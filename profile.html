@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Profile — LinkSocial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        :root{--font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',Roboto,'Helvetica Neue',Arial,sans-serif}
+        .theme-light{--bg-main:#f4f2ee;--bg-surface:#ffffff;--border:#e5e7eb;--text-primary:#191919;--text-secondary:#595856;--text-tertiary:#868482;--primary:#6c47ff}
+        .theme-dark{--bg-main:#1a1a2e;--bg-surface:#16213e;--border:#2a3a5e;--text-primary:#e8e8e8;--text-secondary:#b0b0b0;--text-tertiary:#8a8a8a;--primary:#8b6cff}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-family);background:var(--bg-main);color:var(--text-primary);min-height:100vh}
+        .container{max-width:600px;margin:0 auto;padding:2rem 1rem}
+        .back-link{display:inline-flex;align-items:center;gap:0.25rem;color:var(--primary);font-size:0.875rem;font-weight:600;margin-bottom:1.5rem;cursor:pointer;text-decoration:none}
+        .back-link:hover{text-decoration:underline}
+        .profile-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:1rem;padding:2rem;text-align:center}
+        .avatar{width:80px;height:80px;border-radius:50%;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem;color:white;font-weight:700}
+        .username{font-size:1.5rem;font-weight:700}.email{color:var(--text-tertiary);font-size:0.875rem}
+        .stats{display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+        .stat{text-align:center}.stat-value{font-weight:700;font-size:1.5rem;color:var(--primary)}.stat-label{font-size:0.75rem;color:var(--text-tertiary);text-transform:uppercase}
+        .links-section{margin-top:1.5rem}
+        .link-item{background:var(--bg-surface);border:1px solid var(--border);border-radius:0.75rem;padding:1rem;margin-bottom:0.5rem}
+        .link-item h4{font-size:0.9rem;margin-bottom:0.25rem}.link-item p{font-size:0.75rem;color:var(--text-tertiary)}
+    </style>
+</head>
+<body class="theme-light">
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to LinkSocial</a>
+        <div class="profile-card">
+            <div class="avatar" id="profileAvatar" style="background:linear-gradient(135deg,#6c47ff,#3b82f6)">?</div>
+            <div class="username" id="profileUsername">Loading...</div>
+            <div class="email" id="profileEmail"></div>
+            <div class="stats"><div class="stat"><div class="stat-value" id="profileLinks">0</div><div class="stat-label">Links</div></div><div class="stat"><div class="stat-value" id="profileTrust">-</div><div class="stat-label">Trust Score</div></div></div>
+        </div>
+        <div class="links-section" id="profileLinksList"><p style="text-align:center;color:var(--text-tertiary);">Loading links...</p></div>
+    </div>
+    <script>
+        const firebaseConfig={apiKey:"AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",authDomain:"joefootball-15e7a.firebaseapp.com",projectId:"joefootball-15e7a",storageBucket:"joefootball-15e7a.firebasestorage.app"};
+        firebase.initializeApp(firebaseConfig);const db=firebase.firestore();
+        const $=s=>document.querySelector(s);const esc=s=>s?String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]):'';
+        const userColor=u=>{let h=0;for(let i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return`hsl(${Math.abs(h%360)},50%,45%)`};
+        async function loadProfile(){const params=new URLSearchParams(window.location.search);const uid=params.get('uid');if(!uid){$('#profileUsername').textContent='User not found';return}
+        const userDoc=await db.collection('users').doc(uid).get();if(!userDoc.exists){$('#profileUsername').textContent='User not found';return}
+        const user=userDoc.data();$('#profileUsername').textContent='@'+(user.username||'user');$('#profileEmail').textContent=user.email||'';$('#profileAvatar').style.background=user.accentColor||userColor(user.username);$('#profileAvatar').textContent=(user.emoji||(user.username||'U')[0].toUpperCase());
+        const linksSnap=await db.collection('links').where('ownerId','==',uid).orderBy('createdAt','desc').get();const links=linksSnap.docs.map(d=>({id:d.id,...d.data()}));$('#profileLinks').textContent=links.length;$('#profileTrust').textContent=links.length>0?Math.round(links.reduce((s,l)=>s+(l.trustScore||50),0)/links.length):'-';
+        $('#profileLinksList').innerHTML=links.length>0?links.map(l=>`<div class="link-item"><h4>${esc(l.title)}</h4><p>👍 ${l.upvotes||0} | 💬 ${(l.comments||[]).length} | 🛡 ${l.trustScore||50}% | ${new Date(l.createdAt).toLocaleDateString()}</p></div>`).join(''):'<p style="text-align:center;color:var(--text-tertiary);">No links shared yet</p>'}
+        document.addEventListener('DOMContentLoaded',loadProfile);
+    </script>
+</body>
+</html>
