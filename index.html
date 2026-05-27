@@ -16,7 +16,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LinkSocial — Professional Link Sharing">
     <link rel="canonical" href="https://linksocial.vercel.app/">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
     <style>
         :root {
             --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -39,6 +40,7 @@
             --secondary: #3b82f6; --secondary-hover: #2563eb; --secondary-light: #eff6ff;
             --success: #057642; --success-bg: #e9f7ef; --warning: #b85c00; --warning-bg: #fdf3e7; --danger: #d11124; --danger-bg: #fdecea;
             --card-shadow: 0 0 0 1px rgba(0,0,0,0.05); --card-hover-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03);
+            --logo-url: url('https://i.ibb.co/Z67LrCG7/L-1.png');
         }
         .theme-dark {
             --bg-main: #1a1a2e; --bg-surface: #16213e; --bg-hover: #1a2744; --bg-input: #0f3460;
@@ -48,6 +50,7 @@
             --secondary: #60a5fa; --secondary-hover: #3b82f6; --secondary-light: #1a2a4a;
             --success: #22c55e; --success-bg: #0a2a1a; --warning: #f59e0b; --warning-bg: #2a1a0a; --danger: #ef4444; --danger-bg: #2a0a0a;
             --card-shadow: 0 0 0 1px rgba(255,255,255,0.05); --card-hover-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08);
+            --logo-url: url('https://i.ibb.co/jPxVQH4X/L-2.png');
         }
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-size:16px;scroll-behavior:smooth}
@@ -59,10 +62,15 @@
         input,textarea,select{font-family:inherit;font-size:inherit}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#9ca3af}
 
+        /* Loading Spinner */
+        .loading-spinner{display:flex;align-items:center;justify-content:center;padding:3rem}
+        .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
         .navbar{position:sticky;top:0;z-index:100;background:var(--bg-surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 1.5rem;box-shadow:0 0 0 1px rgba(0,0,0,0.05)}
         .navbar-inner{max-width:1128px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem}
         .navbar-brand{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;cursor:pointer}
-        .navbar-logo{width:34px;height:34px;background:var(--primary);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1rem}
+        .navbar-logo{width:34px;height:34px;background-image:var(--logo-url);background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:var(--radius-sm)}
         .navbar-title{font-size:1.125rem;font-weight:600;letter-spacing:-0.2px}
         .navbar-search{flex:1;max-width:400px}
         .search-input-wrap{display:flex;align-items:center;background:var(--bg-input);border-radius:var(--radius-sm);padding:0 0.75rem;height:34px;gap:0.5rem;transition:all var(--transition-fast);border:1px solid transparent}
@@ -104,7 +112,7 @@
         .link-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:0.75rem;box-shadow:var(--card-shadow);transition:all var(--transition-fast);display:flex;gap:1rem}
         .link-card:hover{box-shadow:var(--card-hover-shadow)}
         .link-card-main{flex:1;min-width:0}
-        .link-card-screenshot{width:200px;flex-shrink:0;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-light);height:130px;background:var(--bg-hover)}
+        .link-card-screenshot{width:200px;flex-shrink:0;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-light);height:130px;background:var(--bg-hover);cursor:pointer}
         .link-card-screenshot img{width:100%;height:100%;object-fit:cover}
         .link-card-screenshot .no-screenshot{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:2rem}
         .card-header{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.5rem}
@@ -118,19 +126,18 @@
         .card-description{font-size:0.875rem;color:var(--text-secondary);margin-bottom:0.5rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
         .card-tags{display:flex;gap:0.375rem;flex-wrap:wrap;margin-bottom:0.375rem}
         .card-tag{padding:2px 0.5rem;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600;letter-spacing:0.3px;text-transform:uppercase}
-        .tag-technology,.tag-ai,.tag-cybersecurity,.tag-software,.tag-hardware,.tag-gadgets,.tag-open-source,.tag-web-development,.tag-mobile-development,.tag-cloud-computing,.tag-developer-resources,.tag-ai-tools{background:#eff6ff;color:#1d4ed8}
-        .tag-programming,.tag-dev-tools,.tag-frameworks,.tag-coding-challenges,.tag-documentation,.tag-apis,.tag-github-repositories{background:#ecfdf5;color:#047857}
-        .tag-education,.tag-tutorials,.tag-courses,.tag-study-resources,.tag-language-learning,.tag-academic-tools{background:#e3f2fd;color:#0d47a1}
+        .tag-technology,.tag-ai,.tag-cybersecurity,.tag-software,.tag-hardware,.tag-gadgets,.tag-open-source,.tag-web-development,.tag-mobile-development,.tag-cloud-computing,.tag-developer-resources,.tag-ai-tools,.tag-programming{background:#eff6ff;color:#1d4ed8}
+        .tag-education,.tag-tutorials,.tag-courses,.tag-study-resources{background:#e3f2fd;color:#0d47a1}
         .tag-entertainment,.tag-movies,.tag-tv-shows,.tag-anime,.tag-memes,.tag-humor,.tag-streaming{background:#fef3c7;color:#92400e}
-        .tag-gaming,.tag-pc-gaming,.tag-mobile-gaming,.tag-console-gaming,.tag-esports,.tag-game-news,.tag-mods,.tag-game-deals{background:#d1fae5;color:#065f46}
-        .tag-music,.tag-songs,.tag-albums,.tag-playlists,.tag-music-videos,.tag-concerts{background:#fce7f3;color:#9d174d}
-        .tag-business,.tag-startups,.tag-investing,.tag-cryptocurrency,.tag-stock-market,.tag-entrepreneurship,.tag-marketing,.tag-e-commerce,.tag-side-hustles,.tag-trading{background:#ede9fe;color:#5b21b6}
-        .tag-news,.tag-world-news,.tag-politics,.tag-local-news,.tag-breaking-news{background:#fffbeb;color:#b45309}
-        .tag-lifestyle,.tag-fashion,.tag-beauty,.tag-self-improvement,.tag-productivity,.tag-minimalism,.tag-relationships{background:#f3e5f5;color:#6a1b9a}
-        .tag-sports,.tag-football,.tag-basketball,.tag-tennis,.tag-mma,.tag-formula-1,.tag-athletics{background:#e8f5e9;color:#1b5e20}
-        .tag-science,.tag-physics,.tag-chemistry,.tag-biology,.tag-astronomy,.tag-space,.tag-environment,.tag-mathematics{background:#dbeafe;color:#1e40af}
-        .tag-food,.tag-recipes,.tag-restaurants,.tag-cooking,.tag-street-food,.tag-coffee{background:#fff3e0;color:#bf360c}
-        .tag-shopping,.tag-deals,.tag-product-reviews,.tag-tech-products,.tag-fashion-products,.tag-marketplaces{background:#fce4ec;color:#880e4f}
+        .tag-gaming,.tag-pc-gaming,.tag-mobile-gaming,.tag-console-gaming,.tag-esports,.tag-game-news{background:#d1fae5;color:#065f46}
+        .tag-music,.tag-songs,.tag-albums,.tag-playlists{background:#fce7f3;color:#9d174d}
+        .tag-business,.tag-startups,.tag-investing,.tag-cryptocurrency,.tag-stock-market,.tag-entrepreneurship,.tag-marketing,.tag-e-commerce,.tag-trading{background:#ede9fe;color:#5b21b6}
+        .tag-news,.tag-world-news,.tag-politics,.tag-breaking-news{background:#fffbeb;color:#b45309}
+        .tag-lifestyle,.tag-fashion,.tag-beauty,.tag-self-improvement,.tag-productivity{background:#f3e5f5;color:#6a1b9a}
+        .tag-sports,.tag-football,.tag-basketball,.tag-tennis,.tag-mma,.tag-formula-1{background:#e8f5e9;color:#1b5e20}
+        .tag-science,.tag-physics,.tag-chemistry,.tag-biology,.tag-astronomy,.tag-space{background:#dbeafe;color:#1e40af}
+        .tag-food,.tag-recipes,.tag-restaurants,.tag-cooking{background:#fff3e0;color:#bf360c}
+        .tag-shopping,.tag-deals,.tag-product-reviews{background:#fce4ec;color:#880e4f}
         .tag-general{background:#f9fafb;color:#6b7280}
         .card-trust{display:inline-flex;align-items:center;gap:3px;font-size:0.65rem;font-weight:600}
         .trust-high{color:#047857}.trust-medium{color:#b45309}.trust-low{color:#be123c}
@@ -138,7 +145,7 @@
         .card-action-btn{display:flex;align-items:center;gap:0.25rem;padding:0.375rem 0.625rem;border-radius:var(--radius-sm);font-size:0.75rem;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all var(--transition-fast)}
         .card-action-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
         .card-action-btn.active,.card-action-btn.voted{color:var(--primary)}
-        .card-follow-btn{padding:0.25rem 0.75rem;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all var(--transition-fast);border:1px solid var(--primary);color:var(--primary);background:transparent;flex-shrink:0}
+        .card-follow-btn{padding:0.25rem 0.75rem;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all var(--transition-fast);border:1px solid var(--primary);color:var(--primary);background:transparent;flex-shrink:0;white-space:nowrap}
         .card-follow-btn:hover{background:var(--primary);color:white}
         .card-follow-btn.following{background:var(--primary);color:white}
 
@@ -189,7 +196,7 @@
         .profile-close{position:absolute;top:0.75rem;right:0.75rem;width:32px;height:32px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-tertiary);transition:all var(--transition-fast);z-index:5}
         .profile-close:hover{background:var(--bg-hover)}
 
-        /* Sub-panel (nested right sidebar) */
+        /* Sub-panel */
         .sub-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:270;opacity:0;visibility:hidden;transition:all var(--transition-base)}
         .sub-panel-overlay.active{opacity:1;visibility:visible}
         .sub-panel{position:fixed;right:0;top:0;bottom:0;width:380px;max-width:100vw;background:var(--bg-surface);border-left:1px solid var(--border);z-index:280;transform:translateX(100%);transition:transform var(--transition-base);overflow-y:auto;display:flex;flex-direction:column}
@@ -214,15 +221,14 @@
         .folder-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all var(--transition-fast)}
         .folder-item:hover{background:var(--bg-hover);border-color:var(--primary)}
         .folder-item.selected{border-color:var(--primary);background:var(--primary-light)}
-        .folder-icon{font-size:1.25rem}
-        .folder-info{flex:1}.folder-name{font-weight:600;font-size:0.875rem}.folder-vis{font-size:0.6875rem;color:var(--text-tertiary)}
+        .folder-icon{font-size:1.25rem}.folder-info{flex:1}.folder-name{font-weight:600;font-size:0.875rem}.folder-vis{font-size:0.6875rem;color:var(--text-tertiary)}
 
         .toast-container{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:0.5rem}
         .toast{padding:0.75rem 1.25rem;border-radius:var(--radius-md);font-size:0.8125rem;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);animation:toastUp .3s ease-out;display:flex;align-items:center;gap:0.5rem;min-width:280px;justify-content:center}
         .toast.success{background:var(--success-bg);color:var(--success);border:1px solid #a7f3d0}
         .toast.error{background:var(--danger-bg);color:var(--danger);border:1px solid #fecaca}
         .toast.info{background:var(--secondary-light);color:#1e40af;border:1px solid #bfdbfe}
-        @keyframes toastUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+        @keyframes toastUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 
         .empty-state{text-align:center;padding:2.5rem 1rem;background:var(--bg-surface);border-radius:var(--radius-lg);border:1px solid var(--border)}
         .empty-state-icon{font-size:2.5rem;margin-bottom:0.75rem;opacity:.6}
@@ -234,16 +240,21 @@
         .page-btn:hover:not(:disabled):not(.active){background:var(--bg-hover)}
         .page-btn.active{background:var(--primary);color:white;border-color:var(--primary);font-weight:600}
 
+        /* Chat bubble */
+        .chat-bubble-btn{position:fixed;bottom:1.5rem;right:1.5rem;width:48px;height:48px;border-radius:var(--radius-full);background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);cursor:pointer;z-index:50;transition:all var(--transition-fast);font-size:1.25rem}
+        .chat-bubble-btn:hover{background:var(--primary-hover);transform:scale(1.05)}
+
         @media(max-width:992px){.main-layout{grid-template-columns:1fr}.sidebar-column{display:none}.link-card-screenshot{width:120px;height:90px}}
-        @media(max-width:640px){.navbar{padding:0 0.75rem}.navbar-title{display:none}.link-card{flex-direction:column}.link-card-screenshot{width:100%;height:160px}.card-actions{gap:0}}
+        @media(max-width:640px){.navbar{padding:0 0.75rem}.navbar-title{display:none}.link-card{flex-direction:column}.link-card-screenshot{width:100%;height:160px}.card-actions{gap:0}.card-follow-btn{font-size:0.7rem;padding:0.2rem 0.5rem}}
     </style>
 </head>
 <body class="theme-light">
     <nav class="navbar">
         <div class="navbar-inner">
-            <div class="navbar-brand" onclick="resetToFeed()"><div class="navbar-logo">L</div><span class="navbar-title">LinkSocial</span></div>
+            <div class="navbar-brand" onclick="resetToFeed()"><div class="navbar-logo"></div><span class="navbar-title">LinkSocial</span></div>
             <div class="navbar-search"><div class="search-input-wrap"><span class="iconify" data-icon="ph:magnifying-glass" data-width="16" style="color:var(--text-tertiary)"></span><input type="text" id="searchInput" placeholder="Search links..."></div></div>
             <div class="navbar-actions">
+                <button class="btn btn-icon btn-ghost" id="chatBtn" title="Community Chat"><span class="iconify" data-icon="ph:chats-circle" data-width="22"></span></button>
                 <button class="btn btn-icon btn-ghost" id="themeToggle" title="Toggle theme"><span class="iconify" data-icon="ph:moon" data-width="20" id="themeIcon"></span></button>
                 <button class="btn btn-outline btn-sm" id="shareBtn"><span class="iconify" data-icon="ph:plus" data-width="16"></span> Share</button>
                 <div id="authArea"></div>
@@ -267,7 +278,7 @@
                 <button class="sort-btn" data-feed="new">Latest</button>
                 <button class="sort-btn" data-feed="top">Top</button>
             </div>
-            <div id="linksFeed"></div>
+            <div id="linksFeed"><div class="loading-spinner"><div class="spinner"></div></div></div>
             <div class="pagination" id="pagination"></div>
         </div>
         <div class="sidebar-column">
@@ -280,21 +291,21 @@
             <div class="sidebar-card">
                 <div class="sidebar-card-title">📂 Categories</div>
                 <div class="sidebar-link active" data-category="all" onclick="filterCategory('all')">All Links <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="technology" onclick="filterCategory('technology')">Technology <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="education" onclick="filterCategory('education')">Education <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="entertainment" onclick="filterCategory('entertainment')">Entertainment <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="gaming" onclick="filterCategory('gaming')">Gaming <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="music" onclick="filterCategory('music')">Music <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="business" onclick="filterCategory('business')">Business <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="news" onclick="filterCategory('news')">News <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="lifestyle" onclick="filterCategory('lifestyle')">Lifestyle <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="sports" onclick="filterCategory('sports')">Sports <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="science" onclick="filterCategory('science')">Science <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="food" onclick="filterCategory('food')">Food <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="shopping" onclick="filterCategory('shopping')">Shopping <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="developer-resources" onclick="filterCategory('developer-resources')">Developer Resources <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="ai-tools" onclick="filterCategory('ai-tools')">AI Tools <span class="sidebar-link-arrow">→</span></div>
-                <div class="sidebar-link" data-category="trading" onclick="filterCategory('trading')">Trading <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Technology" onclick="filterCategory('Technology')">Technology <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Education" onclick="filterCategory('Education')">Education <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Entertainment" onclick="filterCategory('Entertainment')">Entertainment <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Gaming" onclick="filterCategory('Gaming')">Gaming <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Music" onclick="filterCategory('Music')">Music <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Business" onclick="filterCategory('Business')">Business <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="News" onclick="filterCategory('News')">News <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Lifestyle" onclick="filterCategory('Lifestyle')">Lifestyle <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Sports" onclick="filterCategory('Sports')">Sports <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Science" onclick="filterCategory('Science')">Science <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Food" onclick="filterCategory('Food')">Food <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Shopping" onclick="filterCategory('Shopping')">Shopping <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Developer Resources" onclick="filterCategory('Developer Resources')">Developer Resources <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="AI Tools" onclick="filterCategory('AI Tools')">AI Tools <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="Trading" onclick="filterCategory('Trading')">Trading <span class="sidebar-link-arrow">→</span></div>
             </div>
             <div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-tertiary);">
                 <a href="https://pireactive.vercel.app/" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600;">LinkSocial © 2026 · Built by PIReactive</a>
@@ -302,7 +313,7 @@
         </div>
     </div>
 
-    <!-- COMMENT SIDEBAR (LEFT) -->
+    <!-- COMMENT SIDEBAR -->
     <div class="comment-overlay" id="commentOverlay"></div>
     <div class="comment-sidebar" id="commentSidebar">
         <div class="comment-header"><span class="comment-title">💬 Comments</span><button class="comment-close" id="commentClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button></div>
@@ -310,7 +321,7 @@
         <div class="comment-input-area"><input type="text" class="comment-input" id="commentInput" placeholder="Write a comment..."><button class="btn btn-primary btn-sm" id="commentPostBtn">Post</button></div>
     </div>
 
-    <!-- PROFILE SIDEBAR (RIGHT) -->
+    <!-- PROFILE SIDEBAR -->
     <div class="profile-overlay" id="profileOverlay"></div>
     <div class="profile-sidebar" id="profileSidebar">
         <button class="profile-close" id="profileClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button>
@@ -321,11 +332,12 @@
             <div class="profile-menu-item" onclick="openSubPanel('notifications')"><div class="profile-menu-item-left"><span class="iconify" data-icon="ph:bell" data-width="20"></span> Notifications</div><span class="sidebar-link-arrow">›</span></div>
             <div class="profile-menu-item" onclick="openSubPanel('saved')"><div class="profile-menu-item-left"><span class="iconify" data-icon="ph:bookmark-simple" data-width="20"></span> Saved</div><span class="sidebar-link-arrow">›</span></div>
             <div class="profile-menu-item" onclick="openSubPanel('links')"><div class="profile-menu-item-left"><span class="iconify" data-icon="ph:link" data-width="20"></span> Links</div><span class="sidebar-link-arrow">›</span></div>
+            <div class="profile-menu-item" onclick="openSubPanel('vault')"><div class="profile-menu-item-left"><span class="iconify" data-icon="ph:lock-simple" data-width="20"></span> Personal Vault</div><span class="sidebar-link-arrow">›</span></div>
         </div>
         <div style="padding:1rem;margin-top:auto;"><button class="btn btn-danger btn-sm" id="logoutBtn" style="width:100%;">Log Out</button></div>
     </div>
 
-    <!-- SUB PANEL (NESTED RIGHT) -->
+    <!-- SUB PANEL -->
     <div class="sub-panel-overlay" id="subPanelOverlay"></div>
     <div class="sub-panel" id="subPanel">
         <div class="sub-panel-header"><button class="sub-panel-back" id="subPanelBack">←</button><span class="sub-panel-title" id="subPanelTitle">Settings</span></div>
@@ -351,20 +363,20 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
+    <button class="chat-bubble-btn" id="chatBubbleBtn" title="Community Chat"><span class="iconify" data-icon="ph:chats-circle" data-width="24"></span></button>
 
     <script>
     const firebaseConfig={apiKey:"AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",authDomain:"joefootball-15e7a.firebaseapp.com",projectId:"joefootball-15e7a",storageBucket:"joefootball-15e7a.firebasestorage.app"};
     firebase.initializeApp(firebaseConfig);const db=firebase.firestore();const auth=firebase.auth();
 
     const MAIN_CATEGORIES=['Technology','Education','Entertainment','Gaming','Music','Business','News','Lifestyle','Sports','Science','Food','Shopping','Developer Resources','AI Tools','Trading'];
-    const ALL_SUBCATEGORIES={Technology:['AI','Programming','Cybersecurity','Software','Hardware','Gadgets','Open Source','Web Development','Mobile Development','Cloud Computing','Developer Resources','APIs','GitHub Repositories','Dev Tools','Frameworks','Coding Challenges','Documentation','Tools & Utilities','Productivity Apps','Browser Extensions','Automation Tools','Security & Privacy','Privacy Tools','VPNs','Encryption','Threat Reports','Data Protection'],Education:['Tutorials','Courses','Study Resources','Language Learning','Academic Tools','Mathematics','Research Papers','Science','Physics','Chemistry','Biology','Astronomy','Space','Environment'],Entertainment:['Movies','TV Shows','Anime','Memes','Humor','Streaming','Celebrity News','Social Media','Viral Posts','Trends','Influencers','Online Communities','Fun','Random Websites','Weird Internet','Challenges','Interactive Experiences'],Gaming:['PC Gaming','Mobile Gaming','Console Gaming','Esports','Game News','Mods','Game Deals'],Music:['Songs','Albums','Playlists','Music Videos','Producers','Lyrics','Concerts'],Business:['Startups','Investing','Cryptocurrency','Stock Market','Entrepreneurship','Marketing','E-commerce','Side Hustles','Careers','Jobs','Freelancing','Remote Work','Internships','Career Advice','Trading','Finance'],News:['World News','Politics','Local News','Breaking News','Investigations','Journalism'],Lifestyle:['Fashion','Beauty','Self Improvement','Productivity','Minimalism','Relationships','Health & Fitness','Workouts','Nutrition','Mental Wellness','Sports Medicine','Healthy Living','Travel','Tourism','Hotels','Guides','Flight Deals','Adventure'],Sports:['Football','Basketball','Tennis','MMA','Formula 1','Athletics','Sports Highlights'],Science:['Physics','Chemistry','Biology','Astronomy','Space','Environment','Mathematics','Research Papers'],Food:['Recipes','Restaurants','Cooking','Street Food','Coffee'],Shopping:['Deals','Product Reviews','Tech Products','Fashion Products','Marketplaces'],'Developer Resources':['APIs','GitHub Repositories','Dev Tools','Frameworks','Coding Challenges','Documentation','Programming','Open Source'],'AI Tools':['AI','Machine Learning','Automation Tools','Productivity Apps'],Trading:['Cryptocurrency','Stock Market','Investing','Finance','Business']};
+    const SUBCATEGORY_KEYWORDS={Technology:['programming','software','hardware','gadgets','open source','web development','mobile development','cloud computing','cybersecurity','api','github','dev tools','framework','coding','documentation','browser extension','automation','vpn','encryption','security','privacy','data protection'],Education:['tutorial','course','study','learning','academic','mathematics','research','science','physics','chemistry','biology','astronomy','environment','language'],Entertainment:['movie','tv show','anime','meme','humor','streaming','celebrity','social media','viral','trend','influencer','community','fun','random','challenge','interactive'],Gaming:['pc gaming','mobile gaming','console','esports','game news','mod','game deal'],Music:['song','album','playlist','music video','producer','lyric','concert'],Business:['startup','investing','cryptocurrency','stock market','entrepreneurship','marketing','e-commerce','side hustle','career','job','freelance','remote work','internship','trading','finance'],News:['world news','politics','local news','breaking news','investigation','journalism'],Lifestyle:['fashion','beauty','self improvement','productivity','minimalism','relationship','health','workout','nutrition','mental wellness','sports medicine','healthy living','travel','tourism','hotel','guide','flight deal','adventure'],Sports:['football','basketball','tennis','mma','formula 1','athletics','sports highlight'],Science:['physics','chemistry','biology','astronomy','space','environment','mathematics','research paper'],Food:['recipe','restaurant','cooking','street food','coffee'],Shopping:['deal','product review','tech product','fashion product','marketplace'],'Developer Resources':['api','github','dev tool','framework','coding challenge','documentation','programming','open source'],'AI Tools':['ai','machine learning','automation tool','productivity app'],Trading:['cryptocurrency','stock market','investing','finance','business']};
 
     let currentUser=null,allLinks=[],currentFeed='feed',currentCategory='all',currentPage=1,authMode='signin',savedLinkForSave=null,selectedSaveFolder=null,commentLinkId=null,followingUsers=new Set();
 
     const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
     const esc=s=>s?String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]):'';
     const getDomain=u=>{try{return new URL(u).hostname.replace('www.','')}catch{return u}};
-    const favicon=u=>{try{return`https://www.google.com/s2/favicons?domain=${new URL(u).hostname}&sz=32`}catch{return''}};
     const timeAgo=ts=>{if(!ts)return'';const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'};
     const fmtNum=n=>n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n);
     const userColor=u=>{let h=0;for(let i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return`hsl(${Math.abs(h%360)},50%,45%)`};
@@ -380,31 +392,46 @@
     function openModal(id){$(`#${id}`).classList.add('active')}
     function closeModal(id){$(`#${id}`).classList.remove('active')}
     function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add(`theme-${t}`);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
-    function toggleTheme(){const cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')}
 
-    function renderAuth(){const a=$('#authArea');if(currentUser){a.innerHTML=`<button class="btn btn-ghost btn-sm" id="profileBtn" style="display:flex;align-items:center;gap:6px;"><span style="width:28px;height:28px;border-radius:50%;background:${userColor(currentUser.username)};display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:0.7rem;">${(currentUser.username||'U')[0].toUpperCase()}</span><span>${esc(currentUser.username||'User')}</span></button>`;$('#shareAvatar').textContent=(currentUser.username||'L')[0].toUpperCase();$('#shareAvatar').style.background=userColor(currentUser.username);setTimeout(()=>{const pb=$('#profileBtn');if(pb)pb.onclick=openProfile},100)}else{a.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openAuth('signin')">Sign in</button>`;$('#shareAvatar').textContent='L';$('#shareAvatar').style.background='linear-gradient(135deg, var(--primary), var(--secondary))'}}
+    function renderAuth(){const a=$('#authArea');if(currentUser){a.innerHTML=`<button class="btn btn-ghost btn-sm" id="profileBtn" style="display:flex;align-items:center;gap:6px;"><span style="width:28px;height:28px;border-radius:50%;background:${currentUser.accentColor||userColor(currentUser.username)};display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:0.7rem;">${(currentUser.emoji||(currentUser.username||'U')[0].toUpperCase())}</span><span>${esc(currentUser.username||'User')}</span></button>`;$('#shareAvatar').textContent=(currentUser.emoji||(currentUser.username||'L')[0].toUpperCase());$('#shareAvatar').style.background=currentUser.accentColor||userColor(currentUser.username);setTimeout(()=>{const pb=$('#profileBtn');if(pb)pb.onclick=openProfile},100)}else{a.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openAuth('signin')">Sign in</button>`;$('#shareAvatar').textContent='L';$('#shareAvatar').style.background='linear-gradient(135deg, var(--primary), var(--secondary))'}}
 
     function openAuth(mode='signin'){authMode=mode;$('#authTitle').textContent=mode==='signin'?'Sign in':'Join LinkSocial';$('#authSubmitText').textContent=mode==='signin'?'Sign in':'Create account';$('#authUserGroup').style.display=mode==='signin'?'none':'block';$('#authSwitchText').textContent=mode==='signin'?'New to LinkSocial?':'Already have an account?';$('#authSwitch').textContent=mode==='signin'?'Join now':'Sign in';openModal('authModal')}
-    async function handleAuth(){const email=$('#authEmail').value.trim(),pw=$('#authPassword').value,uname=$('#authUsername').value.trim();if(!email||!pw){toast('Email and password required','error');return}const btn=$('#authSubmit');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span>';try{if(authMode==='signup'){if(!uname){toast('Username required','error');btn.disabled=false;btn.innerHTML='<span>Create account</span>';return}await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);const cred=await auth.createUserWithEmailAndPassword(email,pw);await db.collection('users').doc(cred.user.uid).set({uid:cred.user.uid,username:uname,email,createdAt:Date.now(),linkCount:0,accentColor:userColor(uname)});toast(`Welcome, @${uname}!`,'success')}else{await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);await auth.signInWithEmailAndPassword(email,pw);toast('Welcome back!','success')}closeModal('authModal')}catch(e){toast(e.message,'error')}finally{btn.disabled=false;btn.innerHTML=`<span>${authMode==='signin'?'Sign in':'Create account'}</span>`}}
+    async function handleAuth(){const email=$('#authEmail').value.trim(),pw=$('#authPassword').value,uname=$('#authUsername').value.trim();if(!email||!pw){toast('Email and password required','error');return}const btn=$('#authSubmit');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span>';try{if(authMode==='signup'){if(!uname){toast('Username required','error');btn.disabled=false;btn.innerHTML='<span>Create account</span>';return}await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);const cred=await auth.createUserWithEmailAndPassword(email,pw);await db.collection('users').doc(cred.user.uid).set({uid:cred.user.uid,username:uname,email,createdAt:Date.now(),linkCount:0,accentColor:userColor(uname),emoji:'👤'});toast(`Welcome, @${uname}!`,'success')}else{await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);await auth.signInWithEmailAndPassword(email,pw);toast('Welcome back!','success')}closeModal('authModal')}catch(e){toast(e.message,'error')}finally{btn.disabled=false;btn.innerHTML=`<span>${authMode==='signin'?'Sign in':'Create account'}</span>`}}
     async function signOut(){await auth.signOut();currentUser=null;renderAuth();closeProfile();fetchLinks();toast('Signed out','info')}
 
-    function openProfile(){if(!currentUser)return;$('#profileName').textContent=currentUser.username||'User';$('#profileEmail').textContent=currentUser.email||'';$('#profileAvatar').style.background=currentUser.accentColor||userColor(currentUser.username);$('#profileAvatar').textContent=(currentUser.username||'U')[0].toUpperCase();const userLinks=allLinks.filter(l=>l.ownerId===currentUser.uid);$('#profLinks').textContent=fmtNum(userLinks.length);$('#profTrust').textContent=userLinks.length>0?Math.round(userLinks.reduce((s,l)=>s+(l.trustScore||50),0)/userLinks.length):'-';$('#profileOverlay').classList.add('active');$('#profileSidebar').classList.add('active');loadSavedCount()}
+    function openProfile(){if(!currentUser)return;$('#profileName').textContent=(currentUser.emoji||'')+' '+currentUser.username;$('#profileEmail').textContent=currentUser.email||'';$('#profileAvatar').style.background=currentUser.accentColor||userColor(currentUser.username);$('#profileAvatar').textContent=currentUser.emoji||(currentUser.username||'U')[0].toUpperCase();const userLinks=allLinks.filter(l=>l.ownerId===currentUser.uid);$('#profLinks').textContent=fmtNum(userLinks.length);$('#profTrust').textContent=userLinks.length>0?Math.round(userLinks.reduce((s,l)=>s+(l.trustScore||50),0)/userLinks.length):'-';$('#profileOverlay').classList.add('active');$('#profileSidebar').classList.add('active');loadSavedCount()}
     function closeProfile(){$('#profileOverlay').classList.remove('active');$('#profileSidebar').classList.remove('active');closeSubPanel()}
     async function loadSavedCount(){if(!currentUser)return;const snap=await db.collection('users').doc(currentUser.uid).collection('savedLinks').get();$('#profSaved').textContent=fmtNum(snap.docs.length)}
 
-    function openSubPanel(type){$('#subPanelTitle').textContent=type.charAt(0).toUpperCase()+type.slice(1);let html='';if(type==='settings'){html=`<div style="display:flex;flex-direction:column;gap:1rem;"><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Username</label><div style="display:flex;gap:0.5rem;"><input type="text" class="profile-input" id="settingsUsername" value="${esc(currentUser?.username||'')}" style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.875rem;background:var(--bg-surface);color:var(--text-primary);outline:none;"><button class="btn btn-primary btn-sm" onclick="updateSettingsUsername()">Save</button></div></div><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Accent Color</label><input type="color" id="settingsColor" value="${currentUser?.accentColor||'#6c47ff'}" style="width:60px;height:36px;border:none;cursor:pointer;border-radius:var(--radius-md);"><button class="btn btn-sm btn-outline" onclick="updateAccentColor()" style="margin-left:0.5rem;">Apply</button></div><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Profile Emoji</label><input type="text" id="settingsEmoji" maxlength="2" value="${currentUser?.emoji||'👤'}" style="width:60px;padding:0.5rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:1.25rem;text-align:center;background:var(--bg-surface);color:var(--text-primary);outline:none;"><button class="btn btn-sm btn-outline" onclick="updateEmoji()" style="margin-left:0.5rem;">Save</button></div></div>`}else if(type==='notifications'){html='<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No new notifications</p>'}else if(type==='saved'){html='<div id="savedLinksList"><p style="color:var(--text-tertiary);text-align:center;padding:2rem;">Loading saved links...</p></div>';setTimeout(loadSavedLinks,100)}else if(type==='links'){html='<div id="userLinksList"><p style="color:var(--text-tertiary);text-align:center;padding:2rem;">Loading your links...</p></div>';setTimeout(loadUserLinks,100)}
+    function openSubPanel(type){$('#subPanelTitle').textContent=type.charAt(0).toUpperCase()+type.slice(1);let html='';
+    if(type==='settings'){html=`<div style="display:flex;flex-direction:column;gap:1rem;"><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Username</label><div style="display:flex;gap:0.5rem;"><input type="text" class="profile-input" id="settingsUsername" value="${esc(currentUser?.username||'')}" style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.875rem;background:var(--bg-surface);color:var(--text-primary);outline:none;"><button class="btn btn-primary btn-sm" onclick="updateSettingsUsername()">Save</button></div></div><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Accent Color</label><input type="color" id="settingsColor" value="${currentUser?.accentColor||'#6c47ff'}" style="width:60px;height:36px;border:none;cursor:pointer;border-radius:var(--radius-md);"><button class="btn btn-sm btn-outline" onclick="updateAccentColor()" style="margin-left:0.5rem;">Apply</button></div><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Profile Emoji</label><input type="text" id="settingsEmoji" maxlength="2" value="${esc(currentUser?.emoji||'👤')}" style="width:60px;padding:0.5rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:1.25rem;text-align:center;background:var(--bg-surface);color:var(--text-primary);outline:none;"><button class="btn btn-sm btn-outline" onclick="updateEmoji()" style="margin-left:0.5rem;">Save</button></div></div>`}
+    else if(type==='notifications'){html='<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No new notifications</p>'}
+    else if(type==='saved'){html='<div id="savedFoldersView"><p style="color:var(--text-tertiary);text-align:center;padding:2rem;">Loading folders...</p></div>';setTimeout(loadSavedFolders,100)}
+    else if(type==='links'){html='<div id="userLinksList"><p style="color:var(--text-tertiary);text-align:center;padding:2rem;">Loading your links...</p></div>';setTimeout(loadUserLinks,100)}
+    else if(type==='vault'){html='<div id="vaultLinksList"><p style="color:var(--text-tertiary);text-align:center;padding:2rem;">Loading vault...</p></div>';setTimeout(loadVaultLinks,100)}
     $('#subPanelContent').innerHTML=html;$('#subPanelOverlay').classList.add('active');$('#subPanel').classList.add('active')}
     function closeSubPanel(){$('#subPanelOverlay').classList.remove('active');$('#subPanel').classList.remove('active')}
+
     async function updateSettingsUsername(){const nu=$('#settingsUsername').value.trim();if(!nu)return;await db.collection('users').doc(currentUser.uid).update({username:nu});currentUser.username=nu;renderAuth();openProfile();toast('Username updated!','success')}
     async function updateAccentColor(){const c=$('#settingsColor').value;await db.collection('users').doc(currentUser.uid).update({accentColor:c});currentUser.accentColor=c;$('#profileAvatar').style.background=c;renderAuth();toast('Accent color updated!','success')}
     async function updateEmoji(){const e=$('#settingsEmoji').value||'👤';await db.collection('users').doc(currentUser.uid).update({emoji:e});currentUser.emoji=e;$('#profileAvatar').textContent=e;renderAuth();toast('Emoji updated!','success')}
 
-    async function loadSavedLinks(){if(!currentUser)return;const snap=await db.collection('users').doc(currentUser.uid).collection('savedLinks').get();const saved=snap.docs.map(d=>d.data());const links=allLinks.filter(l=>saved.some(s=>s.linkId===l.id));$('#savedLinksList').innerHTML=links.length>0?links.map(l=>`<div style="padding:0.5rem;border-bottom:1px solid var(--border-light);font-size:0.8125rem;cursor:pointer;" onclick="window.open('${esc(l.url)}','_blank')"><strong>${esc(l.title)}</strong><br><span style="color:var(--text-tertiary);">${esc(getDomain(l.url||''))}</span></div>`).join(''):'<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No saved links</p>'}
+    async function loadSavedFolders(){if(!currentUser)return;const snap=await db.collection('users').doc(currentUser.uid).collection('folders').get();let folders=snap.docs.map(d=>({id:d.id,...d.data()}));if(!folders.some(f=>f.name==='DEFAULT')){await db.collection('users').doc(currentUser.uid).collection('folders').doc('DEFAULT').set({name:'DEFAULT',visibility:'public',createdAt:Date.now()});folders.unshift({id:'DEFAULT',name:'DEFAULT',visibility:'public'})}
+    const savedSnap=await db.collection('users').doc(currentUser.uid).collection('savedLinks').get();const saved=savedSnap.docs.map(d=>d.data());
+    $('#savedFoldersView').innerHTML=folders.map(f=>{const count=saved.filter(s=>s.folder===f.name).length;return`<div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:0.5rem;cursor:pointer;" onclick="openSavedFolder('${esc(f.name)}')"><div style="display:flex;align-items:center;gap:0.5rem;"><span class="iconify" data-icon="${f.visibility==='private'?'ph:lock-simple':'ph:globe'}" data-width="16" style="color:var(--text-tertiary);"></span><span style="font-weight:600;font-size:0.875rem;">${esc(f.name)}</span></div><span style="font-size:0.75rem;color:var(--text-tertiary);">${count} links</span></div>`}).join('')||'<p style="color:var(--text-tertiary);text-align:center;padding:1rem;">No folders</p>';window.Iconify?.scan?.($('#savedFoldersView'))}
+
+    async function openSavedFolder(folderName){if(!currentUser)return;const snap=await db.collection('users').doc(currentUser.uid).collection('savedLinks').where('folder','==',folderName).get();const saved=snap.docs.map(d=>d.data());const links=allLinks.filter(l=>saved.some(s=>s.linkId===l.id));
+    $('#subPanelTitle').textContent='📁 '+folderName;$('#subPanelContent').innerHTML=`<button class="btn btn-ghost btn-sm" onclick="openSubPanel('saved')" style="margin-bottom:0.75rem;">← Back to folders</button>`+(links.length>0?links.map(l=>`<div style="padding:0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:0.5rem;cursor:pointer;" onclick="window.open('${esc(l.url)}','_self')"><div style="font-weight:600;font-size:0.8125rem;">${esc(l.title)}</div><div style="font-size:0.75rem;color:var(--text-tertiary);">${esc(getDomain(l.url||''))}</div></div>`).join(''):'<p style="color:var(--text-tertiary);text-align:center;padding:1rem;">No saved links in this folder</p>')}
 
     async function loadUserLinks(){if(!currentUser)return;const links=allLinks.filter(l=>l.ownerId===currentUser.uid);$('#userLinksList').innerHTML=links.length>0?links.map(l=>`<div style="padding:0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:0.5rem;"><div style="font-weight:600;font-size:0.8125rem;">${esc(l.title)}</div><div style="font-size:0.75rem;color:var(--text-secondary);">👍 ${fmtNum(l.upvotes||0)} | 💬 ${fmtNum((l.comments||[]).length)} | 🛡 ${l.trustScore||50}%</div><div style="display:flex;gap:0.5rem;margin-top:0.5rem;"><button class="btn btn-xs btn-outline" onclick="editLink('${l.id}')">Edit</button><button class="btn btn-xs btn-danger" onclick="deleteLink('${l.id}')">Delete</button></div></div>`).join(''):'<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No links shared yet</p>'}
 
+    async function loadVaultLinks(){if(!currentUser)return;const snap=await db.collection('users').doc(currentUser.uid).collection('vault').get();const vaultIds=snap.docs.map(d=>d.data().linkId);const links=allLinks.filter(l=>vaultIds.includes(l.id));
+    $('#vaultLinksList').innerHTML=links.length>0?links.map(l=>`<div style="padding:0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:0.5rem;"><div style="font-weight:600;font-size:0.8125rem;">${esc(l.title)}</div><div style="font-size:0.75rem;color:var(--text-tertiary);">🔒 Private · ${esc(getDomain(l.url||''))}</div><button class="btn btn-xs btn-danger" onclick="removeFromVault('${l.id}')" style="margin-top:0.25rem;">Remove</button></div>`).join(''):'<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No links in vault</p>'}
+
     async function deleteLink(id){if(!confirm('Delete this link?'))return;await db.collection('links').doc(id).delete();toast('Link deleted','success');fetchLinks();loadUserLinks()}
     function editLink(id){const l=allLinks.find(x=>x.id===id);if(!l)return;const nt=prompt('New title:',l.title);if(nt&&nt.trim()){db.collection('links').doc(id).update({title:nt.trim()}).then(()=>{toast('Updated!','success');fetchLinks();loadUserLinks()})}}
+    async function addToVault(linkId){if(!currentUser)return;await db.collection('users').doc(currentUser.uid).collection('vault').doc(linkId).set({linkId,addedAt:Date.now()});toast('Added to vault!','success')}
+    async function removeFromVault(linkId){await db.collection('users').doc(currentUser.uid).collection('vault').doc(linkId).delete();toast('Removed from vault','info');loadVaultLinks()}
 
     // ============ FETCH & RENDER ============
     async function fetchLinks(){try{const snap=await db.collection('links').orderBy('createdAt','desc').get();allLinks=snap.docs.map(d=>({id:d.id,...d.data(),upvotes:d.data().upvotes||0,downvotes:d.data().downvotes||0,ratings:d.data().ratings||{},comments:d.data().comments||[],views:d.data().views||0,saves:d.data().saves||0,categories:d.data().categories||[d.data().category||'general']}));renderFeed();updateStats()}catch(e){console.error(e)}}
@@ -418,22 +445,50 @@
     function renderCommentSidebar(linkId){const l=allLinks.find(x=>x.id===linkId);if(!l)return;$('#commentList').innerHTML=(l.comments||[]).map(c=>`<div class="comment-item"><span class="comment-author">@${esc(c.author)}</span> <span class="comment-time">${timeAgo(c.timestamp)}</span><p style="margin-top:0.25rem;">${esc(c.text)}</p></div>`).join('')||'<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No comments yet</p>'}
     function postComment(){if(!commentLinkId)return;const t=$('#commentInput').value.trim();if(t){addComment(commentLinkId,t);$('#commentInput').value=''}}
 
-    // ============ SAVE ============
-    async function openSaveModal(linkId){if(!currentUser){toast('Sign in to save','error');openAuth('signin');return}savedLinkForSave=linkId;selectedSaveFolder='DEFAULT';const snap=await db.collection('users').doc(currentUser.uid).collection('folders').get();let folders=snap.docs.map(d=>({id:d.id,...d.data()}));if(!folders.some(f=>f.name==='DEFAULT')){await db.collection('users').doc(currentUser.uid).collection('folders').doc('DEFAULT').set({name:'DEFAULT',visibility:'public',createdAt:Date.now()},);folders.unshift({id:'DEFAULT',name:'DEFAULT',visibility:'public'})}$('#saveFolderList').innerHTML=folders.map(f=>`<div class="folder-item ${selectedSaveFolder===f.name?'selected':''}" onclick="selectSaveFolder('${esc(f.name)}')"><span class="folder-icon">📁</span><div class="folder-info"><div class="folder-name">${esc(f.name)}</div><div class="folder-vis">${f.visibility||'public'}</div></div></div>`).join('');openModal('saveModal')}
+    async function openSaveModal(linkId){if(!currentUser){toast('Sign in to save','error');openAuth('signin');return}savedLinkForSave=linkId;selectedSaveFolder='DEFAULT';const snap=await db.collection('users').doc(currentUser.uid).collection('folders').get();let folders=snap.docs.map(d=>({id:d.id,...d.data()}));if(!folders.some(f=>f.name==='DEFAULT')){await db.collection('users').doc(currentUser.uid).collection('folders').doc('DEFAULT').set({name:'DEFAULT',visibility:'public',createdAt:Date.now()});folders.unshift({id:'DEFAULT',name:'DEFAULT',visibility:'public'})}$('#saveFolderList').innerHTML=folders.map(f=>`<div class="folder-item ${selectedSaveFolder===f.name?'selected':''}" onclick="selectSaveFolder('${esc(f.name)}')"><span class="folder-icon">📁</span><div class="folder-info"><div class="folder-name">${esc(f.name)}</div><div class="folder-vis">${f.visibility||'public'}</div></div></div>`).join('');openModal('saveModal')}
     function selectSaveFolder(name){selectedSaveFolder=name;$$('#saveFolderList .folder-item').forEach(i=>i.classList.remove('selected'));event.target.closest('.folder-item').classList.add('selected')}
     async function confirmSave(){if(!savedLinkForSave||!selectedSaveFolder)return;await db.collection('users').doc(currentUser.uid).collection('savedLinks').doc(savedLinkForSave).set({linkId:savedLinkForSave,folder:selectedSaveFolder,savedAt:Date.now()});await db.collection('links').doc(savedLinkForSave).update({saves:firebase.firestore.FieldValue.increment(1)});toast(`Saved to "${selectedSaveFolder}"!`,'success');closeModal('saveModal');fetchLinks();loadSavedCount()}
 
-    // ============ RENDER FEED ============
-    function getFiltered(){let f=[...allLinks];if(currentCategory!=='all'){const catLower=currentCategory.toLowerCase();f=f.filter(l=>{const cats=(l.categories||[l.category||'general']).map(c=>c.toLowerCase());const subs=(ALL_SUBCATEGORIES[currentCategory]||[]).map(s=>s.toLowerCase());return cats.some(c=>c===catLower||subs.includes(c))})}const sq=$('#searchInput')?.value?.toLowerCase().trim()||'';if(sq)f=f.filter(l=>(l.title||'').toLowerCase().includes(sq)||(l.description||'').toLowerCase().includes(sq)||(l.ownerName||'').toLowerCase().includes(sq));switch(currentFeed){case'feed':f.sort((a,b)=>calcFeedScore(b)-calcFeedScore(a));break;case'trending':f.sort((a,b)=>calcTrend(b)-calcTrend(a));break;case'new':f.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));break;case'top':f.sort((a,b)=>calcTop(b)-calcTop(a));break}return f}
+    // ============ CATEGORY FILTERING ============
+    function doesLinkMatchCategory(link,cat){
+        if(!cat||cat==='all')return true;
+        const catLower=cat.toLowerCase();
+        const linkCats=(link.categories||[link.category||'general']).map(c=>c.toLowerCase());
+        if(linkCats.some(c=>c===catLower))return true;
+        const keywords=SUBCATEGORY_KEYWORDS[cat]||[];
+        const descText=((link.description||'')+' '+(link.title||'')).toLowerCase();
+        return keywords.some(kw=>descText.includes(kw.toLowerCase()));
+    }
 
-    function renderFeed(){const filtered=getFiltered(),tp=Math.ceil(filtered.length/20);if(currentPage>tp&&tp>0)currentPage=tp;if(currentPage<1)currentPage=1;const pag=filtered.slice((currentPage-1)*20,currentPage*20);const feed=$('#linksFeed');if(pag.length===0){feed.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔗</div><div class="empty-state-title">No links found</div><div class="empty-state-text">Be the first to share something!</div></div>`;renderPagination(0);return}feed.innerHTML=pag.map(l=>{const net=(l.upvotes||0)-(l.downvotes||0),uv=currentUser&&l.votes?l.votes[currentUser.uid]:null;const tc=l.trustScore>=70?'trust-high':l.trustScore>=40?'trust-medium':'trust-low';const cats=l.categories||[l.category||'general'];const isFollowing=followingUsers.has(l.ownerId);const canFollow=currentUser&&l.ownerId!==currentUser.uid&&l.ownerId!=='anonymous';const screenshotUrl=l.screenshot||l.previewImage||'';return`
+    function getFiltered(){
+        let f=[...allLinks];
+        if(currentCategory!=='all')f=f.filter(l=>doesLinkMatchCategory(l,currentCategory));
+        const sq=$('#searchInput')?.value?.toLowerCase().trim()||'';
+        if(sq)f=f.filter(l=>(l.title||'').toLowerCase().includes(sq)||(l.description||'').toLowerCase().includes(sq)||(l.ownerName||'').toLowerCase().includes(sq));
+        switch(currentFeed){case'feed':f.sort((a,b)=>calcFeedScore(b)-calcFeedScore(a));break;case'trending':f.sort((a,b)=>calcTrend(b)-calcTrend(a));break;case'new':f.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));break;case'top':f.sort((a,b)=>calcTop(b)-calcTop(a));break}
+        return f;
+    }
+
+    function renderFeed(){
+        const filtered=getFiltered(),tp=Math.ceil(filtered.length/20);
+        if(currentPage>tp&&tp>0)currentPage=tp;if(currentPage<1)currentPage=1;
+        const pag=filtered.slice((currentPage-1)*20,currentPage*20);const feed=$('#linksFeed');
+        if(pag.length===0){feed.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔗</div><div class="empty-state-title">No links found</div><div class="empty-state-text">Be the first to share something!</div></div>`;renderPagination(0);return}
+        feed.innerHTML=pag.map(l=>{
+            const net=(l.upvotes||0)-(l.downvotes||0),uv=currentUser&&l.votes?l.votes[currentUser.uid]:null;
+            const tc=l.trustScore>=70?'trust-high':l.trustScore>=40?'trust-medium':'trust-low';
+            const cats=l.categories||[l.category||'general'];
+            const isFollowing=followingUsers.has(l.ownerId);
+            const canFollow=currentUser&&l.ownerId!==currentUser.uid&&l.ownerId!=='anonymous';
+            const screenshotUrl=(l.screenshot||l.previewImage||'');
+            return`
             <div class="link-card">
                 <div class="link-card-main">
                     <div class="card-header">
                         <div class="card-avatar" style="background:${userColor(l.ownerName)};" onclick="event.stopPropagation();viewProfile('${l.ownerId}','${esc(l.ownerName||'')}')">${(l.ownerName||'A')[0].toUpperCase()}</div>
                         <div class="card-meta">
                             <div class="card-author" onclick="event.stopPropagation();viewProfile('${l.ownerId}','${esc(l.ownerName||'')}')">${esc(l.ownerName||'Anonymous')}</div>
-                            <div class="card-subtitle"><span><img src="${favicon(l.url||'')}" alt="" onerror="this.style.display='none'" width="12" height="12" style="display:inline;"> ${esc(getDomain(l.url||''))}</span><span>·</span><span>${timeAgo(l.createdAt)}</span></div>
+                            <div class="card-subtitle"><span>🔗 ${esc(getDomain(l.url||''))}</span><span>·</span><span>${timeAgo(l.createdAt)}</span></div>
                         </div>
                         ${canFollow?`<button class="card-follow-btn ${isFollowing?'following':''}" onclick="event.stopPropagation();toggleFollow('${l.ownerId}','${esc(l.ownerName||'')}')">${isFollowing?'Following':'+ Follow'}</button>`:''}
                     </div>
@@ -445,25 +500,50 @@
                         <button class="card-action-btn ${uv==='down'?'voted':''}" onclick="event.stopPropagation();voteLink('${l.id}','down')"><span class="iconify" data-icon="${uv==='down'?'ph:arrow-fat-down-fill':'ph:arrow-fat-down'}" data-width="16"></span></button>
                         <button class="card-action-btn" onclick="event.stopPropagation();openCommentSidebar('${l.id}')"><span class="iconify" data-icon="ph:chat-centered-text" data-width="16"></span> ${fmtNum((l.comments||[]).length)}</button>
                         <button class="card-action-btn" onclick="event.stopPropagation();openSaveModal('${l.id}')"><span class="iconify" data-icon="ph:bookmark-simple" data-width="16"></span> Save</button>
-                        <button class="card-action-btn" onclick="event.stopPropagation();window.open('${esc(l.url)}','_blank')"><span class="iconify" data-icon="ph:arrow-square-out" data-width="16"></span></button>
+                        <button class="card-action-btn" onclick="event.stopPropagation();addToVault('${l.id}')"><span class="iconify" data-icon="ph:lock-simple" data-width="16"></span> Vault</button>
+                        <button class="card-action-btn" onclick="event.stopPropagation();window.open('${esc(l.url)}','_self')"><span class="iconify" data-icon="ph:arrow-square-out" data-width="16"></span></button>
                     </div>
                 </div>
-                <div class="link-card-screenshot">${screenshotUrl?`<img src="${esc(screenshotUrl)}" alt="Preview" loading="lazy" onerror="this.innerHTML='<span class=\\'no-screenshot\\'>🔗</span>'">`:'<span class="no-screenshot">🔗</span>'}</div>
-            </div>`}).join('');window.Iconify?.scan?.(feed);renderPagination(tp)}
+                <div class="link-card-screenshot" onclick="window.open('${esc(l.url)}','_self')">${screenshotUrl?`<img src="${esc(screenshotUrl)}" alt="Preview" loading="lazy" onerror="this.innerHTML='<span class=\\'no-screenshot\\'>🔗</span>'">`:'<span class="no-screenshot">🔗</span>'}</div>
+            </div>`}).join('');
+        window.Iconify?.scan?.(feed);renderPagination(tp)
+    }
 
     function renderPagination(tp){const p=$('#pagination');if(tp<=1){p.innerHTML='';return}let h='';for(let i=1;i<=tp;i++)h+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;p.innerHTML=h}
     function goPage(pg){const tp=Math.ceil(getFiltered().length/20);if(pg<1||pg>tp)return;currentPage=pg;renderFeed();window.scrollTo({top:0,behavior:'smooth'})}
     function updateStats(){$('#statTotalLinks').textContent=fmtNum(allLinks.length);$('#statToday').textContent=fmtNum(allLinks.filter(l=>(l.createdAt||0)>Date.now()-86400000).length)}
     function filterCategory(cat){currentCategory=cat;currentPage=1;$$('.sidebar-link').forEach(l=>l.classList.remove('active'));const el=$(`.sidebar-link[data-category="${cat}"]`);if(el)el.classList.add('active');renderFeed()}
     function resetToFeed(){currentFeed='feed';currentCategory='all';currentPage=1;$('#searchInput').value='';$$('#feedSort .sort-btn').forEach(x=>x.classList.remove('active'));$('#feedSort').querySelector('[data-feed="feed"]').classList.add('active');$$('.sidebar-link').forEach(l=>l.classList.remove('active'));$('.sidebar-link[data-category="all"]')?.classList.add('active');renderFeed()}
-    function viewProfile(uid,uname){if(uid==='anonymous'||!uid){toast('Cannot view anonymous profile','error');return}window.open(`profile.html?uid=${uid}`,'_blank')}
+    function viewProfile(uid,uname){if(uid==='anonymous'||!uid){toast('Cannot view anonymous profile','error');return}window.open(`profile.html?uid=${uid}`,'_self')}
 
     // ============ EVENT LISTENERS ============
-    function setup(){const savedTheme=localStorage.getItem('ls-theme')||'light';setTheme(savedTheme);$('#themeToggle').addEventListener('click',toggleTheme);$('#shareBtn').addEventListener('click',()=>window.open('add-link.html','_blank'));$('#shareInputBtn').addEventListener('click',()=>window.open('add-link.html','_blank'));$('#quickShareBtn').addEventListener('click',()=>window.open('add-link.html','_blank'));$('#authModalClose').addEventListener('click',()=>closeModal('authModal'));$('#authModal').addEventListener('click',e=>{if(e.target===$('#authModal'))closeModal('authModal')});$('#authSwitch').addEventListener('click',e=>{e.preventDefault();openAuth(authMode==='signin'?'signup':'signin')});$('#authSubmit').addEventListener('click',handleAuth);['authEmail','authPassword','authUsername'].forEach(id=>{const el=$(`#${id}`);if(el)el.addEventListener('keypress',e=>{if(e.key==='Enter')handleAuth()})});$('#searchInput').addEventListener('input',()=>{currentPage=1;renderFeed()});$$('#feedSort .sort-btn').forEach(b=>b.addEventListener('click',()=>{$$('#feedSort .sort-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentFeed=b.dataset.feed;currentPage=1;renderFeed()}));$('#commentClose').addEventListener('click',closeCommentSidebar);$('#commentOverlay').addEventListener('click',closeCommentSidebar);$('#commentPostBtn').addEventListener('click',postComment);$('#commentInput').addEventListener('keypress',e=>{if(e.key==='Enter')postComment()});$('#profileClose').addEventListener('click',closeProfile);$('#profileOverlay').addEventListener('click',closeProfile);$('#logoutBtn').addEventListener('click',signOut);$('#subPanelBack').addEventListener('click',closeSubPanel);$('#subPanelOverlay').addEventListener('click',closeSubPanel);$('#saveModalClose').addEventListener('click',()=>closeModal('saveModal'));$('#saveModal').addEventListener('click',e=>{if(e.target===$('#saveModal'))closeModal('saveModal')});$('#confirmSave').addEventListener('click',confirmSave);setInterval(()=>{if(allLinks.length>0)$('#statToday').textContent=fmtNum(allLinks.filter(l=>(l.createdAt||0)>Date.now()-86400000).length)},30000)}
+    function setup(){
+        const savedTheme=localStorage.getItem('ls-theme')||'light';setTheme(savedTheme);
+        $('#themeToggle').addEventListener('click',()=>{const cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')});
+        $('#shareBtn').addEventListener('click',()=>window.open('add-link.html','_self'));
+        $('#shareInputBtn').addEventListener('click',()=>window.open('add-link.html','_self'));
+        $('#quickShareBtn').addEventListener('click',()=>window.open('add-link.html','_self'));
+        $('#chatBtn').addEventListener('click',()=>toast('Community chat coming soon!','info'));
+        $('#chatBubbleBtn').addEventListener('click',()=>toast('Community chat coming soon!','info'));
+        $('#authModalClose').addEventListener('click',()=>closeModal('authModal'));
+        $('#authModal').addEventListener('click',e=>{if(e.target===$('#authModal'))closeModal('authModal')});
+        $('#authSwitch').addEventListener('click',e=>{e.preventDefault();openAuth(authMode==='signin'?'signup':'signin')});
+        $('#authSubmit').addEventListener('click',handleAuth);
+        ['authEmail','authPassword','authUsername'].forEach(id=>{const el=$(`#${id}`);if(el)el.addEventListener('keypress',e=>{if(e.key==='Enter')handleAuth()})});
+        $('#searchInput').addEventListener('input',()=>{currentPage=1;renderFeed()});
+        $$('#feedSort .sort-btn').forEach(b=>b.addEventListener('click',()=>{$$('#feedSort .sort-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentFeed=b.dataset.feed;currentPage=1;renderFeed()}));
+        $('#commentClose').addEventListener('click',closeCommentSidebar);$('#commentOverlay').addEventListener('click',closeCommentSidebar);
+        $('#commentPostBtn').addEventListener('click',postComment);$('#commentInput').addEventListener('keypress',e=>{if(e.key==='Enter')postComment()});
+        $('#profileClose').addEventListener('click',closeProfile);$('#profileOverlay').addEventListener('click',closeProfile);
+        $('#logoutBtn').addEventListener('click',signOut);
+        $('#subPanelBack').addEventListener('click',closeSubPanel);$('#subPanelOverlay').addEventListener('click',closeSubPanel);
+        $('#saveModalClose').addEventListener('click',()=>closeModal('saveModal'));$('#saveModal').addEventListener('click',e=>{if(e.target===$('#saveModal'))closeModal('saveModal')});
+        $('#confirmSave').addEventListener('click',confirmSave);
+        setInterval(()=>{if(allLinks.length>0)$('#statToday').textContent=fmtNum(allLinks.filter(l=>(l.createdAt||0)>Date.now()-86400000).length)},30000);
+    }
 
-    auth.onAuthStateChanged(async user=>{if(user){const doc=await db.collection('users').doc(user.uid).get();currentUser=doc.exists?{uid:user.uid,...doc.data()}:{uid:user.uid,username:user.email?.split('@')[0]||'user',email:user.email||'',accentColor:userColor(user.email?.split('@')[0]||'user')}}else currentUser=null;renderAuth();fetchLinks()});
+    auth.onAuthStateChanged(async user=>{if(user){const doc=await db.collection('users').doc(user.uid).get();currentUser=doc.exists?{uid:user.uid,...doc.data()}:{uid:user.uid,username:user.email?.split('@')[0]||'user',email:user.email||'',accentColor:userColor(user.email?.split('@')[0]||'user'),emoji:'👤'}}else currentUser=null;renderAuth();fetchLinks()});
     document.addEventListener('DOMContentLoaded',()=>{setup();renderAuth();fetchLinks()});
     </script>
-    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </body>
 </html>
