@@ -12,874 +12,458 @@
     <meta property="og:title" content="LinkSocial — Professional Link Sharing & Discovery">
     <meta property="og:description" content="Discover, share, and discuss the best links on the internet. Join our community today.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://linksocial.vercel.app/">
     <meta property="og:site_name" content="LinkSocial">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LinkSocial — Professional Link Sharing">
-    <meta name="twitter:description" content="Discover, share, and discuss the best links on the internet.">
     <link rel="canonical" href="https://linksocial.vercel.app/">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-
     <style>
-        /* ============ CSS VARIABLES ============ */
         :root {
             --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, 'Helvetica Neue', Arial, sans-serif;
             --transition-fast: 167ms cubic-bezier(0.4, 0, 0.2, 1);
             --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
             --radius-sm: 0.375rem; --radius-md: 0.5rem; --radius-lg: 0.75rem; --radius-xl: 1rem; --radius-2xl: 1.5rem; --radius-full: 9999px;
-            --shadow-xs: 0 0 0 1px rgba(0,0,0,0.05);
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03);
         }
-
-        /* Light Theme */
         .theme-light {
             --bg-main: #f4f2ee; --bg-surface: #ffffff; --bg-hover: #f9fafb; --bg-input: #eef3f8;
             --border: #e5e7eb; --border-light: #f0f0f0;
             --text-primary: #191919; --text-secondary: #595856; --text-tertiary: #868482;
             --primary: #6c47ff; --primary-hover: #5835e8; --primary-light: #f0ebff;
             --secondary: #3b82f6; --secondary-hover: #2563eb; --secondary-light: #eff6ff;
-            --success: #057642; --success-bg: #e9f7ef;
-            --warning: #b85c00; --warning-bg: #fdf3e7;
-            --danger: #d11124; --danger-bg: #fdecea;
-            --card-shadow: 0 0 0 1px rgba(0,0,0,0.05);
-            --card-hover-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03);
+            --success: #057642; --success-bg: #e9f7ef; --warning: #b85c00; --warning-bg: #fdf3e7; --danger: #d11124; --danger-bg: #fdecea;
+            --card-shadow: 0 0 0 1px rgba(0,0,0,0.05); --card-hover-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03);
         }
-
-        /* Dark Theme */
         .theme-dark {
             --bg-main: #1a1a2e; --bg-surface: #16213e; --bg-hover: #1a2744; --bg-input: #0f3460;
             --border: #2a3a5e; --border-light: #1e2d4a;
             --text-primary: #e8e8e8; --text-secondary: #b0b0b0; --text-tertiary: #8a8a8a;
             --primary: #8b6cff; --primary-hover: #7b5ce8; --primary-light: #1e1a3a;
             --secondary: #60a5fa; --secondary-hover: #3b82f6; --secondary-light: #1a2a4a;
-            --success: #22c55e; --success-bg: #0a2a1a;
-            --warning: #f59e0b; --warning-bg: #2a1a0a;
-            --danger: #ef4444; --danger-bg: #2a0a0a;
-            --card-shadow: 0 0 0 1px rgba(255,255,255,0.05);
-            --card-hover-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08);
+            --success: #22c55e; --success-bg: #0a2a1a; --warning: #f59e0b; --warning-bg: #2a1a0a; --danger: #ef4444; --danger-bg: #2a0a0a;
+            --card-shadow: 0 0 0 1px rgba(255,255,255,0.05); --card-hover-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08);
         }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-size:16px;scroll-behavior:smooth}
+        body{font-family:var(--font-family);background:var(--bg-main);color:var(--text-primary);line-height:1.5;min-height:100vh;transition:background var(--transition-base),color var(--transition-base)}
+        a{color:inherit;text-decoration:none}
+        button{cursor:pointer;font-family:inherit;border:none;background:transparent}
+        button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+        img,video{max-width:100%;height:auto;display:block}
+        input,textarea,select{font-family:inherit;font-size:inherit}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#9ca3af}
 
-        /* ============ RESET ============ */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; font-size: 16px; scroll-behavior: smooth; }
-        body { font-family: var(--font-family); background: var(--bg-main); color: var(--text-primary); line-height: 1.5; min-height: 100vh; transition: background var(--transition-base), color var(--transition-base); }
-        a { color: inherit; text-decoration: none; }
-        button { cursor: pointer; font-family: inherit; border: none; }
-        button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-        img, video { max-width: 100%; height: auto; display: block; }
-        input, textarea, select { font-family: inherit; font-size: inherit; }
+        .navbar{position:sticky;top:0;z-index:100;background:var(--bg-surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 1.5rem;box-shadow:0 0 0 1px rgba(0,0,0,0.05)}
+        .navbar-inner{max-width:1128px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+        .navbar-brand{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;cursor:pointer}
+        .navbar-logo{width:34px;height:34px;background:var(--primary);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1rem}
+        .navbar-title{font-size:1.125rem;font-weight:600;letter-spacing:-0.2px}
+        .navbar-search{flex:1;max-width:400px}
+        .search-input-wrap{display:flex;align-items:center;background:var(--bg-input);border-radius:var(--radius-sm);padding:0 0.75rem;height:34px;gap:0.5rem;transition:all var(--transition-fast);border:1px solid transparent}
+        .search-input-wrap:focus-within{background:var(--bg-surface);border-color:var(--primary);box-shadow:0 0 0 2px rgba(108,71,255,0.1)}
+        .search-input-wrap input{flex:1;border:none;background:transparent;outline:none;font-size:0.875rem;color:var(--text-primary)}
+        .search-input-wrap input::placeholder{color:var(--text-tertiary)}
+        .navbar-actions{display:flex;align-items:center;gap:0.5rem;flex-shrink:0}
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.25rem;padding:0.5rem 1rem;border-radius:var(--radius-full);font-weight:600;font-size:0.875rem;transition:all var(--transition-fast);white-space:nowrap;font-family:var(--font-family);letter-spacing:0.1px}
+        .btn:active{transform:scale(0.97)}
+        .btn-primary{background:var(--primary);color:#fff;box-shadow:0 0 0 1px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06)}
+        .btn-primary:hover{background:var(--primary-hover)}
+        .btn-outline{background:transparent;color:var(--primary);border:1px solid var(--primary);font-weight:600}
+        .btn-outline:hover{background:var(--primary-light);border-color:var(--primary-hover)}
+        .btn-ghost{background:transparent;color:var(--text-secondary);font-weight:500}
+        .btn-ghost:hover{background:var(--bg-hover);color:var(--text-primary)}
+        .btn-sm{padding:0.25rem 0.75rem;font-size:0.8125rem}
+        .btn-icon{width:36px;height:36px;padding:0;border-radius:var(--radius-full)}
+        .btn-danger{background:var(--danger);color:white}.btn-danger:hover{background:#b91c1c}
 
-        /* ============ LAYOUT ============ */
-        .app-container { max-width: 1128px; margin: 0 auto; padding: 0 1rem; }
+        .main-layout{display:grid;grid-template-columns:1fr 320px;gap:1.5rem;padding-top:1.5rem;padding-bottom:3rem;max-width:1128px;margin:0 auto;padding-left:1rem;padding-right:1rem}
+        .feed-column{min-width:0}
+        .sidebar-column{position:sticky;top:68px;align-self:start;display:flex;flex-direction:column;gap:0.75rem}
 
-        /* ============ NAVBAR ============ */
-        .navbar { position: sticky; top: 0; z-index: 100; background: var(--bg-surface); border-bottom: 1px solid var(--border); height: 52px; display: flex; align-items: center; padding: 0 1.5rem; box-shadow: var(--shadow-xs); }
-        .navbar-inner { max-width: 1128px; margin: 0 auto; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-        .navbar-brand { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; cursor: pointer; }
-        .navbar-logo { width: 34px; height: 34px; background: var(--primary); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; }
-        .navbar-title { font-size: 1.125rem; font-weight: 600; letter-spacing: -0.2px; }
-        .navbar-search { flex: 1; max-width: 400px; position: relative; }
-        .search-input-wrap { display: flex; align-items: center; background: var(--bg-input); border-radius: var(--radius-sm); padding: 0 0.75rem; height: 34px; gap: 0.5rem; transition: all var(--transition-fast); border: 1px solid transparent; }
-        .search-input-wrap:focus-within { background: var(--bg-surface); border-color: var(--primary); box-shadow: 0 0 0 2px rgba(108,71,255,0.1); }
-        .search-input-wrap input { flex: 1; border: none; background: transparent; outline: none; font-size: 0.875rem; color: var(--text-primary); }
-        .search-input-wrap input::placeholder { color: var(--text-tertiary); }
-        .navbar-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+        .share-box{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;box-shadow:var(--card-shadow);margin-bottom:1rem}
+        .share-box-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem}
+        .share-avatar{width:48px;height:48px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1.125rem;flex-shrink:0;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+        .share-input-btn{flex:1;text-align:left;padding:0.75rem 1rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-full);color:var(--text-tertiary);font-size:0.875rem;font-weight:500;cursor:pointer;transition:all var(--transition-fast)}
+        .share-input-btn:hover{background:var(--bg-hover);border-color:var(--text-tertiary)}
+        .share-box-actions{display:flex;gap:0.5rem;flex-wrap:wrap}
+        .share-action-chip{display:flex;align-items:center;gap:0.25rem;padding:0.5rem 0.75rem;border-radius:var(--radius-sm);font-size:0.8125rem;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all var(--transition-fast)}
+        .share-action-chip:hover{background:var(--bg-hover);color:var(--text-primary)}
 
-        /* ============ BUTTONS ============ */
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.5rem 1rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.875rem; line-height: 1.25rem; transition: all var(--transition-fast); white-space: nowrap; font-family: var(--font-family); letter-spacing: 0.1px; }
-        .btn:active { transform: scale(0.97); }
-        .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06); }
-        .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 0 0 1px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08); }
-        .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); font-weight: 600; }
-        .btn-outline:hover { background: var(--primary-light); border-color: var(--primary-hover); }
-        .btn-ghost { background: transparent; color: var(--text-secondary); font-weight: 500; }
-        .btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .btn-sm { padding: 0.25rem 0.75rem; font-size: 0.8125rem; }
-        .btn-xs { padding: 2px 0.5rem; font-size: 0.75rem; }
-        .btn-icon { width: 36px; height: 36px; padding: 0; border-radius: var(--radius-full); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:hover { background: #b91c1c; }
+        .feed-sort{display:flex;gap:1px;background:var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;box-shadow:0 0 0 1px rgba(0,0,0,0.05)}
+        .sort-btn{flex:1;padding:0.5rem 1rem;background:var(--bg-surface);font-size:0.8125rem;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all var(--transition-fast);white-space:nowrap}
+        .sort-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+        .sort-btn.active{background:var(--primary);color:#fff}
 
-        /* ============ MAIN LAYOUT ============ */
-        .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; padding-top: 1.5rem; padding-bottom: 3rem; max-width: 1128px; margin: 0 auto; padding-left: 1rem; padding-right: 1rem; }
-        .feed-column { min-width: 0; }
-        .sidebar-column { position: sticky; top: 68px; align-self: start; display: flex; flex-direction: column; gap: 0.75rem; }
+        .link-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:0.75rem;box-shadow:var(--card-shadow);transition:all var(--transition-fast);display:flex;gap:1rem}
+        .link-card:hover{box-shadow:var(--card-hover-shadow)}
+        .link-card-main{flex:1;min-width:0}
+        .link-card-screenshot{width:200px;flex-shrink:0;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-light);height:130px;background:var(--bg-hover)}
+        .link-card-screenshot img{width:100%;height:100%;object-fit:cover}
+        .link-card-screenshot .no-screenshot{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:2rem}
+        .card-header{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.5rem}
+        .card-avatar{width:40px;height:40px;border-radius:var(--radius-full);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white;cursor:pointer}
+        .card-avatar:hover{opacity:0.85}
+        .card-meta{flex:1;min-width:0}
+        .card-author{font-weight:600;font-size:0.875rem;cursor:pointer}
+        .card-author:hover{color:var(--primary);text-decoration:underline}
+        .card-subtitle{font-size:0.75rem;color:var(--text-tertiary);display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap}
+        .card-title{font-size:1rem;font-weight:600;margin-bottom:0.375rem;line-height:1.4}
+        .card-description{font-size:0.875rem;color:var(--text-secondary);margin-bottom:0.5rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .card-tags{display:flex;gap:0.375rem;flex-wrap:wrap;margin-bottom:0.375rem}
+        .card-tag{padding:2px 0.5rem;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600;letter-spacing:0.3px;text-transform:uppercase}
+        .tag-technology,.tag-ai,.tag-cybersecurity,.tag-software,.tag-hardware,.tag-gadgets,.tag-open-source,.tag-web-development,.tag-mobile-development,.tag-cloud-computing,.tag-developer-resources,.tag-ai-tools{background:#eff6ff;color:#1d4ed8}
+        .tag-programming,.tag-dev-tools,.tag-frameworks,.tag-coding-challenges,.tag-documentation,.tag-apis,.tag-github-repositories{background:#ecfdf5;color:#047857}
+        .tag-education,.tag-tutorials,.tag-courses,.tag-study-resources,.tag-language-learning,.tag-academic-tools{background:#e3f2fd;color:#0d47a1}
+        .tag-entertainment,.tag-movies,.tag-tv-shows,.tag-anime,.tag-memes,.tag-humor,.tag-streaming{background:#fef3c7;color:#92400e}
+        .tag-gaming,.tag-pc-gaming,.tag-mobile-gaming,.tag-console-gaming,.tag-esports,.tag-game-news,.tag-mods,.tag-game-deals{background:#d1fae5;color:#065f46}
+        .tag-music,.tag-songs,.tag-albums,.tag-playlists,.tag-music-videos,.tag-concerts{background:#fce7f3;color:#9d174d}
+        .tag-business,.tag-startups,.tag-investing,.tag-cryptocurrency,.tag-stock-market,.tag-entrepreneurship,.tag-marketing,.tag-e-commerce,.tag-side-hustles,.tag-trading{background:#ede9fe;color:#5b21b6}
+        .tag-news,.tag-world-news,.tag-politics,.tag-local-news,.tag-breaking-news{background:#fffbeb;color:#b45309}
+        .tag-lifestyle,.tag-fashion,.tag-beauty,.tag-self-improvement,.tag-productivity,.tag-minimalism,.tag-relationships{background:#f3e5f5;color:#6a1b9a}
+        .tag-sports,.tag-football,.tag-basketball,.tag-tennis,.tag-mma,.tag-formula-1,.tag-athletics{background:#e8f5e9;color:#1b5e20}
+        .tag-science,.tag-physics,.tag-chemistry,.tag-biology,.tag-astronomy,.tag-space,.tag-environment,.tag-mathematics{background:#dbeafe;color:#1e40af}
+        .tag-food,.tag-recipes,.tag-restaurants,.tag-cooking,.tag-street-food,.tag-coffee{background:#fff3e0;color:#bf360c}
+        .tag-shopping,.tag-deals,.tag-product-reviews,.tag-tech-products,.tag-fashion-products,.tag-marketplaces{background:#fce4ec;color:#880e4f}
+        .tag-general{background:#f9fafb;color:#6b7280}
+        .card-trust{display:inline-flex;align-items:center;gap:3px;font-size:0.65rem;font-weight:600}
+        .trust-high{color:#047857}.trust-medium{color:#b45309}.trust-low{color:#be123c}
+        .card-actions{display:flex;align-items:center;gap:0.25rem;padding-top:0.5rem;border-top:1px solid var(--border-light)}
+        .card-action-btn{display:flex;align-items:center;gap:0.25rem;padding:0.375rem 0.625rem;border-radius:var(--radius-sm);font-size:0.75rem;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all var(--transition-fast)}
+        .card-action-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+        .card-action-btn.active,.card-action-btn.voted{color:var(--primary)}
+        .card-follow-btn{padding:0.25rem 0.75rem;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all var(--transition-fast);border:1px solid var(--primary);color:var(--primary);background:transparent;flex-shrink:0}
+        .card-follow-btn:hover{background:var(--primary);color:white}
+        .card-follow-btn.following{background:var(--primary);color:white}
 
-        /* ============ SHARE BOX ============ */
-        .share-box { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; box-shadow: var(--card-shadow); margin-bottom: 1rem; }
-        .share-box-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
-        .share-avatar { width: 48px; height: 48px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.125rem; flex-shrink: 0; background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-        .share-input-btn { flex: 1; text-align: left; padding: 0.75rem 1rem; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-full); color: var(--text-tertiary); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all var(--transition-fast); }
-        .share-input-btn:hover { background: var(--bg-hover); border-color: var(--text-tertiary); }
-        .share-box-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .share-action-chip { display: flex; align-items: center; gap: 0.25rem; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all var(--transition-fast); background: transparent; }
-        .share-action-chip:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .sidebar-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;box-shadow:var(--card-shadow)}
+        .sidebar-card-title{font-size:0.875rem;font-weight:600;margin-bottom:0.75rem}
+        .sidebar-stat{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;font-size:0.8125rem}
+        .sidebar-stat-label{color:var(--text-secondary);font-weight:500}
+        .sidebar-stat-value{font-weight:600;color:var(--primary)}
+        .sidebar-divider{border:none;border-top:1px solid var(--border-light);margin:0.5rem 0}
+        .sidebar-link{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.75rem;font-size:0.8125rem;font-weight:600;color:var(--text-secondary);border-radius:var(--radius-sm);transition:all var(--transition-fast);cursor:pointer}
+        .sidebar-link:hover{background:var(--bg-hover);color:var(--text-primary)}
+        .sidebar-link.active{color:var(--primary);background:var(--primary-light)}
+        .sidebar-link-arrow{font-size:0.7rem;color:var(--text-tertiary)}
+        .live-indicator{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;margin-right:6px}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-        /* ============ FEED SORT ============ */
-        .feed-sort { display: flex; gap: 1px; background: var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1rem; box-shadow: var(--shadow-xs); }
-        .sort-btn { flex: 1; padding: 0.5rem 1rem; background: var(--bg-surface); font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all var(--transition-fast); white-space: nowrap; }
-        .sort-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .sort-btn.active { background: var(--primary); color: #fff; }
+        /* Comment Sidebar (Left) */
+        .comment-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:250;opacity:0;visibility:hidden;transition:all var(--transition-base)}
+        .comment-overlay.active{opacity:1;visibility:visible}
+        .comment-sidebar{position:fixed;left:0;top:0;bottom:0;width:420px;max-width:100vw;background:var(--bg-surface);border-right:1px solid var(--border);z-index:260;transform:translateX(-100%);transition:transform var(--transition-base);overflow-y:auto;display:flex;flex-direction:column}
+        .comment-sidebar.active{transform:translateX(0)}
+        .comment-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-surface);z-index:5}
+        .comment-title{font-weight:700;font-size:1rem}
+        .comment-close{width:32px;height:32px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-tertiary);transition:all var(--transition-fast)}
+        .comment-close:hover{background:var(--bg-hover)}
+        .comment-list{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem}
+        .comment-item{background:var(--bg-hover);padding:0.75rem;border-radius:var(--radius-md);font-size:0.8125rem}
+        .comment-author{font-weight:600;color:var(--primary)}
+        .comment-time{font-size:0.6875rem;color:var(--text-tertiary)}
+        .comment-input-area{padding:1rem;border-top:1px solid var(--border);display:flex;gap:0.5rem}
+        .comment-input{flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius-full);font-size:0.8125rem;background:var(--bg-surface);color:var(--text-primary);outline:none}
+        .comment-input:focus{border-color:var(--primary)}
 
-        /* ============ LINK CARD ============ */
-        .link-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 0.75rem; box-shadow: var(--card-shadow); transition: all var(--transition-fast); }
-        .link-card:hover { box-shadow: var(--card-hover-shadow); }
-        .card-header { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem; }
-        .card-avatar { width: 48px; height: 48px; border-radius: var(--radius-full); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: white; }
-        .card-meta { flex: 1; min-width: 0; }
-        .card-author { font-weight: 600; font-size: 0.875rem; }
-        .card-author:hover { color: var(--primary); text-decoration: underline; }
-        .card-subtitle { font-size: 0.75rem; color: var(--text-tertiary); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-        .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.4; }
-        .card-description { font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-screenshot { border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 0.75rem; }
-        .card-screenshot img { width: 100%; height: auto; max-height: 300px; object-fit: cover; }
-        .card-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
-        .card-tag { padding: 2px 0.5rem; border-radius: var(--radius-full); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; }
-        .tag-tech, .tag-technology, .tag-programming, .tag-cybersecurity, .tag-software, .tag-hardware, .tag-gadgets, .tag-open-source, .tag-web-development, .tag-mobile-development, .tag-cloud-computing, .tag-developer-resources, .tag-dev-tools, .tag-frameworks, .tag-coding-challenges, .tag-documentation, .tag-apis, .tag-github-repositories { background: #eff6ff; color: #1d4ed8; }
-        .tag-ai, .tag-artificial-intelligence, .tag-machine-learning, .tag-ai-tools { background: #f5f3ff; color: #6d28d9; }
-        .tag-dev { background: #ecfdf5; color: #047857; }
-        .tag-news, .tag-world-news, .tag-politics, .tag-local-news, .tag-breaking-news, .tag-investigations, .tag-journalism { background: #fffbeb; color: #b45309; }
-        .tag-design, .tag-graphic-design, .tag-ui-ux, .tag-photography, .tag-video-editing, .tag-3d-art, .tag-animation, .tag-branding, .tag-design-creativity { background: #fdf2f8; color: #be185d; }
-        .tag-entertainment, .tag-movies, .tag-tv-shows, .tag-anime, .tag-memes, .tag-humor, .tag-streaming, .tag-celebrity-news, .tag-fun { background: #fef3c7; color: #92400e; }
-        .tag-music, .tag-songs, .tag-albums, .tag-playlists, .tag-music-videos, .tag-producers, .tag-lyrics, .tag-concerts { background: #fce7f3; color: #9d174d; }
-        .tag-gaming, .tag-pc-gaming, .tag-mobile-gaming, .tag-console-gaming, .tag-esports, .tag-game-news, .tag-mods, .tag-game-deals { background: #d1fae5; color: #065f46; }
-        .tag-business, .tag-startups, .tag-investing, .tag-cryptocurrency, .tag-stock-market, .tag-entrepreneurship, .tag-marketing, .tag-e-commerce, .tag-side-hustles, .tag-business-finance, .tag-careers, .tag-jobs, .tag-freelancing, .tag-remote-work, .tag-internships, .tag-career-advice { background: #ede9fe; color: #5b21b6; }
-        .tag-science, .tag-physics, .tag-chemistry, .tag-biology, .tag-astronomy, .tag-space, .tag-environment, .tag-mathematics, .tag-research-papers { background: #dbeafe; color: #1e40af; }
-        .tag-health, .tag-workouts, .tag-nutrition, .tag-mental-wellness, .tag-sports-medicine, .tag-healthy-living, .tag-health-fitness { background: #fce4ec; color: #880e4f; }
-        .tag-lifestyle, .tag-fashion, .tag-beauty, .tag-self-improvement, .tag-productivity, .tag-minimalism, .tag-relationships { background: #f3e5f5; color: #6a1b9a; }
-        .tag-food, .tag-recipes, .tag-restaurants, .tag-cooking, .tag-street-food, .tag-coffee { background: #fff3e0; color: #bf360c; }
-        .tag-travel, .tag-tourism, .tag-hotels, .tag-guides, .tag-flight-deals, .tag-adventure { background: #e0f2f1; color: #004d40; }
-        .tag-sports, .tag-football, .tag-basketball, .tag-tennis, .tag-mma, .tag-formula-1, .tag-athletics, .tag-sports-highlights { background: #e8f5e9; color: #1b5e20; }
-        .tag-shopping, .tag-deals, .tag-product-reviews, .tag-tech-products, .tag-fashion-products, .tag-marketplaces { background: #fce4ec; color: #880e4f; }
-        .tag-education, .tag-tutorials, .tag-courses, .tag-study-resources, .tag-language-learning, .tag-academic-tools { background: #e3f2fd; color: #0d47a1; }
-        .tag-social-media, .tag-viral-posts, .tag-trends, .tag-influencers, .tag-online-communities, .tag-forums, .tag-discord-servers, .tag-reddit-communities, .tag-online-groups, .tag-communities { background: #f1f8e9; color: #33691e; }
-        .tag-security-privacy, .tag-privacy-tools, .tag-vpns, .tag-encryption, .tag-threat-reports, .tag-data-protection, .tag-tools-utilities, .tag-productivity-apps, .tag-websites, .tag-browser-extensions, .tag-automation-tools { background: #eceff1; color: #263238; }
-        .tag-culture, .tag-history, .tag-philosophy, .tag-religion, .tag-art, .tag-society { background: #efebe9; color: #3e2723; }
-        .tag-general { background: #f9fafb; color: #6b7280; }
+        /* Profile Sidebar (Right) */
+        .profile-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:250;opacity:0;visibility:hidden;transition:all var(--transition-base)}
+        .profile-overlay.active{opacity:1;visibility:visible}
+        .profile-sidebar{position:fixed;right:0;top:0;bottom:0;width:380px;max-width:100vw;background:var(--bg-surface);border-left:1px solid var(--border);z-index:260;transform:translateX(100%);transition:transform var(--transition-base);overflow-y:auto;display:flex;flex-direction:column}
+        .profile-sidebar.active{transform:translateX(0)}
+        .profile-header{position:relative;padding:1.5rem;text-align:center;border-bottom:1px solid var(--border)}
+        .profile-avatar-lg{width:72px;height:72px;border-radius:var(--radius-full);margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.5rem;color:white}
+        .profile-name{font-weight:700;font-size:1.125rem}.profile-email{font-size:0.8125rem;color:var(--text-tertiary)}
+        .profile-stats{display:flex;justify-content:center;gap:2rem;padding:1rem;border-bottom:1px solid var(--border)}
+        .profile-stat{text-align:center}.profile-stat-value{font-weight:700;font-size:1.25rem;color:var(--primary)}.profile-stat-label{font-size:0.6875rem;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px}
+        .profile-menu{padding:0.5rem}
+        .profile-menu-item{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-radius:var(--radius-sm);font-size:0.875rem;font-weight:500;cursor:pointer;transition:all var(--transition-fast);color:var(--text-secondary)}
+        .profile-menu-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+        .profile-menu-item-left{display:flex;align-items:center;gap:0.75rem}
+        .profile-close{position:absolute;top:0.75rem;right:0.75rem;width:32px;height:32px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-tertiary);transition:all var(--transition-fast);z-index:5}
+        .profile-close:hover{background:var(--bg-hover)}
 
-        .card-trust { display: inline-flex; align-items: center; gap: 3px; font-size: 0.6875rem; font-weight: 600; }
-        .trust-high { color: #047857; }
-        .trust-medium { color: #b45309; }
-        .trust-low { color: #be123c; }
-
-        .card-actions { display: flex; align-items: center; justify-content: space-around; gap: 0.25rem; padding-top: 0.5rem; border-top: 1px solid var(--border-light); }
-        .card-action-btn { display: flex; align-items: center; gap: 0.25rem; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all var(--transition-fast); background: transparent; }
-        .card-action-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .card-action-btn.active, .card-action-btn.voted { color: var(--primary); }
-
-        /* ============ SIDEBAR ============ */
-        .sidebar-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; box-shadow: var(--card-shadow); }
-        .sidebar-card-title { font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; }
-        .sidebar-stat { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.8125rem; }
-        .sidebar-stat-label { color: var(--text-secondary); font-weight: 500; }
-        .sidebar-stat-value { font-weight: 600; color: var(--primary); }
-        .sidebar-divider { border: none; border-top: 1px solid var(--border-light); margin: 0.5rem 0; }
-        .sidebar-link { display: block; padding: 0.5rem 0.75rem; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); border-radius: var(--radius-sm); transition: all var(--transition-fast); cursor: pointer; }
-        .sidebar-link:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .sidebar-link.active { color: var(--primary); background: var(--primary-light); }
-        .live-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; margin-right: 6px; }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        /* ============ PROFILE SIDEBAR ============ */
-        .profile-sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 250; opacity: 0; visibility: hidden; transition: all var(--transition-base); }
-        .profile-sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .profile-sidebar { position: fixed; right: 0; top: 0; bottom: 0; width: 380px; max-width: 100vw; background: var(--bg-surface); border-left: 1px solid var(--border); z-index: 260; transform: translateX(100%); transition: transform var(--transition-base); overflow-y: auto; display: flex; flex-direction: column; }
-        .profile-sidebar.active { transform: translateX(0); }
-        .profile-header { padding: 1.5rem; text-align: center; border-bottom: 1px solid var(--border); }
-        .profile-avatar-lg { width: 72px; height: 72px; border-radius: var(--radius-full); margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.5rem; color: white; }
-        .profile-name { font-weight: 700; font-size: 1.125rem; }
-        .profile-email { font-size: 0.8125rem; color: var(--text-tertiary); }
-        .profile-stats { display: flex; justify-content: center; gap: 2rem; padding: 1rem; border-bottom: 1px solid var(--border); }
-        .profile-stat { text-align: center; }
-        .profile-stat-value { font-weight: 700; font-size: 1.25rem; color: var(--primary); }
-        .profile-stat-label { font-size: 0.6875rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
-        .profile-section { padding: 1rem; border-bottom: 1px solid var(--border-light); }
-        .profile-section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); margin-bottom: 0.75rem; }
-        .profile-input-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
-        .profile-input { flex: 1; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.8125rem; background: var(--bg-surface); color: var(--text-primary); outline: none; }
-        .profile-input:focus { border-color: var(--primary); }
-        .profile-menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all var(--transition-fast); color: var(--text-secondary); }
-        .profile-menu-item:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .notification-badge { background: var(--danger); color: white; font-size: 0.625rem; padding: 2px 6px; border-radius: var(--radius-full); font-weight: 700; }
-        .profile-close { position: absolute; top: 0.75rem; right: 0.75rem; width: 32px; height: 32px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-tertiary); transition: all var(--transition-fast); background: transparent; z-index: 5; }
-        .profile-close:hover { background: var(--bg-hover); color: var(--text-primary); }
-
-        /* ============ COMMENT SIDEBAR ============ */
-        .comment-sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 250; opacity: 0; visibility: hidden; transition: all var(--transition-base); }
-        .comment-sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .comment-sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 420px; max-width: 100vw; background: var(--bg-surface); border-right: 1px solid var(--border); z-index: 260; transform: translateX(-100%); transition: transform var(--transition-base); overflow-y: auto; display: flex; flex-direction: column; }
-        .comment-sidebar.active { transform: translateX(0); }
-        .comment-sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg-surface); z-index: 5; }
-        .comment-sidebar-title { font-weight: 700; font-size: 1rem; }
-        .comment-sidebar-close { width: 32px; height: 32px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-tertiary); transition: all var(--transition-fast); background: transparent; }
-        .comment-sidebar-close:hover { background: var(--bg-hover); }
-        .comment-list { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
-        .comment-item { background: var(--bg-hover); padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.8125rem; }
-        .comment-author { font-weight: 600; color: var(--primary); }
-        .comment-time { font-size: 0.6875rem; color: var(--text-tertiary); }
-        .comment-input-area { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
-        .comment-input { flex: 1; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-full); font-size: 0.8125rem; background: var(--bg-surface); color: var(--text-primary); outline: none; }
-        .comment-input:focus { border-color: var(--primary); }
-
-        /* ============ MODAL ============ */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; visibility: hidden; transition: all var(--transition-base); }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal { background: var(--bg-surface); border-radius: var(--radius-xl); width: 100%; max-width: 552px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: modalIn 0.2s ease-out; }
-        @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-light); position: sticky; top: 0; background: var(--bg-surface); z-index: 5; }
-        .modal-title { font-weight: 600; font-size: 1.125rem; }
-        .modal-close { width: 36px; height: 36px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-tertiary); font-size: 1.25rem; transition: all var(--transition-fast); background: transparent; }
-        .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .modal-body { padding: 1.5rem; }
-        .form-group { margin-bottom: 1rem; }
-        .form-label { display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary); }
-        .form-input, .form-textarea { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.875rem; color: var(--text-primary); background: var(--bg-surface); outline: none; transition: all var(--transition-fast); }
-        .form-input:focus, .form-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,71,255,0.1); }
-        .form-textarea { resize: vertical; min-height: 80px; }
-
-        /* Category Multi-Select */
-        .category-search-wrap { position: relative; }
-        .category-search-input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.875rem; background: var(--bg-surface); color: var(--text-primary); outline: none; }
-        .category-search-input:focus { border-color: var(--primary); }
-        .category-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); max-height: 220px; overflow-y: auto; z-index: 10; box-shadow: var(--shadow-md); display: none; margin-top: 2px; }
-        .category-dropdown.show { display: block; }
-        .category-dropdown-item { padding: 0.5rem 0.75rem; font-size: 0.8125rem; cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; gap: 0.5rem; }
-        .category-dropdown-item:hover { background: var(--primary-light); color: var(--primary); }
-        .selected-categories { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.5rem; }
-        .selected-category-chip { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; background: var(--primary-light); color: var(--primary); border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
-        .selected-category-chip .remove-cat { cursor: pointer; font-weight: 700; margin-left: 2px; }
-        .recommended-categories { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.5rem; }
-        .recommended-category-chip { padding: 0.25rem 0.625rem; background: var(--bg-hover); border: 1px solid var(--border); border-radius: var(--radius-full); font-size: 0.75rem; cursor: pointer; transition: all var(--transition-fast); color: var(--text-secondary); font-weight: 500; }
-        .recommended-category-chip:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+        /* Sub-panel (nested right sidebar) */
+        .sub-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:270;opacity:0;visibility:hidden;transition:all var(--transition-base)}
+        .sub-panel-overlay.active{opacity:1;visibility:visible}
+        .sub-panel{position:fixed;right:0;top:0;bottom:0;width:380px;max-width:100vw;background:var(--bg-surface);border-left:1px solid var(--border);z-index:280;transform:translateX(100%);transition:transform var(--transition-base);overflow-y:auto;display:flex;flex-direction:column}
+        .sub-panel.active{transform:translateX(0)}
+        .sub-panel-header{display:flex;align-items:center;gap:0.75rem;padding:1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-surface);z-index:5}
+        .sub-panel-back{width:32px;height:32px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);font-size:1.25rem}
+        .sub-panel-back:hover{background:var(--bg-hover)}
+        .sub-panel-title{font-weight:700;font-size:1rem}
+        .sub-panel-content{padding:1rem;flex:1;overflow-y:auto}
 
         /* Save Modal */
-        .folder-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; max-height: 200px; overflow-y: auto; }
-        .folder-item { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-fast); }
-        .folder-item:hover { background: var(--bg-hover); border-color: var(--primary); }
-        .folder-item.selected { border-color: var(--primary); background: var(--primary-light); }
-        .folder-visibility { font-size: 0.6875rem; padding: 2px 6px; border-radius: var(--radius-full); font-weight: 600; }
-        .folder-public { background: #e9f7ef; color: #057642; }
-        .folder-private { background: #fdecea; color: #d11124; }
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:all var(--transition-base)}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal{background:var(--bg-surface);border-radius:var(--radius-xl);width:100%;max-width:420px;max-height:80vh;overflow-y:auto;box-shadow:0 10px 25px rgba(0,0,0,0.15);animation:modalIn .2s ease-out}
+        @keyframes modalIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+        .modal-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border-light);position:sticky;top:0;background:var(--bg-surface);z-index:5}
+        .modal-title{font-weight:600;font-size:1.125rem}
+        .modal-close{width:36px;height:36px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-tertiary);font-size:1.25rem;transition:all var(--transition-fast)}
+        .modal-close:hover{background:var(--bg-hover)}
+        .modal-body{padding:1.25rem}
+        .folder-list{display:flex;flex-direction:column;gap:0.5rem;max-height:250px;overflow-y:auto}
+        .folder-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all var(--transition-fast)}
+        .folder-item:hover{background:var(--bg-hover);border-color:var(--primary)}
+        .folder-item.selected{border-color:var(--primary);background:var(--primary-light)}
+        .folder-icon{font-size:1.25rem}
+        .folder-info{flex:1}.folder-name{font-weight:600;font-size:0.875rem}.folder-vis{font-size:0.6875rem;color:var(--text-tertiary)}
 
-        /* ============ TOAST ============ */
-        .toast-container { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 400; display: flex; flex-direction: column; gap: 0.5rem; }
-        .toast { padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-size: 0.8125rem; font-weight: 500; box-shadow: var(--shadow-lg); animation: toastUp 0.3s ease-out; display: flex; align-items: center; gap: 0.5rem; min-width: 300px; justify-content: center; }
-        .toast.success { background: var(--success-bg); color: var(--success); border: 1px solid #a7f3d0; }
-        .toast.error { background: var(--danger-bg); color: var(--danger); border: 1px solid #fecaca; }
-        .toast.info { background: var(--secondary-light); color: #1e40af; border: 1px solid #bfdbfe; }
-        @keyframes toastUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .toast-container{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:0.5rem}
+        .toast{padding:0.75rem 1.25rem;border-radius:var(--radius-md);font-size:0.8125rem;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);animation:toastUp .3s ease-out;display:flex;align-items:center;gap:0.5rem;min-width:280px;justify-content:center}
+        .toast.success{background:var(--success-bg);color:var(--success);border:1px solid #a7f3d0}
+        .toast.error{background:var(--danger-bg);color:var(--danger);border:1px solid #fecaca}
+        .toast.info{background:var(--secondary-light);color:#1e40af;border:1px solid #bfdbfe}
+        @keyframes toastUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 
-        /* ============ EMPTY STATE ============ */
-        .empty-state { text-align: center; padding: 2.5rem 1rem; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border); }
-        .empty-state-icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.6; }
-        .empty-state-title { font-weight: 600; font-size: 1.125rem; margin-bottom: 0.25rem; }
-        .empty-state-text { color: var(--text-secondary); font-size: 0.875rem; }
+        .empty-state{text-align:center;padding:2.5rem 1rem;background:var(--bg-surface);border-radius:var(--radius-lg);border:1px solid var(--border)}
+        .empty-state-icon{font-size:2.5rem;margin-bottom:0.75rem;opacity:.6}
+        .empty-state-title{font-weight:600;font-size:1.125rem;margin-bottom:0.25rem}
+        .empty-state-text{color:var(--text-secondary);font-size:0.875rem}
 
-        /* ============ PAGINATION ============ */
-        .pagination { display: flex; justify-content: center; gap: 0.25rem; padding: 1rem 0; }
-        .page-btn { width: 36px; height: 36px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg-surface); font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; justify-content: center; }
-        .page-btn:hover:not(:disabled):not(.active) { background: var(--bg-hover); border-color: var(--text-tertiary); }
-        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
+        .pagination{display:flex;justify-content:center;gap:0.25rem;padding:1rem 0}
+        .page-btn{width:36px;height:36px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-surface);font-size:0.8125rem;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all var(--transition-fast);display:flex;align-items:center;justify-content:center}
+        .page-btn:hover:not(:disabled):not(.active){background:var(--bg-hover)}
+        .page-btn.active{background:var(--primary);color:white;border-color:var(--primary);font-weight:600}
 
-        /* ============ SKELETON ============ */
-        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius-sm); }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* ============ RESPONSIVE ============ */
-        @media (max-width: 992px) { .main-layout { grid-template-columns: 1fr; } .sidebar-column { display: none; } }
-        @media (max-width: 640px) { .navbar { padding: 0 0.75rem; } .navbar-title { display: none; } .navbar-search { max-width: 100%; } .card-screenshot img { max-height: 200px; } .card-actions { gap: 0; } .card-action-btn { padding: 0.25rem 0.5rem; font-size: 0.75rem; } }
+        @media(max-width:992px){.main-layout{grid-template-columns:1fr}.sidebar-column{display:none}.link-card-screenshot{width:120px;height:90px}}
+        @media(max-width:640px){.navbar{padding:0 0.75rem}.navbar-title{display:none}.link-card{flex-direction:column}.link-card-screenshot{width:100%;height:160px}.card-actions{gap:0}}
     </style>
 </head>
 <body class="theme-light">
-    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-inner">
-            <div class="navbar-brand" onclick="location.reload()">
-                <div class="navbar-logo">L</div>
-                <span class="navbar-title">LinkSocial</span>
-            </div>
-            <div class="navbar-search">
-                <div class="search-input-wrap">
-                    <span class="iconify" data-icon="ph:magnifying-glass" data-width="16" style="color:var(--text-tertiary)"></span>
-                    <input type="text" id="searchInput" placeholder="Search links...">
-                </div>
-            </div>
+            <div class="navbar-brand" onclick="resetToFeed()"><div class="navbar-logo">L</div><span class="navbar-title">LinkSocial</span></div>
+            <div class="navbar-search"><div class="search-input-wrap"><span class="iconify" data-icon="ph:magnifying-glass" data-width="16" style="color:var(--text-tertiary)"></span><input type="text" id="searchInput" placeholder="Search links..."></div></div>
             <div class="navbar-actions">
-                <button class="btn btn-icon btn-ghost" id="themeToggle" title="Toggle theme" aria-label="Toggle dark/light mode">
-                    <span class="iconify" data-icon="ph:moon" data-width="20" id="themeIcon"></span>
-                </button>
-                <button class="btn btn-outline btn-sm" id="shareBtn">
-                    <span class="iconify" data-icon="ph:plus" data-width="16"></span> Share
-                </button>
+                <button class="btn btn-icon btn-ghost" id="themeToggle" title="Toggle theme"><span class="iconify" data-icon="ph:moon" data-width="20" id="themeIcon"></span></button>
+                <button class="btn btn-outline btn-sm" id="shareBtn"><span class="iconify" data-icon="ph:plus" data-width="16"></span> Share</button>
                 <div id="authArea"></div>
             </div>
         </div>
     </nav>
 
-    <!-- MAIN LAYOUT -->
     <div class="main-layout">
         <div class="feed-column">
             <div class="share-box">
-                <div class="share-box-header">
-                    <div class="share-avatar" id="shareAvatar">L</div>
-                    <button class="share-input-btn" id="shareInputBtn">Share an interesting link...</button>
-                </div>
+                <div class="share-box-header"><div class="share-avatar" id="shareAvatar">L</div><button class="share-input-btn" id="shareInputBtn">Share an interesting link...</button></div>
                 <div class="share-box-actions">
                     <button class="share-action-chip" id="quickShareBtn"><span class="iconify" data-icon="ph:link-simple" data-width="16" style="color:var(--primary)"></span> Link</button>
                     <button class="share-action-chip"><span class="iconify" data-icon="ph:image" data-width="16" style="color:#45b058"></span> Screenshot</button>
                     <button class="share-action-chip"><span class="iconify" data-icon="ph:tag" data-width="16" style="color:#e7a33e"></span> Category</button>
                 </div>
             </div>
-
             <div class="feed-sort" id="feedSort">
-                <button class="sort-btn active" data-feed="trending">Trending</button>
+                <button class="sort-btn active" data-feed="feed">Feed</button>
+                <button class="sort-btn" data-feed="trending">Trending</button>
                 <button class="sort-btn" data-feed="new">Latest</button>
                 <button class="sort-btn" data-feed="top">Top</button>
-                <button class="sort-btn" data-feed="feed">Feed</button>
             </div>
-
-            <div id="linksFeed">
-                <div class="link-card skeleton" style="height:200px;"></div>
-                <div class="link-card skeleton" style="height:200px;"></div>
-            </div>
-
+            <div id="linksFeed"></div>
             <div class="pagination" id="pagination"></div>
         </div>
-
         <div class="sidebar-column">
             <div class="sidebar-card">
                 <div class="sidebar-card-title">📊 LinkSocial Stats</div>
                 <div class="sidebar-stat"><span class="sidebar-stat-label">Total links shared</span><span class="sidebar-stat-value" id="statTotalLinks">0</span></div>
                 <hr class="sidebar-divider">
                 <div class="sidebar-stat"><span class="sidebar-stat-label"><span class="live-indicator"></span>Links today (24h)</span><span class="sidebar-stat-value" id="statToday">0</span></div>
-                <hr class="sidebar-divider">
-                <div class="sidebar-stat"><span class="sidebar-stat-label">Active users</span><span class="sidebar-stat-value" id="statUsers">0</span></div>
             </div>
-
             <div class="sidebar-card">
                 <div class="sidebar-card-title">📂 Categories</div>
-                <div class="sidebar-link active" data-category="all" onclick="filterCategory('all')">All Links</div>
-                <div class="sidebar-link" data-category="technology" onclick="filterCategory('technology')">Technology</div>
-                <div class="sidebar-link" data-category="ai" onclick="filterCategory('ai')">AI</div>
-                <div class="sidebar-link" data-category="programming" onclick="filterCategory('programming')">Programming</div>
-                <div class="sidebar-link" data-category="entertainment" onclick="filterCategory('entertainment')">Entertainment</div>
-                <div class="sidebar-link" data-category="gaming" onclick="filterCategory('gaming')">Gaming</div>
-                <div class="sidebar-link" data-category="business" onclick="filterCategory('business')">Business</div>
+                <div class="sidebar-link active" data-category="all" onclick="filterCategory('all')">All Links <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="technology" onclick="filterCategory('technology')">Technology <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="education" onclick="filterCategory('education')">Education <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="entertainment" onclick="filterCategory('entertainment')">Entertainment <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="gaming" onclick="filterCategory('gaming')">Gaming <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="music" onclick="filterCategory('music')">Music <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="business" onclick="filterCategory('business')">Business <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="news" onclick="filterCategory('news')">News <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="lifestyle" onclick="filterCategory('lifestyle')">Lifestyle <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="sports" onclick="filterCategory('sports')">Sports <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="science" onclick="filterCategory('science')">Science <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="food" onclick="filterCategory('food')">Food <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="shopping" onclick="filterCategory('shopping')">Shopping <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="developer-resources" onclick="filterCategory('developer-resources')">Developer Resources <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="ai-tools" onclick="filterCategory('ai-tools')">AI Tools <span class="sidebar-link-arrow">→</span></div>
+                <div class="sidebar-link" data-category="trading" onclick="filterCategory('trading')">Trading <span class="sidebar-link-arrow">→</span></div>
             </div>
-
             <div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-tertiary);">
                 <a href="https://pireactive.vercel.app/" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600;">LinkSocial © 2026 · Built by PIReactive</a>
             </div>
         </div>
     </div>
 
-    <!-- COMMENT SIDEBAR (Left side) -->
-    <div class="comment-sidebar-overlay" id="commentOverlay"></div>
+    <!-- COMMENT SIDEBAR (LEFT) -->
+    <div class="comment-overlay" id="commentOverlay"></div>
     <div class="comment-sidebar" id="commentSidebar">
-        <div class="comment-sidebar-header">
-            <span class="comment-sidebar-title">💬 Comments</span>
-            <button class="comment-sidebar-close" id="commentClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button>
-        </div>
-        <div class="comment-list" id="commentList"><p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No comments yet</p></div>
-        <div class="comment-input-area">
-            <input type="text" class="comment-input" id="commentInput" placeholder="Write a comment...">
-            <button class="btn btn-primary btn-sm" id="commentPostBtn">Post</button>
-        </div>
+        <div class="comment-header"><span class="comment-title">💬 Comments</span><button class="comment-close" id="commentClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button></div>
+        <div class="comment-list" id="commentList"></div>
+        <div class="comment-input-area"><input type="text" class="comment-input" id="commentInput" placeholder="Write a comment..."><button class="btn btn-primary btn-sm" id="commentPostBtn">Post</button></div>
     </div>
 
-    <!-- PROFILE SIDEBAR (Right side) -->
-    <div class="profile-sidebar-overlay" id="profileOverlay"></div>
+    <!-- PROFILE SIDEBAR (RIGHT) -->
+    <div class="profile-overlay" id="profileOverlay"></div>
     <div class="profile-sidebar" id="profileSidebar">
         <button class="profile-close" id="profileClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button>
-        <div class="profile-header">
-            <div class="profile-avatar-lg" id="profileAvatar" style="background:linear-gradient(135deg, var(--primary), var(--secondary));">L</div>
-            <div class="profile-name" id="profileName">User</div>
-            <div class="profile-email" id="profileEmail">user@example.com</div>
+        <div class="profile-header"><div class="profile-avatar-lg" id="profileAvatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary))">L</div><div class="profile-name" id="profileName">User</div><div class="profile-email" id="profileEmail">user@example.com</div></div>
+        <div class="profile-stats"><div class="profile-stat"><div class="profile-stat-value" id="profLinks">0</div><div class="profile-stat-label">Links</div></div><div class="profile-stat"><div class="profile-stat-value" id="profSaved">0</div><div class="profile-stat-label">Saved</div></div><div class="profile-stat"><div class="profile-stat-value" id="profTrust">-</div><div class="profile-stat-label">Trust</div></div></div>
+        <div class="profile-menu">
+            <div class="profile-menu-item" onclick="openSubPanel('settings')"><div class="profile-menu-item-left"><span class="iconify" data-icon="ph:gear" data-width="20"></span> Settings</div><span class="sidebar-link-arrow">›</span></div>
+            <div class="profile-menu-item" onclick="openSubPanel('notifications')"><div class="profile-menu-item-left"><span class="iconify" data-icon="ph:bell" data-width="20"></span> Notifications</div><span class="sidebar-link-arrow">›</span></div>
+            <div class="profile-menu-item" onclick="openSubPanel('saved')"><div class="profile-menu-item-left"><span class="iconify" data-icon="ph:bookmark-simple" data-width="20"></span> Saved</div><span class="sidebar-link-arrow">›</span></div>
+            <div class="profile-menu-item" onclick="openSubPanel('links')"><div class="profile-menu-item-left"><span class="iconify" data-icon="ph:link" data-width="20"></span> Links</div><span class="sidebar-link-arrow">›</span></div>
         </div>
-        <div class="profile-stats">
-            <div class="profile-stat"><div class="profile-stat-value" id="profLinks">0</div><div class="profile-stat-label">Links</div></div>
-            <div class="profile-stat"><div class="profile-stat-value" id="profComments">0</div><div class="profile-stat-label">Comments</div></div>
-            <div class="profile-stat"><div class="profile-stat-value" id="profTrust">-</div><div class="profile-stat-label">Trust</div></div>
-        </div>
-        <div class="profile-section">
-            <div class="profile-section-title">Edit Username</div>
-            <div class="profile-input-row">
-                <input type="text" class="profile-input" id="editUsername" placeholder="New username">
-                <button class="btn btn-primary btn-sm" id="updateUsernameBtn">Update</button>
-            </div>
-        </div>
-        <div class="profile-section">
-            <div class="profile-section-title">Manage Folders</div>
-            <div class="profile-input-row">
-                <input type="text" class="profile-input" id="newFolderName" placeholder="Folder name">
-                <select id="newFolderVisibility" style="padding:0.25rem 0.5rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.75rem;background:var(--bg-surface);color:var(--text-primary);">
-                    <option value="public">Public</option>
-                    <option value="private">Private</option>
-                </select>
-                <button class="btn btn-sm btn-outline" id="createFolderBtn">+</button>
-            </div>
-            <div id="folderList" style="max-height:150px;overflow-y:auto;font-size:0.75rem;"></div>
-        </div>
-        <div class="profile-section">
-            <div class="profile-section-title">Notifications</div>
-            <div style="font-size:0.8125rem;color:var(--text-tertiary);">No new notifications</div>
-        </div>
-        <div class="profile-section">
-            <button class="btn btn-danger btn-sm" id="logoutBtn" style="width:100%;">Log Out</button>
-        </div>
+        <div style="padding:1rem;margin-top:auto;"><button class="btn btn-danger btn-sm" id="logoutBtn" style="width:100%;">Log Out</button></div>
     </div>
 
-    <!-- SHARE MODAL -->
-    <div class="modal-overlay" id="shareModal">
-        <div class="modal">
-            <div class="modal-header"><span class="modal-title">Share a link</span><button class="modal-close" id="shareModalClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button></div>
-            <div class="modal-body">
-                <div class="form-group"><label class="form-label">URL *</label><input type="url" class="form-input" id="shareUrl" placeholder="https://example.com/article" oninput="fetchLinkPreview()"></div>
-                <div class="form-group"><label class="form-label">Title *</label><input type="text" class="form-input" id="shareTitle" placeholder="What's this link about?"></div>
-                <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="shareDesc" placeholder="Add a brief description..."></textarea></div>
-                <div id="previewInline" style="display:none;"><div class="link-preview-inline"><img id="previewImg" src="" alt="" onerror="this.style.display='none'" style="width:72px;height:54px;border-radius:var(--radius-sm);object-fit:cover;"><div class="link-preview-inline-info" style="flex:1;min-width:0;"><div class="link-preview-inline-title" id="previewTitle" style="font-weight:600;font-size:0.8125rem;"></div><div class="link-preview-inline-desc" id="previewDesc" style="font-size:0.75rem;color:var(--text-tertiary);"></div></div></div></div>
-                <div class="form-group">
-                    <label class="form-label">Categories</label>
-                    <div class="category-search-wrap">
-                        <input type="text" class="category-search-input" id="categorySearch" placeholder="Search categories..." oninput="filterCategoryDropdown()" onfocus="showCategoryDropdown()">
-                        <div class="category-dropdown" id="categoryDropdown"></div>
-                    </div>
-                    <div class="selected-categories" id="selectedCategories"></div>
-                    <div class="recommended-categories" id="recommendedCategories"></div>
-                    <div style="font-size:0.6875rem;color:var(--text-tertiary);margin-top:0.25rem;">Recommended based on your description</div>
-                </div>
-                <button class="btn btn-primary" id="confirmShare" style="width:100%;padding:0.75rem;">Publish link</button>
-            </div>
-        </div>
+    <!-- SUB PANEL (NESTED RIGHT) -->
+    <div class="sub-panel-overlay" id="subPanelOverlay"></div>
+    <div class="sub-panel" id="subPanel">
+        <div class="sub-panel-header"><button class="sub-panel-back" id="subPanelBack">←</button><span class="sub-panel-title" id="subPanelTitle">Settings</span></div>
+        <div class="sub-panel-content" id="subPanelContent"></div>
     </div>
 
     <!-- SAVE MODAL -->
     <div class="modal-overlay" id="saveModal">
-        <div class="modal" style="max-width:420px;">
-            <div class="modal-header"><span class="modal-title">Save to Collection</span><button class="modal-close" id="saveModalClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button></div>
-            <div class="modal-body">
-                <div class="folder-list" id="saveFolderList"></div>
-                <div class="profile-input-row"><input type="text" class="profile-input" id="newSaveFolder" placeholder="New folder name"><select id="newSaveVisibility" style="padding:0.25rem 0.5rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.75rem;background:var(--bg-surface);color:var(--text-primary);"><option value="public">Public</option><option value="private">Private</option></select></div>
-                <button class="btn btn-primary btn-sm" id="createSaveFolderBtn" style="width:100%;">Create & Save</button>
-                <button class="btn btn-primary" id="confirmSave" style="width:100%;margin-top:0.5rem;">Save to Selected</button>
-            </div>
-        </div>
+        <div class="modal"><div class="modal-header"><span class="modal-title">Save to Collection</span><button class="modal-close" id="saveModalClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button></div>
+        <div class="modal-body"><div class="folder-list" id="saveFolderList"></div><button class="btn btn-primary" id="confirmSave" style="width:100%;margin-top:0.75rem;">Save</button></div></div>
     </div>
 
     <!-- AUTH MODAL -->
     <div class="modal-overlay" id="authModal">
-        <div class="modal" style="max-width:400px;">
-            <div class="modal-header"><span class="modal-title" id="authTitle">Sign in</span><button class="modal-close" id="authModalClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button></div>
-            <div class="modal-body">
-                <div class="form-group" id="authUserGroup" style="display:none;"><label class="form-label">Username</label><input type="text" class="form-input" id="authUsername" placeholder="johndoe"></div>
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="authEmail" placeholder="you@example.com"></div>
-                <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="authPassword" placeholder="••••••••"></div>
-                <button class="btn btn-primary" id="authSubmit" style="width:100%;padding:0.75rem;"><span id="authSubmitText">Sign in</span></button>
-                <p style="text-align:center;margin-top:1rem;font-size:0.8125rem;color:var(--text-secondary);"><span id="authSwitchText">New to LinkSocial?</span><a href="#" id="authSwitch" style="color:var(--primary);font-weight:600;margin-left:0.25rem;">Join now</a></p>
-            </div>
-        </div>
+        <div class="modal" style="max-width:400px;"><div class="modal-header"><span class="modal-title" id="authTitle">Sign in</span><button class="modal-close" id="authModalClose"><span class="iconify" data-icon="ph:x" data-width="20"></span></button></div>
+        <div class="modal-body">
+            <div class="form-group" id="authUserGroup" style="display:none;"><label style="display:block;font-size:0.8125rem;font-weight:600;margin-bottom:0.25rem;">Username</label><input type="text" class="form-input" id="authUsername" placeholder="johndoe" style="width:100%;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.875rem;background:var(--bg-surface);color:var(--text-primary);outline:none;"></div>
+            <div class="form-group"><label style="display:block;font-size:0.8125rem;font-weight:600;margin-bottom:0.25rem;">Email</label><input type="email" class="form-input" id="authEmail" placeholder="you@example.com" style="width:100%;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.875rem;background:var(--bg-surface);color:var(--text-primary);outline:none;"></div>
+            <div class="form-group"><label style="display:block;font-size:0.8125rem;font-weight:600;margin-bottom:0.25rem;">Password</label><input type="password" class="form-input" id="authPassword" placeholder="••••••••" style="width:100%;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.875rem;background:var(--bg-surface);color:var(--text-primary);outline:none;"></div>
+            <button class="btn btn-primary" id="authSubmit" style="width:100%;padding:0.75rem;"><span id="authSubmitText">Sign in</span></button>
+            <p style="text-align:center;margin-top:1rem;font-size:0.8125rem;color:var(--text-secondary);"><span id="authSwitchText">New to LinkSocial?</span><a href="#" id="authSwitch" style="color:var(--primary);font-weight:600;margin-left:0.25rem;">Join now</a></p>
+        </div></div>
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-    const firebaseConfig = { apiKey: "AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0", authDomain: "joefootball-15e7a.firebaseapp.com", projectId: "joefootball-15e7a", storageBucket: "joefootball-15e7a.firebasestorage.app" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    const firebaseConfig={apiKey:"AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",authDomain:"joefootball-15e7a.firebaseapp.com",projectId:"joefootball-15e7a",storageBucket:"joefootball-15e7a.firebasestorage.app"};
+    firebase.initializeApp(firebaseConfig);const db=firebase.firestore();const auth=firebase.auth();
 
-    // ============ ALL CATEGORIES ============
-    const ALL_CATEGORIES = ['Technology','AI','Programming','Cybersecurity','Software','Hardware','Gadgets','Open Source','Web Development','Mobile Development','Cloud Computing','Education','Tutorials','Courses','Study Resources','Science','Mathematics','Research Papers','Language Learning','Academic Tools','Entertainment','Movies','TV Shows','Anime','Memes','Humor','Streaming','Celebrity News','Music','Songs','Albums','Playlists','Music Videos','Producers','Lyrics','Concerts','Gaming','PC Gaming','Mobile Gaming','Console Gaming','Esports','Game News','Mods','Game Deals','Business & Finance','Startups','Investing','Cryptocurrency','Stock Market','Entrepreneurship','Marketing','E-commerce','Side Hustles','News','World News','Politics','Local News','Breaking News','Investigations','Journalism','Social Media','Viral Posts','Trends','Influencers','Online Communities','Design & Creativity','Graphic Design','UI/UX','Photography','Video Editing','3D Art','Animation','Branding','Lifestyle','Fashion','Beauty','Self Improvement','Productivity','Minimalism','Relationships','Health & Fitness','Workouts','Nutrition','Mental Wellness','Sports Medicine','Healthy Living','Sports','Football','Basketball','Tennis','MMA','Formula 1','Athletics','Sports Highlights','Physics','Chemistry','Biology','Astronomy','Space','Environment','Travel','Tourism','Hotels','Guides','Flight Deals','Adventure','Food','Recipes','Restaurants','Cooking','Street Food','Coffee','Shopping','Deals','Product Reviews','Tech Products','Fashion Products','Marketplaces','Developer Resources','APIs','GitHub Repositories','Dev Tools','Frameworks','Coding Challenges','Documentation','Careers','Jobs','Freelancing','Remote Work','Internships','Career Advice','Communities','Forums','Discord Servers','Reddit Communities','Online Groups','Tools & Utilities','AI Tools','Productivity Apps','Websites','Browser Extensions','Automation Tools','Security & Privacy','Privacy Tools','VPNs','Encryption','Threat Reports','Data Protection','Culture','History','Philosophy','Religion','Art','Society','Fun','Random Websites','Weird Internet','Challenges','Interactive Experiences'];
-    const CATEGORY_LOWER = ALL_CATEGORIES.map(c => c.toLowerCase());
+    const MAIN_CATEGORIES=['Technology','Education','Entertainment','Gaming','Music','Business','News','Lifestyle','Sports','Science','Food','Shopping','Developer Resources','AI Tools','Trading'];
+    const ALL_SUBCATEGORIES={Technology:['AI','Programming','Cybersecurity','Software','Hardware','Gadgets','Open Source','Web Development','Mobile Development','Cloud Computing','Developer Resources','APIs','GitHub Repositories','Dev Tools','Frameworks','Coding Challenges','Documentation','Tools & Utilities','Productivity Apps','Browser Extensions','Automation Tools','Security & Privacy','Privacy Tools','VPNs','Encryption','Threat Reports','Data Protection'],Education:['Tutorials','Courses','Study Resources','Language Learning','Academic Tools','Mathematics','Research Papers','Science','Physics','Chemistry','Biology','Astronomy','Space','Environment'],Entertainment:['Movies','TV Shows','Anime','Memes','Humor','Streaming','Celebrity News','Social Media','Viral Posts','Trends','Influencers','Online Communities','Fun','Random Websites','Weird Internet','Challenges','Interactive Experiences'],Gaming:['PC Gaming','Mobile Gaming','Console Gaming','Esports','Game News','Mods','Game Deals'],Music:['Songs','Albums','Playlists','Music Videos','Producers','Lyrics','Concerts'],Business:['Startups','Investing','Cryptocurrency','Stock Market','Entrepreneurship','Marketing','E-commerce','Side Hustles','Careers','Jobs','Freelancing','Remote Work','Internships','Career Advice','Trading','Finance'],News:['World News','Politics','Local News','Breaking News','Investigations','Journalism'],Lifestyle:['Fashion','Beauty','Self Improvement','Productivity','Minimalism','Relationships','Health & Fitness','Workouts','Nutrition','Mental Wellness','Sports Medicine','Healthy Living','Travel','Tourism','Hotels','Guides','Flight Deals','Adventure'],Sports:['Football','Basketball','Tennis','MMA','Formula 1','Athletics','Sports Highlights'],Science:['Physics','Chemistry','Biology','Astronomy','Space','Environment','Mathematics','Research Papers'],Food:['Recipes','Restaurants','Cooking','Street Food','Coffee'],Shopping:['Deals','Product Reviews','Tech Products','Fashion Products','Marketplaces'],'Developer Resources':['APIs','GitHub Repositories','Dev Tools','Frameworks','Coding Challenges','Documentation','Programming','Open Source'],'AI Tools':['AI','Machine Learning','Automation Tools','Productivity Apps'],Trading:['Cryptocurrency','Stock Market','Investing','Finance','Business']};
 
-    // ============ STATE ============
-    let currentUser = null, allLinks = [], currentFeed = 'trending', currentCategory = 'all', currentPage = 1, authMode = 'signin';
-    let selectedCategories = [], selectedLinkForSave = null, selectedFolderForSave = null, currentCommentLinkId = null;
-    const LINKS_PER_PAGE = 10;
+    let currentUser=null,allLinks=[],currentFeed='feed',currentCategory='all',currentPage=1,authMode='signin',savedLinkForSave=null,selectedSaveFolder=null,commentLinkId=null,followingUsers=new Set();
 
-    // ============ HELPERS ============
-    const $ = s => document.querySelector(s);
-    const $$ = s => document.querySelectorAll(s);
-    const esc = s => s ? String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]) : '';
-    const getDomain = u => { try { return new URL(u).hostname.replace('www.',''); } catch { return u; } };
-    const favicon = u => { try { return `https://www.google.com/s2/favicons?domain=${new URL(u).hostname}&sz=32`; } catch { return ''; } };
-    const timeAgo = ts => { if(!ts) return ''; const s = Math.floor((Date.now()-ts)/1000); if(s<60) return 'now'; if(s<3600) return Math.floor(s/60)+'m'; if(s<86400) return Math.floor(s/3600)+'h'; if(s<604800) return Math.floor(s/86400)+'d'; return Math.floor(s/2592000)+'mo'; };
-    const fmtNum = n => n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n);
-    const userColor = u => { let h=0; for(let i=0;i<(u||'a').length;i++) h=u.charCodeAt(i)+((h<<5)-h); return `hsl(${Math.abs(h%360)},50%,45%)`; };
-    const getCatClass = c => { const l=(c||'').toLowerCase().replace(/[^a-z0-9]/g,'-'); return `tag-${l}`; };
+    const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
+    const esc=s=>s?String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]):'';
+    const getDomain=u=>{try{return new URL(u).hostname.replace('www.','')}catch{return u}};
+    const favicon=u=>{try{return`https://www.google.com/s2/favicons?domain=${new URL(u).hostname}&sz=32`}catch{return''}};
+    const timeAgo=ts=>{if(!ts)return'';const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'};
+    const fmtNum=n=>n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n);
+    const userColor=u=>{let h=0;for(let i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return`hsl(${Math.abs(h%360)},50%,45%)`};
+    const getCatClass=c=>{const l=(c||'').toLowerCase().replace(/[^a-z0-9]/g,'-');return`tag-${l}`};
 
-    function detectCategoryFromText(text) {
-        const t = text.toLowerCase(); const matches = [];
-        for(const cat of ALL_CATEGORIES) { if(t.includes(cat.toLowerCase())) matches.push(cat); }
-        return matches.slice(0, 3);
-    }
+    function calcTrust(link){let s=100;const d=getDomain(link.url||'').toLowerCase();if(['github.com','stackoverflow.com','medium.com','dev.to','nytimes.com','wikipedia.org'].some(t=>d.includes(t)))s+=5;if(['.xyz','.tk','.ml','.ga','.cf','.top'].some(t=>d.endsWith(t)))s-=20;if(!(link.url||'').startsWith('https://'))s-=10;return Math.max(0,Math.min(100,s))}
+    function calcTrend(link){const ageD=(Date.now()-(link.createdAt||Date.now()))/(86400000),decay=Math.max(0.05,1/(1+ageD*0.3));return((link.upvotes||0)-(link.downvotes||0))*3+(link.comments||[]).length*2+(link.views||0)*0.01+(link.saves||0)*5*decay}
+    function calcTop(link){return(link.upvotes||0)-(link.downvotes||0)}
+    function calcFeedScore(link){return calcTrend(link)*0.4+(Date.now()-(link.createdAt||0)<86400000?10:0)*0.3+calcTop(link)*0.3+(followingUsers.has(link.ownerId)?20:0)}
 
-    function calcTrust(link) {
-        let s=100; const d=getDomain(link.url||'').toLowerCase();
-        const trusted=['github.com','stackoverflow.com','medium.com','dev.to','nytimes.com','wikipedia.org','arxiv.org','nature.com'];
-        if(trusted.some(t=>d.includes(t))) s+=5;
-        if(['.xyz','.tk','.ml','.ga','.cf','.top'].some(t=>d.endsWith(t))) s-=20;
-        if(d.split('.').length>4) s-=10;
-        if(!(link.url||'').startsWith('https://')) s-=10;
-        return Math.max(0,Math.min(100,s));
-    }
+    function toast(msg,type='info'){const c=$('#toastContainer'),t=document.createElement('div');t.className=`toast ${type}`;t.innerHTML=`<span>${esc(msg)}</span>`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(10px)';t.style.transition='all 0.25s';setTimeout(()=>t.remove(),250)},3000)}
 
-    function calcTrend(link) {
-        const ageD=(Date.now()-(link.createdAt||Date.now()))/(86400000), decay=Math.max(0.05,1/(1+ageD*0.3));
-        return ((link.upvotes||0)-(link.downvotes||0))*3+(link.comments||[]).length*2+(link.views||0)*0.01+(link.saves||0)*5*decay*(0.95+Math.random()*0.1);
-    }
+    function openModal(id){$(`#${id}`).classList.add('active')}
+    function closeModal(id){$(`#${id}`).classList.remove('active')}
+    function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add(`theme-${t}`);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
+    function toggleTheme(){const cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')}
 
-    function toast(msg, type='info') {
-        const c=$('#toastContainer'), t=document.createElement('div'); t.className=`toast ${type}`; t.innerHTML=`<span>${esc(msg)}</span>`;
-        c.appendChild(t); setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(10px)';t.style.transition='all 0.25s';setTimeout(()=>t.remove(),250);},3000);
-    }
+    function renderAuth(){const a=$('#authArea');if(currentUser){a.innerHTML=`<button class="btn btn-ghost btn-sm" id="profileBtn" style="display:flex;align-items:center;gap:6px;"><span style="width:28px;height:28px;border-radius:50%;background:${userColor(currentUser.username)};display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:0.7rem;">${(currentUser.username||'U')[0].toUpperCase()}</span><span>${esc(currentUser.username||'User')}</span></button>`;$('#shareAvatar').textContent=(currentUser.username||'L')[0].toUpperCase();$('#shareAvatar').style.background=userColor(currentUser.username);setTimeout(()=>{const pb=$('#profileBtn');if(pb)pb.onclick=openProfile},100)}else{a.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openAuth('signin')">Sign in</button>`;$('#shareAvatar').textContent='L';$('#shareAvatar').style.background='linear-gradient(135deg, var(--primary), var(--secondary))'}}
 
-    function openModal(id){$(`#${id}`).classList.add('active');}
-    function closeModal(id){$(`#${id}`).classList.remove('active');}
+    function openAuth(mode='signin'){authMode=mode;$('#authTitle').textContent=mode==='signin'?'Sign in':'Join LinkSocial';$('#authSubmitText').textContent=mode==='signin'?'Sign in':'Create account';$('#authUserGroup').style.display=mode==='signin'?'none':'block';$('#authSwitchText').textContent=mode==='signin'?'New to LinkSocial?':'Already have an account?';$('#authSwitch').textContent=mode==='signin'?'Join now':'Sign in';openModal('authModal')}
+    async function handleAuth(){const email=$('#authEmail').value.trim(),pw=$('#authPassword').value,uname=$('#authUsername').value.trim();if(!email||!pw){toast('Email and password required','error');return}const btn=$('#authSubmit');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span>';try{if(authMode==='signup'){if(!uname){toast('Username required','error');btn.disabled=false;btn.innerHTML='<span>Create account</span>';return}await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);const cred=await auth.createUserWithEmailAndPassword(email,pw);await db.collection('users').doc(cred.user.uid).set({uid:cred.user.uid,username:uname,email,createdAt:Date.now(),linkCount:0,accentColor:userColor(uname)});toast(`Welcome, @${uname}!`,'success')}else{await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);await auth.signInWithEmailAndPassword(email,pw);toast('Welcome back!','success')}closeModal('authModal')}catch(e){toast(e.message,'error')}finally{btn.disabled=false;btn.innerHTML=`<span>${authMode==='signin'?'Sign in':'Create account'}</span>`}}
+    async function signOut(){await auth.signOut();currentUser=null;renderAuth();closeProfile();fetchLinks();toast('Signed out','info')}
 
-    // ============ THEME ============
-    function setTheme(t) { document.body.classList.remove('theme-light','theme-dark'); document.body.classList.add(`theme-${t}`); $('#themeIcon').setAttribute('data-icon', t==='dark'?'ph:sun':'ph:moon'); localStorage.setItem('ls-theme',t); }
-    function toggleTheme() { const cur=document.body.classList.contains('theme-dark')?'dark':'light'; setTheme(cur==='dark'?'light':'dark'); }
+    function openProfile(){if(!currentUser)return;$('#profileName').textContent=currentUser.username||'User';$('#profileEmail').textContent=currentUser.email||'';$('#profileAvatar').style.background=currentUser.accentColor||userColor(currentUser.username);$('#profileAvatar').textContent=(currentUser.username||'U')[0].toUpperCase();const userLinks=allLinks.filter(l=>l.ownerId===currentUser.uid);$('#profLinks').textContent=fmtNum(userLinks.length);$('#profTrust').textContent=userLinks.length>0?Math.round(userLinks.reduce((s,l)=>s+(l.trustScore||50),0)/userLinks.length):'-';$('#profileOverlay').classList.add('active');$('#profileSidebar').classList.add('active');loadSavedCount()}
+    function closeProfile(){$('#profileOverlay').classList.remove('active');$('#profileSidebar').classList.remove('active');closeSubPanel()}
+    async function loadSavedCount(){if(!currentUser)return;const snap=await db.collection('users').doc(currentUser.uid).collection('savedLinks').get();$('#profSaved').textContent=fmtNum(snap.docs.length)}
 
-    // ============ CATEGORY DROPDOWN ============
-    function filterCategoryDropdown() {
-        const q = $('#categorySearch').value.toLowerCase().trim();
-        const dd = $('#categoryDropdown'); dd.innerHTML = '';
-        const filtered = q ? ALL_CATEGORIES.filter(c => c.toLowerCase().includes(q) && !selectedCategories.includes(c)) : ALL_CATEGORIES.filter(c => !selectedCategories.includes(c));
-        const show = filtered.slice(0, 15);
-        show.forEach(c => { const d=document.createElement('div'); d.className='category-dropdown-item'; d.textContent=c; d.onclick=()=>addCategory(c); dd.appendChild(d); });
-        if(show.length===0) dd.innerHTML='<div style="padding:0.5rem;color:var(--text-tertiary);font-size:0.75rem;">No categories found</div>';
-    }
+    function openSubPanel(type){$('#subPanelTitle').textContent=type.charAt(0).toUpperCase()+type.slice(1);let html='';if(type==='settings'){html=`<div style="display:flex;flex-direction:column;gap:1rem;"><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Username</label><div style="display:flex;gap:0.5rem;"><input type="text" class="profile-input" id="settingsUsername" value="${esc(currentUser?.username||'')}" style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.875rem;background:var(--bg-surface);color:var(--text-primary);outline:none;"><button class="btn btn-primary btn-sm" onclick="updateSettingsUsername()">Save</button></div></div><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Accent Color</label><input type="color" id="settingsColor" value="${currentUser?.accentColor||'#6c47ff'}" style="width:60px;height:36px;border:none;cursor:pointer;border-radius:var(--radius-md);"><button class="btn btn-sm btn-outline" onclick="updateAccentColor()" style="margin-left:0.5rem;">Apply</button></div><div><label style="font-size:0.8125rem;font-weight:600;display:block;margin-bottom:0.25rem;">Profile Emoji</label><input type="text" id="settingsEmoji" maxlength="2" value="${currentUser?.emoji||'👤'}" style="width:60px;padding:0.5rem;border:1px solid var(--border);border-radius:var(--radius-md);font-size:1.25rem;text-align:center;background:var(--bg-surface);color:var(--text-primary);outline:none;"><button class="btn btn-sm btn-outline" onclick="updateEmoji()" style="margin-left:0.5rem;">Save</button></div></div>`}else if(type==='notifications'){html='<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No new notifications</p>'}else if(type==='saved'){html='<div id="savedLinksList"><p style="color:var(--text-tertiary);text-align:center;padding:2rem;">Loading saved links...</p></div>';setTimeout(loadSavedLinks,100)}else if(type==='links'){html='<div id="userLinksList"><p style="color:var(--text-tertiary);text-align:center;padding:2rem;">Loading your links...</p></div>';setTimeout(loadUserLinks,100)}
+    $('#subPanelContent').innerHTML=html;$('#subPanelOverlay').classList.add('active');$('#subPanel').classList.add('active')}
+    function closeSubPanel(){$('#subPanelOverlay').classList.remove('active');$('#subPanel').classList.remove('active')}
+    async function updateSettingsUsername(){const nu=$('#settingsUsername').value.trim();if(!nu)return;await db.collection('users').doc(currentUser.uid).update({username:nu});currentUser.username=nu;renderAuth();openProfile();toast('Username updated!','success')}
+    async function updateAccentColor(){const c=$('#settingsColor').value;await db.collection('users').doc(currentUser.uid).update({accentColor:c});currentUser.accentColor=c;$('#profileAvatar').style.background=c;renderAuth();toast('Accent color updated!','success')}
+    async function updateEmoji(){const e=$('#settingsEmoji').value||'👤';await db.collection('users').doc(currentUser.uid).update({emoji:e});currentUser.emoji=e;$('#profileAvatar').textContent=e;renderAuth();toast('Emoji updated!','success')}
 
-    function showCategoryDropdown() { filterCategoryDropdown(); $('#categoryDropdown').classList.add('show'); }
-    function hideCategoryDropdown() { setTimeout(()=>$('#categoryDropdown').classList.remove('show'),200); }
+    async function loadSavedLinks(){if(!currentUser)return;const snap=await db.collection('users').doc(currentUser.uid).collection('savedLinks').get();const saved=snap.docs.map(d=>d.data());const links=allLinks.filter(l=>saved.some(s=>s.linkId===l.id));$('#savedLinksList').innerHTML=links.length>0?links.map(l=>`<div style="padding:0.5rem;border-bottom:1px solid var(--border-light);font-size:0.8125rem;cursor:pointer;" onclick="window.open('${esc(l.url)}','_blank')"><strong>${esc(l.title)}</strong><br><span style="color:var(--text-tertiary);">${esc(getDomain(l.url||''))}</span></div>`).join(''):'<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No saved links</p>'}
 
-    function addCategory(cat) {
-        if(!selectedCategories.includes(cat)) { selectedCategories.push(cat); renderSelectedCategories(); }
-        $('#categorySearch').value=''; filterCategoryDropdown(); $('#categoryDropdown').classList.remove('show');
-        updateRecommendations();
-    }
-    function removeCategory(cat) { selectedCategories=selectedCategories.filter(c=>c!==cat); renderSelectedCategories(); updateRecommendations(); }
+    async function loadUserLinks(){if(!currentUser)return;const links=allLinks.filter(l=>l.ownerId===currentUser.uid);$('#userLinksList').innerHTML=links.length>0?links.map(l=>`<div style="padding:0.75rem;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:0.5rem;"><div style="font-weight:600;font-size:0.8125rem;">${esc(l.title)}</div><div style="font-size:0.75rem;color:var(--text-secondary);">👍 ${fmtNum(l.upvotes||0)} | 💬 ${fmtNum((l.comments||[]).length)} | 🛡 ${l.trustScore||50}%</div><div style="display:flex;gap:0.5rem;margin-top:0.5rem;"><button class="btn btn-xs btn-outline" onclick="editLink('${l.id}')">Edit</button><button class="btn btn-xs btn-danger" onclick="deleteLink('${l.id}')">Delete</button></div></div>`).join(''):'<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No links shared yet</p>'}
 
-    function renderSelectedCategories() {
-        $('#selectedCategories').innerHTML = selectedCategories.map(c => `<span class="selected-category-chip">${esc(c)}<span class="remove-cat" onclick="event.stopPropagation();removeCategory('${esc(c)}')">&times;</span></span>`).join('');
-    }
+    async function deleteLink(id){if(!confirm('Delete this link?'))return;await db.collection('links').doc(id).delete();toast('Link deleted','success');fetchLinks();loadUserLinks()}
+    function editLink(id){const l=allLinks.find(x=>x.id===id);if(!l)return;const nt=prompt('New title:',l.title);if(nt&&nt.trim()){db.collection('links').doc(id).update({title:nt.trim()}).then(()=>{toast('Updated!','success');fetchLinks();loadUserLinks()})}}
 
-    function updateRecommendations() {
-        const desc = ($('#shareDesc').value||'')+' '+($('#shareTitle').value||'');
-        const detected = detectCategoryFromText(desc).filter(c => !selectedCategories.includes(c));
-        const recs = detected.length>=3 ? detected.slice(0,3) : [...detected, ...ALL_CATEGORIES.filter(c=>!selectedCategories.includes(c)&&!detected.includes(c)).slice(0,3-detected.length)];
-        $('#recommendedCategories').innerHTML = recs.length>0 ? '<span style="font-size:0.6875rem;color:var(--text-tertiary);">Suggested:</span> '+recs.map(c => `<span class="recommended-category-chip" onclick="addCategory('${esc(c)}')">${esc(c)}</span>`).join('') : '';
-    }
+    // ============ FETCH & RENDER ============
+    async function fetchLinks(){try{const snap=await db.collection('links').orderBy('createdAt','desc').get();allLinks=snap.docs.map(d=>({id:d.id,...d.data(),upvotes:d.data().upvotes||0,downvotes:d.data().downvotes||0,ratings:d.data().ratings||{},comments:d.data().comments||[],views:d.data().views||0,saves:d.data().saves||0,categories:d.data().categories||[d.data().category||'general']}));renderFeed();updateStats()}catch(e){console.error(e)}}
 
-    // ============ AUTH ============
-    function renderAuth() {
-        const a=$('#authArea');
-        if(currentUser) {
-            a.innerHTML=`<button class="btn btn-ghost btn-sm" id="profileBtn" style="display:flex;align-items:center;gap:6px;"><span style="width:28px;height:28px;border-radius:50%;background:${userColor(currentUser.username)};display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:0.7rem;">${(currentUser.username||'U')[0].toUpperCase()}</span><span>${esc(currentUser.username||'User')}</span></button>`;
-            $('#shareAvatar').textContent=(currentUser.username||'L')[0].toUpperCase(); $('#shareAvatar').style.background=userColor(currentUser.username);
-            setTimeout(()=>{const pb=$('#profileBtn'); if(pb) pb.onclick=openProfile;},100);
-        } else {
-            a.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openAuth('signin')">Sign in</button>`;
-            $('#shareAvatar').textContent='L'; $('#shareAvatar').style.background='linear-gradient(135deg, var(--primary), var(--secondary))';
-        }
-    }
+    async function voteLink(linkId,type){if(!currentUser){toast('Sign in to vote','error');openAuth('signin');return}const ref=db.collection('links').doc(linkId),doc=await ref.get();if(!doc.exists)return;const link=doc.data(),votes=link.votes||{};let upD=0,downD=0;if(type==='up'){if(votes[currentUser.uid]==='up'){delete votes[currentUser.uid];upD=-1}else{if(votes[currentUser.uid]==='down')downD=-1;votes[currentUser.uid]='up';upD=1}}else{if(votes[currentUser.uid]==='down'){delete votes[currentUser.uid];downD=-1}else{if(votes[currentUser.uid]==='up')upD=-1;votes[currentUser.uid]='down';downD=1}}await ref.update({votes,upvotes:firebase.firestore.FieldValue.increment(upD),downvotes:firebase.firestore.FieldValue.increment(downD)});fetchLinks()}
+    async function addComment(linkId,text){if(!currentUser){toast('Sign in to comment','error');return}if(!text.trim())return;const ref=db.collection('links').doc(linkId),doc=await ref.get();if(!doc.exists)return;const comments=[...(doc.data().comments||[]),{author:currentUser.username||'anon',authorId:currentUser.uid,text:text.trim(),timestamp:Date.now()}];await ref.update({comments});fetchLinks();if(commentLinkId===linkId)renderCommentSidebar(linkId)}
+    async function toggleFollow(ownerId,ownerName){if(!currentUser){toast('Sign in to follow','error');return}if(ownerId===currentUser.uid||ownerId==='anonymous'){toast('Cannot follow this account','error');return}if(followingUsers.has(ownerId)){followingUsers.delete(ownerId);toast(`Unfollowed @${ownerName}`,'info')}else{followingUsers.add(ownerId);toast(`Following @${ownerName}!`,'success')}renderFeed()}
 
-    function openAuth(mode='signin') {
-        authMode=mode; $('#authTitle').textContent=mode==='signin'?'Sign in':'Join LinkSocial';
-        $('#authSubmitText').textContent=mode==='signin'?'Sign in':'Create account';
-        $('#authUserGroup').style.display=mode==='signin'?'none':'block';
-        $('#authSwitchText').textContent=mode==='signin'?'New to LinkSocial?':'Already have an account?';
-        $('#authSwitch').textContent=mode==='signin'?'Join now':'Sign in';
-        $('#authEmail').value='';$('#authPassword').value='';$('#authUsername').value='';openModal('authModal');
-    }
-
-    async function handleAuth() {
-        const email=$('#authEmail').value.trim(),pw=$('#authPassword').value,uname=$('#authUsername').value.trim();
-        if(!email||!pw){toast('Email and password required','error');return;}
-        const btn=$('#authSubmit');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span>';
-        try{
-            if(authMode==='signup'){
-                if(!uname){toast('Username required','error');btn.disabled=false;btn.innerHTML='<span>Create account</span>';return;}
-                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-                const cred=await auth.createUserWithEmailAndPassword(email,pw);
-                await db.collection('users').doc(cred.user.uid).set({uid:cred.user.uid,username:uname,email,createdAt:Date.now(),linkCount:0,karma:0,bio:''});
-                toast(`Welcome, @${uname}!`,'success');
-            }else{await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);await auth.signInWithEmailAndPassword(email,pw);toast('Welcome back!','success');}
-            closeModal('authModal');
-        }catch(e){toast(e.message,'error');}finally{btn.disabled=false;btn.innerHTML=`<span>${authMode==='signin'?'Sign in':'Create account'}</span>`;}
-    }
-
-    async function signOut(){await auth.signOut();currentUser=null;renderAuth();closeProfile();fetchLinks();toast('Signed out','info');}
-
-    // ============ PROFILE ============
-    function openProfile() {
-        if(!currentUser) return;
-        $('#profileName').textContent=currentUser.username||'User';
-        $('#profileEmail').textContent=currentUser.email||'';
-        $('#profileAvatar').style.background=userColor(currentUser.username);
-        $('#profileAvatar').textContent=(currentUser.username||'U')[0].toUpperCase();
-        const userLinks=allLinks.filter(l=>l.ownerId===currentUser.uid);
-        $('#profLinks').textContent=fmtNum(userLinks.length);
-        $('#profComments').textContent=fmtNum(allLinks.reduce((s,l)=>s+(l.comments||[]).filter(c=>c.authorId===currentUser.uid).length,0));
-        const avgTrust=userLinks.length>0?Math.round(userLinks.reduce((s,l)=>s+(l.trustScore||50),0)/userLinks.length):'-';
-        $('#profTrust').textContent=avgTrust;
-        renderFolderList();$('#profileOverlay').classList.add('active');$('#profileSidebar').classList.add('active');
-    }
-    function closeProfile(){$('#profileOverlay').classList.remove('active');$('#profileSidebar').classList.remove('active');}
-
-    async function renderFolderList() {
-        if(!currentUser) return;
-        const snap=await db.collection('users').doc(currentUser.uid).collection('folders').get();
-        const folders=snap.docs.map(d=>({id:d.id,...d.data()}));
-        if(!folders.some(f=>f.name==='DEFAULT')){await db.collection('users').doc(currentUser.uid).collection('folders').doc('DEFAULT').set({name:'DEFAULT',visibility:'public',createdAt:Date.now()});}
-        const snap2=await db.collection('users').doc(currentUser.uid).collection('folders').get();
-        const allFolders=snap2.docs.map(d=>({id:d.id,...d.data()}));
-        $('#folderList').innerHTML=allFolders.map(f=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.25rem 0;font-size:0.75rem;"><span>📁 ${esc(f.name)}</span><span class="folder-visibility ${f.visibility==='public'?'folder-public':'folder-private'}">${f.visibility}</span></div>`).join('')||'No custom folders';
-    }
-
-    async function createFolder() {
-        if(!currentUser) return;
-        const name=$('#newFolderName').value.trim(); if(!name){toast('Folder name required','error');return;}
-        const vis=$('#newFolderVisibility').value;
-        await db.collection('users').doc(currentUser.uid).collection('folders').doc(name).set({name,visibility:vis,createdAt:Date.now()});
-        toast(`Folder "${name}" created!`,'success');$('#newFolderName').value='';renderFolderList();
-    }
-
-    async function updateUsername() {
-        if(!currentUser) return;
-        const nu=$('#editUsername').value.trim(); if(!nu){toast('Username required','error');return;}
-        await db.collection('users').doc(currentUser.uid).update({username:nu});
-        currentUser.username=nu;renderAuth();closeProfile();openProfile();
-        toast('Username updated!','success');
-    }
-
-    // ============ PREVIEW ============
-    async function fetchLinkPreview(){
-        const url=$('#shareUrl').value.trim();if(!url||!url.startsWith('http')) return;
-        const box=$('#previewInline');box.style.display='none';
-        try{
-            const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true`);
-            const d=await r.json();
-            if(d.status==='success'&&d.data){
-                $('#previewImg').src=d.data.screenshot?.url||d.data.image?.url||''; $('#previewImg').style.display=$('#previewImg').src?'':'none';
-                $('#previewTitle').textContent=d.data.title||getDomain(url);
-                $('#previewDesc').textContent=d.data.description||'';
-                box.style.display='';
-                if(!$('#shareTitle').value&&d.data.title) $('#shareTitle').value=d.data.title;
-                if(!$('#shareDesc').value&&d.data.description) $('#shareDesc').value=d.data.description;
-                updateRecommendations();
-            }
-        }catch(e){$('#previewTitle').textContent=getDomain(url);box.style.display='';}
-    }
-
-    // ============ CRUD ============
-    async function fetchLinks(){
-        try{
-            const snap=await db.collection('links').orderBy('createdAt','desc').get();
-            allLinks=snap.docs.map(d=>({id:d.id,...d.data(),upvotes:d.data().upvotes||0,downvotes:d.data().downvotes||0,ratings:d.data().ratings||{},avgRating:d.data().avgRating||0,comments:d.data().comments||[],views:d.data().views||0,saves:d.data().saves||0,categories:d.data().categories||[d.data().category||'general']}));
-            renderFeed();updateStats();
-        }catch(e){console.error(e);}
-    }
-
-    async function addLink(){
-        const title=$('#shareTitle').value.trim(),url=$('#shareUrl').value.trim(),desc=$('#shareDesc').value.trim();
-        if(!title||!url){toast('Title and URL required','error');return;}
-        let finalUrl=url.startsWith('http')?url:'https://'+url;
-        if(allLinks.some(l=>l.url===finalUrl)){toast('Already shared','error');return;}
-        const cats=selectedCategories.length>0?selectedCategories:[detectCategoryFromText(title+' '+desc)[0]||'General'];
-        let screenshot='',previewDesc=desc;
-        try{const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(finalUrl)}&screenshot=true`);const d=await r.json();if(d.status==='success'&&d.data){screenshot=d.data.screenshot?.url||d.data.image?.url||'';previewDesc=desc||d.data.description||'';}}catch(e){}
-        const link={title:title||getDomain(finalUrl),url:finalUrl,description:previewDesc,categories:cats,category:cats[0],screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0};
-        link.trustScore=calcTrust(link);
-        await db.collection('links').add(link);
-        if(currentUser) await db.collection('users').doc(currentUser.uid).update({linkCount:firebase.firestore.FieldValue.increment(1)});
-        toast('Link shared!','success');closeModal('shareModal');
-        $('#shareUrl').value='';$('#shareTitle').value='';$('#shareDesc').value='';selectedCategories=[];renderSelectedCategories();$('#previewInline').style.display='none';
-        fetchLinks();
-    }
-
-    async function voteLink(linkId,type){
-        if(!currentUser){toast('Sign in to vote','error');openAuth('signin');return;}
-        const ref=db.collection('links').doc(linkId),doc=await ref.get();if(!doc.exists) return;
-        const link=doc.data(),votes=link.votes||{};let upD=0,downD=0;
-        if(type==='up'){if(votes[currentUser.uid]==='up'){delete votes[currentUser.uid];upD=-1;}else{if(votes[currentUser.uid]==='down') downD=-1;votes[currentUser.uid]='up';upD=1;}}
-        else{if(votes[currentUser.uid]==='down'){delete votes[currentUser.uid];downD=-1;}else{if(votes[currentUser.uid]==='up') upD=-1;votes[currentUser.uid]='down';downD=1;}}
-        await ref.update({votes,upvotes:firebase.firestore.FieldValue.increment(upD),downvotes:firebase.firestore.FieldValue.increment(downD)});fetchLinks();
-    }
-
-    async function addComment(linkId,text){
-        if(!currentUser){toast('Sign in to comment','error');return;}if(!text.trim()) return;
-        const ref=db.collection('links').doc(linkId),doc=await ref.get();if(!doc.exists) return;
-        const comments=[...(doc.data().comments||[]),{author:currentUser.username||'anon',authorId:currentUser.uid,text:text.trim(),timestamp:Date.now()}];
-        await ref.update({comments});fetchLinks();renderCommentSidebar(linkId);
-    }
-
-    // ============ COMMENT SIDEBAR ============
-    function openCommentSidebar(linkId) {
-        currentCommentLinkId=linkId;renderCommentSidebar(linkId);
-        $('#commentOverlay').classList.add('active');$('#commentSidebar').classList.add('active');
-    }
-    function closeCommentSidebar(){$('#commentOverlay').classList.remove('active');$('#commentSidebar').classList.remove('active');currentCommentLinkId=null;}
-    function renderCommentSidebar(linkId){
-        const l=allLinks.find(x=>x.id===linkId);if(!l) return;
-        const comments=(l.comments||[]).map(c=>`<div class="comment-item"><span class="comment-author">@${esc(c.author)}</span> <span class="comment-time">${timeAgo(c.timestamp)}</span><p style="margin-top:0.25rem;">${esc(c.text)}</p></div>`).join('');
-        $('#commentList').innerHTML=comments||'<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No comments yet</p>';
-    }
-
-    function postCommentFromSidebar(){
-        if(!currentCommentLinkId) return;
-        const t=$('#commentInput').value.trim();if(t){addComment(currentCommentLinkId,t);$('#commentInput').value='';}
-    }
+    function openCommentSidebar(linkId){commentLinkId=linkId;renderCommentSidebar(linkId);$('#commentOverlay').classList.add('active');$('#commentSidebar').classList.add('active')}
+    function closeCommentSidebar(){$('#commentOverlay').classList.remove('active');$('#commentSidebar').classList.remove('active');commentLinkId=null}
+    function renderCommentSidebar(linkId){const l=allLinks.find(x=>x.id===linkId);if(!l)return;$('#commentList').innerHTML=(l.comments||[]).map(c=>`<div class="comment-item"><span class="comment-author">@${esc(c.author)}</span> <span class="comment-time">${timeAgo(c.timestamp)}</span><p style="margin-top:0.25rem;">${esc(c.text)}</p></div>`).join('')||'<p style="color:var(--text-tertiary);text-align:center;padding:2rem;">No comments yet</p>'}
+    function postComment(){if(!commentLinkId)return;const t=$('#commentInput').value.trim();if(t){addComment(commentLinkId,t);$('#commentInput').value=''}}
 
     // ============ SAVE ============
-    async function openSaveModal(linkId){
-        if(!currentUser){toast('Sign in to save','error');openAuth('signin');return;}
-        selectedLinkForSave=linkId;selectedFolderForSave='DEFAULT';
-        const snap=await db.collection('users').doc(currentUser.uid).collection('folders').get();
-        let folders=snap.docs.map(d=>({id:d.id,...d.data()}));
-        if(!folders.some(f=>f.name==='DEFAULT')){await db.collection('users').doc(currentUser.uid).collection('folders').doc('DEFAULT').set({name:'DEFAULT',visibility:'public',createdAt:Date.now()});folders.push({id:'DEFAULT',name:'DEFAULT',visibility:'public'});}
-        $('#saveFolderList').innerHTML=folders.map(f=>`<div class="folder-item ${selectedFolderForSave===f.name?'selected':''}" onclick="selectSaveFolder('${esc(f.name)}')"><span>📁 ${esc(f.name)}</span><span class="folder-visibility ${f.visibility==='public'?'folder-public':'folder-private'}">${f.visibility}</span></div>`).join('');
-        openModal('saveModal');
-    }
-    function selectSaveFolder(name){selectedFolderForSave=name;$$('#saveFolderList .folder-item').forEach(i=>i.classList.remove('selected'));event.target.closest('.folder-item').classList.add('selected');}
-    async function confirmSave(){
-        if(!selectedLinkForSave||!selectedFolderForSave) return;
-        await db.collection('users').doc(currentUser.uid).collection('savedLinks').doc(selectedLinkForSave).set({linkId:selectedLinkForSave,folder:selectedFolderForSave,savedAt:Date.now()});
-        await db.collection('links').doc(selectedLinkForSave).update({saves:firebase.firestore.FieldValue.increment(1)});
-        toast(`Saved to "${selectedFolderForSave}"!`,'success');closeModal('saveModal');fetchLinks();
-    }
-    async function createSaveFolder(){
-        const name=$('#newSaveFolder').value.trim();if(!name){toast('Folder name required','error');return;}
-        const vis=$('#newSaveVisibility').value;
-        await db.collection('users').doc(currentUser.uid).collection('folders').doc(name).set({name,visibility:vis,createdAt:Date.now()});
-        toast(`Folder "${name}" created!`,'success');$('#newSaveFolder').value='';
-        openSaveModal(selectedLinkForSave);
-    }
+    async function openSaveModal(linkId){if(!currentUser){toast('Sign in to save','error');openAuth('signin');return}savedLinkForSave=linkId;selectedSaveFolder='DEFAULT';const snap=await db.collection('users').doc(currentUser.uid).collection('folders').get();let folders=snap.docs.map(d=>({id:d.id,...d.data()}));if(!folders.some(f=>f.name==='DEFAULT')){await db.collection('users').doc(currentUser.uid).collection('folders').doc('DEFAULT').set({name:'DEFAULT',visibility:'public',createdAt:Date.now()},);folders.unshift({id:'DEFAULT',name:'DEFAULT',visibility:'public'})}$('#saveFolderList').innerHTML=folders.map(f=>`<div class="folder-item ${selectedSaveFolder===f.name?'selected':''}" onclick="selectSaveFolder('${esc(f.name)}')"><span class="folder-icon">📁</span><div class="folder-info"><div class="folder-name">${esc(f.name)}</div><div class="folder-vis">${f.visibility||'public'}</div></div></div>`).join('');openModal('saveModal')}
+    function selectSaveFolder(name){selectedSaveFolder=name;$$('#saveFolderList .folder-item').forEach(i=>i.classList.remove('selected'));event.target.closest('.folder-item').classList.add('selected')}
+    async function confirmSave(){if(!savedLinkForSave||!selectedSaveFolder)return;await db.collection('users').doc(currentUser.uid).collection('savedLinks').doc(savedLinkForSave).set({linkId:savedLinkForSave,folder:selectedSaveFolder,savedAt:Date.now()});await db.collection('links').doc(savedLinkForSave).update({saves:firebase.firestore.FieldValue.increment(1)});toast(`Saved to "${selectedSaveFolder}"!`,'success');closeModal('saveModal');fetchLinks();loadSavedCount()}
 
-    // ============ RENDER ============
-    function getFiltered(){
-        let f=[...allLinks];
-        if(currentCategory!=='all') f=f.filter(l=>(l.categories||[l.category||'general']).some(c=>c.toLowerCase()===currentCategory.toLowerCase()));
-        const sq=$('#searchInput')?.value?.toLowerCase().trim()||'';
-        if(sq) f=f.filter(l=>(l.title||'').toLowerCase().includes(sq)||(l.description||'').toLowerCase().includes(sq)||(l.ownerName||'').toLowerCase().includes(sq));
-        if(currentFeed==='feed'&&currentUser) {
-            const followingIds=[]; f=f.filter(l=>followingIds.includes(l.ownerId));
-            f.sort((a,b)=>(calcTrend(b)*0.7+(b.createdAt||0)*0.3/1e13)-(calcTrend(a)*0.7+(a.createdAt||0)*0.3/1e13));
-        } else {
-            switch(currentFeed){case 'trending':f.sort((a,b)=>calcTrend(b)-calcTrend(a));break;case 'new':f.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));break;case 'top':f.sort((a,b)=>(b.upvotes-b.downvotes)-(a.upvotes-a.downvotes));break;}
-        }
-        return f;
-    }
+    // ============ RENDER FEED ============
+    function getFiltered(){let f=[...allLinks];if(currentCategory!=='all'){const catLower=currentCategory.toLowerCase();f=f.filter(l=>{const cats=(l.categories||[l.category||'general']).map(c=>c.toLowerCase());const subs=(ALL_SUBCATEGORIES[currentCategory]||[]).map(s=>s.toLowerCase());return cats.some(c=>c===catLower||subs.includes(c))})}const sq=$('#searchInput')?.value?.toLowerCase().trim()||'';if(sq)f=f.filter(l=>(l.title||'').toLowerCase().includes(sq)||(l.description||'').toLowerCase().includes(sq)||(l.ownerName||'').toLowerCase().includes(sq));switch(currentFeed){case'feed':f.sort((a,b)=>calcFeedScore(b)-calcFeedScore(a));break;case'trending':f.sort((a,b)=>calcTrend(b)-calcTrend(a));break;case'new':f.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));break;case'top':f.sort((a,b)=>calcTop(b)-calcTop(a));break}return f}
 
-    function renderFeed(){
-        const filtered=getFiltered(),tp=Math.ceil(filtered.length/LINKS_PER_PAGE);
-        if(currentPage>tp&&tp>0) currentPage=tp;if(currentPage<1) currentPage=1;
-        const pag=filtered.slice((currentPage-1)*LINKS_PER_PAGE,currentPage*LINKS_PER_PAGE);
-        const feed=$('#linksFeed');
-        if(pag.length===0){feed.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔗</div><div class="empty-state-title">No links found</div><div class="empty-state-text">Be the first to share something!</div></div>`;renderPagination(0);return;}
-        feed.innerHTML=pag.map(l=>{
-            const net=(l.upvotes||0)-(l.downvotes||0),uv=currentUser&&l.votes?l.votes[currentUser.uid]:null;
-            const tc=l.trustScore>=70?'trust-high':l.trustScore>=40?'trust-medium':'trust-low';
-            const cats=l.categories||[l.category||'general'];
-            return`
+    function renderFeed(){const filtered=getFiltered(),tp=Math.ceil(filtered.length/20);if(currentPage>tp&&tp>0)currentPage=tp;if(currentPage<1)currentPage=1;const pag=filtered.slice((currentPage-1)*20,currentPage*20);const feed=$('#linksFeed');if(pag.length===0){feed.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔗</div><div class="empty-state-title">No links found</div><div class="empty-state-text">Be the first to share something!</div></div>`;renderPagination(0);return}feed.innerHTML=pag.map(l=>{const net=(l.upvotes||0)-(l.downvotes||0),uv=currentUser&&l.votes?l.votes[currentUser.uid]:null;const tc=l.trustScore>=70?'trust-high':l.trustScore>=40?'trust-medium':'trust-low';const cats=l.categories||[l.category||'general'];const isFollowing=followingUsers.has(l.ownerId);const canFollow=currentUser&&l.ownerId!==currentUser.uid&&l.ownerId!=='anonymous';const screenshotUrl=l.screenshot||l.previewImage||'';return`
             <div class="link-card">
-                <div class="card-header"><div class="card-avatar" style="background:${userColor(l.ownerName)};">${esc((l.ownerName||'A')[0].toUpperCase())}</div><div class="card-meta"><div class="card-author">${esc(l.ownerName||'Anonymous')}</div><div class="card-subtitle"><span><img src="${favicon(l.url||'')}" alt="" onerror="this.style.display='none'" width="12" height="12" style="display:inline;"> ${esc(getDomain(l.url||''))}</span><span>·</span><span>${timeAgo(l.createdAt)}</span></div></div></div>
-                <div class="card-title">${esc(l.title)}</div>
-                ${l.description?`<div class="card-description">${esc(l.description)}</div>`:''}
-                ${l.screenshot?`<div class="card-screenshot"><img src="${esc(l.screenshot)}" alt="Screenshot preview" loading="lazy" onerror="this.style.display='none'"></div>`:''}
-                <div class="card-tags">${cats.map(c=>`<span class="card-tag ${getCatClass(c)}">${esc(c)}</span>`).join('')}<span class="card-trust ${tc}">🛡 ${l.trustScore}%</span></div>
-                <div class="card-actions">
-                    <button class="card-action-btn ${uv==='up'?'voted':''}" onclick="event.stopPropagation();voteLink('${l.id}','up')"><span class="iconify" data-icon="${uv==='up'?'ph:arrow-fat-up-fill':'ph:arrow-fat-up'}" data-width="18"></span> ${fmtNum(net)}</button>
-                    <button class="card-action-btn ${uv==='down'?'voted':''}" onclick="event.stopPropagation();voteLink('${l.id}','down')"><span class="iconify" data-icon="${uv==='down'?'ph:arrow-fat-down-fill':'ph:arrow-fat-down'}" data-width="18"></span></button>
-                    <button class="card-action-btn" onclick="event.stopPropagation();openCommentSidebar('${l.id}')"><span class="iconify" data-icon="ph:chat-centered-text" data-width="18"></span> ${fmtNum((l.comments||[]).length)}</button>
-                    <button class="card-action-btn" onclick="event.stopPropagation();openSaveModal('${l.id}')"><span class="iconify" data-icon="ph:bookmark-simple" data-width="18"></span> Save</button>
-                    <button class="card-action-btn" onclick="event.stopPropagation();window.open('${esc(l.url)}','_blank')"><span class="iconify" data-icon="ph:arrow-square-out" data-width="18"></span></button>
+                <div class="link-card-main">
+                    <div class="card-header">
+                        <div class="card-avatar" style="background:${userColor(l.ownerName)};" onclick="event.stopPropagation();viewProfile('${l.ownerId}','${esc(l.ownerName||'')}')">${(l.ownerName||'A')[0].toUpperCase()}</div>
+                        <div class="card-meta">
+                            <div class="card-author" onclick="event.stopPropagation();viewProfile('${l.ownerId}','${esc(l.ownerName||'')}')">${esc(l.ownerName||'Anonymous')}</div>
+                            <div class="card-subtitle"><span><img src="${favicon(l.url||'')}" alt="" onerror="this.style.display='none'" width="12" height="12" style="display:inline;"> ${esc(getDomain(l.url||''))}</span><span>·</span><span>${timeAgo(l.createdAt)}</span></div>
+                        </div>
+                        ${canFollow?`<button class="card-follow-btn ${isFollowing?'following':''}" onclick="event.stopPropagation();toggleFollow('${l.ownerId}','${esc(l.ownerName||'')}')">${isFollowing?'Following':'+ Follow'}</button>`:''}
+                    </div>
+                    <div class="card-title">${esc(l.title)}</div>
+                    ${l.description?`<div class="card-description">${esc(l.description)}</div>`:''}
+                    <div class="card-tags">${cats.map(c=>`<span class="card-tag ${getCatClass(c)}">${esc(c)}</span>`).join('')}<span class="card-trust ${tc}">🛡 ${l.trustScore}%</span></div>
+                    <div class="card-actions">
+                        <button class="card-action-btn ${uv==='up'?'voted':''}" onclick="event.stopPropagation();voteLink('${l.id}','up')"><span class="iconify" data-icon="${uv==='up'?'ph:arrow-fat-up-fill':'ph:arrow-fat-up'}" data-width="16"></span> ${fmtNum(net)}</button>
+                        <button class="card-action-btn ${uv==='down'?'voted':''}" onclick="event.stopPropagation();voteLink('${l.id}','down')"><span class="iconify" data-icon="${uv==='down'?'ph:arrow-fat-down-fill':'ph:arrow-fat-down'}" data-width="16"></span></button>
+                        <button class="card-action-btn" onclick="event.stopPropagation();openCommentSidebar('${l.id}')"><span class="iconify" data-icon="ph:chat-centered-text" data-width="16"></span> ${fmtNum((l.comments||[]).length)}</button>
+                        <button class="card-action-btn" onclick="event.stopPropagation();openSaveModal('${l.id}')"><span class="iconify" data-icon="ph:bookmark-simple" data-width="16"></span> Save</button>
+                        <button class="card-action-btn" onclick="event.stopPropagation();window.open('${esc(l.url)}','_blank')"><span class="iconify" data-icon="ph:arrow-square-out" data-width="16"></span></button>
+                    </div>
                 </div>
-            </div>`;
-        }).join('');
-        window.Iconify?.scan?.(feed);renderPagination(tp);
-    }
+                <div class="link-card-screenshot">${screenshotUrl?`<img src="${esc(screenshotUrl)}" alt="Preview" loading="lazy" onerror="this.innerHTML='<span class=\\'no-screenshot\\'>🔗</span>'">`:'<span class="no-screenshot">🔗</span>'}</div>
+            </div>`}).join('');window.Iconify?.scan?.(feed);renderPagination(tp)}
 
-    function renderPagination(tp){const p=$('#pagination');if(tp<=1){p.innerHTML='';return;}let h='';for(let i=1;i<=tp;i++) h+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;p.innerHTML=h;}
-    function goPage(pg){const tp=Math.ceil(getFiltered().length/LINKS_PER_PAGE);if(pg<1||pg>tp) return;currentPage=pg;renderFeed();window.scrollTo({top:0,behavior:'smooth'});}
-
-    function updateStats(){
-        $('#statTotalLinks').textContent=fmtNum(allLinks.length);
-        const today=Date.now()-86400000;
-        $('#statToday').textContent=fmtNum(allLinks.filter(l=>(l.createdAt||0)>today).length);
-        $('#statUsers').textContent=fmtNum(new Set(allLinks.map(l=>l.ownerId).filter(Boolean)).size);
-    }
-
-    function filterCategory(cat){currentCategory=cat;currentPage=1;$$('.sidebar-link').forEach(l=>l.classList.remove('active'));const el=$(`.sidebar-link[data-category="${cat}"]`);if(el) el.classList.add('active');renderFeed();}
+    function renderPagination(tp){const p=$('#pagination');if(tp<=1){p.innerHTML='';return}let h='';for(let i=1;i<=tp;i++)h+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;p.innerHTML=h}
+    function goPage(pg){const tp=Math.ceil(getFiltered().length/20);if(pg<1||pg>tp)return;currentPage=pg;renderFeed();window.scrollTo({top:0,behavior:'smooth'})}
+    function updateStats(){$('#statTotalLinks').textContent=fmtNum(allLinks.length);$('#statToday').textContent=fmtNum(allLinks.filter(l=>(l.createdAt||0)>Date.now()-86400000).length)}
+    function filterCategory(cat){currentCategory=cat;currentPage=1;$$('.sidebar-link').forEach(l=>l.classList.remove('active'));const el=$(`.sidebar-link[data-category="${cat}"]`);if(el)el.classList.add('active');renderFeed()}
+    function resetToFeed(){currentFeed='feed';currentCategory='all';currentPage=1;$('#searchInput').value='';$$('#feedSort .sort-btn').forEach(x=>x.classList.remove('active'));$('#feedSort').querySelector('[data-feed="feed"]').classList.add('active');$$('.sidebar-link').forEach(l=>l.classList.remove('active'));$('.sidebar-link[data-category="all"]')?.classList.add('active');renderFeed()}
+    function viewProfile(uid,uname){if(uid==='anonymous'||!uid){toast('Cannot view anonymous profile','error');return}window.open(`profile.html?uid=${uid}`,'_blank')}
 
     // ============ EVENT LISTENERS ============
-    function setup(){
-        const savedTheme=localStorage.getItem('ls-theme')||'light';setTheme(savedTheme);
-        $('#themeToggle').addEventListener('click',toggleTheme);
-        $('#shareBtn').addEventListener('click',()=>{openModal('shareModal');$('#shareUrl').focus();});
-        $('#shareInputBtn').addEventListener('click',()=>{openModal('shareModal');$('#shareUrl').focus();});
-        $('#quickShareBtn').addEventListener('click',()=>{openModal('shareModal');$('#shareUrl').focus();});
-        $('#shareModalClose').addEventListener('click',()=>closeModal('shareModal'));
-        $('#shareModal').addEventListener('click',e=>{if(e.target===$('#shareModal')) closeModal('shareModal');});
-        $('#confirmShare').addEventListener('click',addLink);
-        $('#categorySearch').addEventListener('focus',showCategoryDropdown);
-        $('#categorySearch').addEventListener('blur',hideCategoryDropdown);
-        $('#categorySearch').addEventListener('input',()=>{filterCategoryDropdown();$('#categoryDropdown').classList.add('show');});
-        $('#shareDesc').addEventListener('input',updateRecommendations);
-        $('#shareTitle').addEventListener('input',updateRecommendations);
-        $('#shareUrl').addEventListener('blur',fetchLinkPreview);
-        $('#authModalClose').addEventListener('click',()=>closeModal('authModal'));
-        $('#authModal').addEventListener('click',e=>{if(e.target===$('#authModal')) closeModal('authModal');});
-        $('#authSwitch').addEventListener('click',e=>{e.preventDefault();openAuth(authMode==='signin'?'signup':'signin');});
-        $('#authSubmit').addEventListener('click',handleAuth);
-        ['authEmail','authPassword','authUsername'].forEach(id=>{const el=$(`#${id}`);if(el) el.addEventListener('keypress',e=>{if(e.key==='Enter') handleAuth();});});
-        $('#searchInput').addEventListener('input',()=>{currentPage=1;renderFeed();});
-        $$('#feedSort .sort-btn').forEach(b=>b.addEventListener('click',()=>{$$('#feedSort .sort-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentFeed=b.dataset.feed;currentPage=1;renderFeed();}));
-        $('#commentClose').addEventListener('click',closeCommentSidebar);
-        $('#commentOverlay').addEventListener('click',closeCommentSidebar);
-        $('#commentPostBtn').addEventListener('click',postCommentFromSidebar);
-        $('#commentInput').addEventListener('keypress',e=>{if(e.key==='Enter') postCommentFromSidebar();});
-        $('#profileClose').addEventListener('click',closeProfile);
-        $('#profileOverlay').addEventListener('click',closeProfile);
-        $('#updateUsernameBtn').addEventListener('click',updateUsername);
-        $('#createFolderBtn').addEventListener('click',createFolder);
-        $('#logoutBtn').addEventListener('click',signOut);
-        $('#saveModalClose').addEventListener('click',()=>closeModal('saveModal'));
-        $('#saveModal').addEventListener('click',e=>{if(e.target===$('#saveModal')) closeModal('saveModal');});
-        $('#confirmSave').addEventListener('click',confirmSave);
-        $('#createSaveFolderBtn').addEventListener('click',createSaveFolder);
-    }
+    function setup(){const savedTheme=localStorage.getItem('ls-theme')||'light';setTheme(savedTheme);$('#themeToggle').addEventListener('click',toggleTheme);$('#shareBtn').addEventListener('click',()=>window.open('add-link.html','_blank'));$('#shareInputBtn').addEventListener('click',()=>window.open('add-link.html','_blank'));$('#quickShareBtn').addEventListener('click',()=>window.open('add-link.html','_blank'));$('#authModalClose').addEventListener('click',()=>closeModal('authModal'));$('#authModal').addEventListener('click',e=>{if(e.target===$('#authModal'))closeModal('authModal')});$('#authSwitch').addEventListener('click',e=>{e.preventDefault();openAuth(authMode==='signin'?'signup':'signin')});$('#authSubmit').addEventListener('click',handleAuth);['authEmail','authPassword','authUsername'].forEach(id=>{const el=$(`#${id}`);if(el)el.addEventListener('keypress',e=>{if(e.key==='Enter')handleAuth()})});$('#searchInput').addEventListener('input',()=>{currentPage=1;renderFeed()});$$('#feedSort .sort-btn').forEach(b=>b.addEventListener('click',()=>{$$('#feedSort .sort-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentFeed=b.dataset.feed;currentPage=1;renderFeed()}));$('#commentClose').addEventListener('click',closeCommentSidebar);$('#commentOverlay').addEventListener('click',closeCommentSidebar);$('#commentPostBtn').addEventListener('click',postComment);$('#commentInput').addEventListener('keypress',e=>{if(e.key==='Enter')postComment()});$('#profileClose').addEventListener('click',closeProfile);$('#profileOverlay').addEventListener('click',closeProfile);$('#logoutBtn').addEventListener('click',signOut);$('#subPanelBack').addEventListener('click',closeSubPanel);$('#subPanelOverlay').addEventListener('click',closeSubPanel);$('#saveModalClose').addEventListener('click',()=>closeModal('saveModal'));$('#saveModal').addEventListener('click',e=>{if(e.target===$('#saveModal'))closeModal('saveModal')});$('#confirmSave').addEventListener('click',confirmSave);setInterval(()=>{if(allLinks.length>0)$('#statToday').textContent=fmtNum(allLinks.filter(l=>(l.createdAt||0)>Date.now()-86400000).length)},30000)}
 
-    auth.onAuthStateChanged(async user=>{
-        if(user){const doc=await db.collection('users').doc(user.uid).get();currentUser=doc.exists?{uid:user.uid,...doc.data()}:{uid:user.uid,username:user.email?.split('@')[0]||'user',email:user.email||'',linkCount:0,karma:0};}
-        else currentUser=null;
-        renderAuth();fetchLinks();
-    });
-
-    document.addEventListener('DOMContentLoaded',()=>{setup();renderAuth();fetchLinks();});
-
-    // ============ REALTIME STATS UPDATE ============
-    setInterval(()=>{if(allLinks.length>0){const today=Date.now()-86400000;$('#statToday').textContent=fmtNum(allLinks.filter(l=>(l.createdAt||0)>today).length);}},30000);
+    auth.onAuthStateChanged(async user=>{if(user){const doc=await db.collection('users').doc(user.uid).get();currentUser=doc.exists?{uid:user.uid,...doc.data()}:{uid:user.uid,username:user.email?.split('@')[0]||'user',email:user.email||'',accentColor:userColor(user.email?.split('@')[0]||'user')}}else currentUser=null;renderAuth();fetchLinks()});
+    document.addEventListener('DOMContentLoaded',()=>{setup();renderAuth();fetchLinks()});
     </script>
-    <style>@keyframes spin{to{transform:rotate(360deg);}}</style>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </body>
 </html>
