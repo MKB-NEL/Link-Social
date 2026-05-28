@@ -62,10 +62,7 @@
         .url-input-wrap .url-paste-btn:hover{background:var(--primary-light);color:var(--primary)}
 
         .url-status{display:flex;align-items:center;gap:0.5rem;margin-top:0.4rem;font-size:0.75rem;font-weight:600;min-height:1.25rem}
-        .url-status.duplicate{color:var(--warning)}
-        .url-status.unique{color:var(--success)}
-        .url-status.error{color:var(--danger)}
-        .url-status.checking{color:var(--info)}
+        .url-status.duplicate{color:var(--warning)}.url-status.unique{color:var(--success)}.url-status.error{color:var(--danger)}.url-status.checking{color:var(--info)}
 
         .form-input,.form-textarea{width:100%;padding:0.8rem 1rem;border:2px solid var(--border);border-radius:var(--radius-xl);font-size:0.9rem;background:var(--bg-input);color:var(--text-primary);outline:none;font-family:var(--font-family);transition:all var(--transition-fast)}
         .form-input:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(108,71,255,0.08);background:var(--bg-surface)}
@@ -103,11 +100,8 @@
         .trust-shields{display:flex;gap:0.3rem;margin-bottom:0.6rem}
         .trust-shield{font-size:1.6rem;transition:all 0.3s ease;animation:shieldFill 0.4s ease-out backwards}
         .trust-shield:nth-child(1){animation-delay:0.05s}.trust-shield:nth-child(2){animation-delay:0.15s}.trust-shield:nth-child(3){animation-delay:0.25s}.trust-shield:nth-child(4){animation-delay:0.35s}.trust-shield:nth-child(5){animation-delay:0.45s}
-        .trust-shield.filled-green{color:#10b981}
-        .trust-shield.filled-orange{color:#f59e0b}
-        .trust-shield.filled-red{color:#ef4444}
-        .trust-shield.empty{color:#d1d5db}
-        .dark .trust-shield.empty{color:#374151}
+        .trust-shield.filled-green{color:#10b981}.trust-shield.filled-orange{color:#f59e0b}.trust-shield.filled-red{color:#ef4444}
+        .trust-shield.empty{color:#d1d5db}.dark .trust-shield.empty{color:#374151}
         .trust-summary-text{font-size:0.8rem;font-weight:600;color:var(--text-secondary)}
 
         .back-link{display:inline-flex;align-items:center;gap:0.35rem;color:var(--text-tertiary);font-size:0.8125rem;font-weight:600;margin-bottom:1.5rem;cursor:pointer;transition:all var(--transition-fast);text-decoration:none}
@@ -118,6 +112,14 @@
         .loading-dots{display:inline-flex;gap:3px}.loading-dots span{width:5px;height:5px;border-radius:50%;background:var(--primary);animation:pulse 1.4s infinite}.loading-dots span:nth-child(2){animation-delay:0.2s}.loading-dots span:nth-child(3){animation-delay:0.4s}
         .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);padding:0.8rem 1.5rem;border-radius:var(--radius-lg);font-size:0.85rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:100;animation:slideIn 0.3s ease-out}
         .toast.success{background:var(--success);color:#fff}.toast.error{background:var(--danger);color:#fff}.toast.info{background:var(--primary);color:#fff}
+
+        /* Duplicate Overlay Modal */
+        .duplicate-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:all var(--transition-base)}
+        .duplicate-overlay.active{opacity:1;visibility:visible}
+        .duplicate-modal{background:var(--bg-surface);border-radius:var(--radius-2xl);padding:2rem;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.3);animation:fadeInUp 0.3s ease-out}
+        .duplicate-modal h2{font-size:1.3rem;font-weight:800;margin-bottom:0.5rem;color:var(--danger)}
+        .duplicate-modal p{color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.5}
+        .duplicate-modal .existing-link{background:var(--bg-hover);border-radius:var(--radius-lg);padding:0.75rem 1rem;margin-bottom:1.25rem;text-align:left;font-size:0.85rem;word-break:break-all;color:var(--primary)}
 
         @media(max-width:768px){.main-container{flex-direction:column}.preview-panel{width:100%;position:static}}
         @media(max-width:480px){.form-panel{padding:1.25rem}.preview-panel{padding:1rem}.url-input-wrap .url-paste-btn{padding:0 0.6rem;font-size:0.7rem}.trust-score-number{font-size:2rem}.trust-shield{font-size:1.3rem}}
@@ -132,319 +134,208 @@
         <div class="form-panel">
             <a class="back-link" href="index.html"><span class="iconify" data-icon="ph:arrow-left" data-width="16"></span> Back to feed</a>
             <div class="header-row">
-                <div class="header-left">
-                    <div class="logo-icon"></div>
-                    <h1>Share a Link</h1>
-                </div>
-                <div class="user-indicator" id="userIndicator">
-                    <div class="user-dot" id="userDot" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">?</div>
-                    <span id="userName">Loading...</span>
-                </div>
+                <div class="header-left"><div class="logo-icon"></div><h1>Share a Link</h1></div>
+                <div class="user-indicator" id="userIndicator"><div class="user-dot" id="userDot" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">?</div><span id="userName">Loading...</span></div>
             </div>
             <p class="subtitle">Curate the web. Share something valuable with the community.</p>
 
-            <div class="form-section">
-                <label class="form-label">URL <span class="required">*</span></label>
-                <div class="url-input-wrap" id="urlInputWrap">
-                    <span class="url-icon"><span class="iconify" data-icon="ph:link-simple-bold" data-width="20"></span></span>
-                    <input type="url" id="shareUrl" placeholder="example.com/amazing-article" oninput="handleUrlInput()" autofocus>
-                    <button class="url-paste-btn" onclick="pasteFromClipboard()"><span class="iconify" data-icon="ph:clipboard-text" data-width="16"></span> Paste</button>
-                </div>
-                <div class="url-status" id="urlStatus"></div>
-            </div>
-            <div class="form-section">
-                <label class="form-label">Title <span class="required">*</span> <span class="auto-badge">auto-fill</span></label>
-                <input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()">
-            </div>
-            <div class="form-section">
-                <label class="form-label">Description <span class="auto-badge">auto-fill</span></label>
-                <textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing? Add context..." oninput="onContentChange()"></textarea>
-            </div>
-
-            <div class="auto-cat-display" id="autoCatDisplay" style="display:none;">
-                <span class="cat-emoji" id="catEmoji">🏷️</span>
-                <span>Category: <strong id="detectedCatText">—</strong></span>
-            </div>
-
-            <div class="trust-box" id="trustBox" style="display:none;">
-                <div class="trust-box-top">
-                    <div class="trust-score-row">
-                        <span class="trust-score-number high" id="trustScoreNumber">—</span>
-                        <span class="trust-percent">/100</span>
-                    </div>
-                </div>
-                <div class="trust-shields" id="trustShields">
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                </div>
-                <div class="trust-summary-text" id="trustSummaryText">Enter a URL to analyze safety</div>
-            </div>
-
-            <button class="btn btn-primary" id="publishBtn" onclick="publishLink()">
-                <span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span>
-                Publish to LinkSocial
-            </button>
+            <div class="form-section"><label class="form-label">URL <span class="required">*</span></label><div class="url-input-wrap" id="urlInputWrap"><span class="url-icon"><span class="iconify" data-icon="ph:link-simple-bold" data-width="20"></span></span><input type="url" id="shareUrl" placeholder="example.com/amazing-article" oninput="handleUrlInput()" autofocus><button class="url-paste-btn" onclick="pasteFromClipboard()"><span class="iconify" data-icon="ph:clipboard-text" data-width="16"></span> Paste</button></div><div class="url-status" id="urlStatus"></div></div>
+            <div class="form-section"><label class="form-label">Title <span class="required">*</span> <span class="auto-badge">auto-fill</span></label><input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()"></div>
+            <div class="form-section"><label class="form-label">Description <span class="auto-badge">auto-fill</span></label><textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing? Add context..." oninput="onContentChange()"></textarea></div>
+            <div class="auto-cat-display" id="autoCatDisplay" style="display:none;"><span class="cat-emoji" id="catEmoji">🏷️</span><span>Category: <strong id="detectedCatText">—</strong></span></div>
+            <div class="trust-box" id="trustBox" style="display:none;"><div class="trust-box-top"><div class="trust-score-row"><span class="trust-score-number high" id="trustScoreNumber">—</span><span class="trust-percent">/100</span></div></div><div class="trust-shields" id="trustShields"><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span></div><div class="trust-summary-text" id="trustSummaryText">Enter a URL to analyze safety</div></div>
+            <button class="btn btn-primary" id="publishBtn" onclick="handlePublish()"><span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span>Publish to LinkSocial</button>
         </div>
+        <div class="preview-panel"><div class="preview-panel-title"><span class="iconify" data-icon="ph:eye" data-width="16"></span> Live Preview</div><div class="preview-placeholder" id="previewPlaceholder"><div class="preview-placeholder-icon">🔗</div><p style="font-weight:600;font-size:0.9rem;">No preview yet</p><p style="font-size:0.8rem;">Enter a URL to see a live preview</p></div><div id="previewContent" style="display:none;"></div></div>
+    </div>
 
-        <div class="preview-panel">
-            <div class="preview-panel-title"><span class="iconify" data-icon="ph:eye" data-width="16"></span> Live Preview</div>
-            <div class="preview-placeholder" id="previewPlaceholder">
-                <div class="preview-placeholder-icon">🔗</div>
-                <p style="font-weight:600;font-size:0.9rem;margin-bottom:0.25rem;">No preview yet</p>
-                <p style="font-size:0.8rem;">Enter a URL to see a live preview</p>
-            </div>
-            <div id="previewContent" style="display:none;"></div>
+    <!-- Duplicate Warning Modal -->
+    <div class="duplicate-overlay" id="duplicateOverlay">
+        <div class="duplicate-modal">
+            <span class="iconify" data-icon="ph:warning-circle" data-width="56" style="color:var(--warning);margin-bottom:0.5rem;"></span>
+            <h2>SORRY, IT ALREADY EXISTS!</h2>
+            <p>This link has already been shared on LinkSocial by another user. Please share something unique.</p>
+            <div class="existing-link" id="existingLinkDisplay"></div>
+            <button class="btn btn-primary" onclick="closeDuplicateModal()" style="width:100%;">OK, I'll share something else</button>
         </div>
     </div>
 
     <script>
-        const firebaseConfig={apiKey:"AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",authDomain:"joefootball-15e7a.firebaseapp.com",projectId:"joefootball-15e7a",storageBucket:"joefootball-15e7a.firebasestorage.app"};
-        firebase.initializeApp(firebaseConfig);const db=firebase.firestore();const auth=firebase.auth();
+        var firebaseConfig={apiKey:"AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",authDomain:"joefootball-15e7a.firebaseapp.com",projectId:"joefootball-15e7a",storageBucket:"joefootball-15e7a.firebasestorage.app"};
+        firebase.initializeApp(firebaseConfig);var db=firebase.firestore();var auth=firebase.auth();
 
-        let currentUser=null,previewData=null,debounceTimer=null,detectedCategory='',categoryData=null,trustScoreData=null,existingUrls=new Set(),duplicateCheckTimer=null,isUrlUnique=false,urlCheckInProgress=false;
+        var currentUser=null,previewData=null,debounceTimer=null,detectedCategory='',categoryData=null,trustScoreData=null,duplicateCheckTimer=null,isUrlUnique=false,allExistingUrls=[];
 
-        const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
-        const esc=s=>s?String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]):'';
-        const getDomain=u=>{try{return new URL(u).hostname.replace('www.','')}catch{return u}};
-        const faviconUrl=u=>{try{return`https://www.google.com/s2/favicons?domain=${new URL(u).hostname}&sz=32`}catch{return''}};
-        const userColor=u=>{let h=0;for(let i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return`hsl(${Math.abs(h%360)},50%,45%)`};
+        function $(s){return document.querySelector(s)}
+        function $$(s){return document.querySelectorAll(s)}
+        function esc(s){if(!s)return'';return String(s).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+        function getDomain(u){try{return new URL(u).hostname.replace('www.','')}catch(e){return u}}
+        function faviconUrl(u){try{return'https://www.google.com/s2/favicons?domain='+new URL(u).hostname+'&sz=32'}catch(e){return''}}
+        function userColor(u){var h=0;for(var i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return'hsl('+Math.abs(h%360)+',50%,45%)'}
 
         function normalizeUrl(url){
-            try{
-                let u=url.trim().toLowerCase();
-                if(!u.startsWith('http'))u='https://'+u;
-                const parsed=new URL(u);
-                let normalized=parsed.origin+parsed.pathname.replace(/\/+$/,'');
-                const skipParams=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','ref','source','ref_src','ref_url'];
-                const params=new URLSearchParams(parsed.search);
-                const importantParams=[];
-                for(const[key,value]of params){if(!skipParams.includes(key))importantParams.push(`${key}=${value}`)}
-                if(importantParams.length>0)normalized+='?'+importantParams.sort().join('&');
-                if(parsed.hash&&!parsed.hash.startsWith('#!'))normalized+=parsed.hash;
-                return normalized;
-            }catch(e){return url.trim().toLowerCase()}
+            try{var u=url.trim().toLowerCase();if(!u.startsWith('http'))u='https://'+u;var p=new URL(u);var n=p.hostname.replace(/^www\./,'')+p.pathname.replace(/\/+$/,'');var skip=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','ref','source','ref_src','ref_url'];var params=[];new URLSearchParams(p.search).forEach(function(v,k){if(skip.indexOf(k)===-1)params.push(k+'='+v)});params.sort();if(params.length)n+='?'+params.join('&');return n}catch(e){return url.trim().toLowerCase()}
         }
 
-        function isSameUrl(url1,url2){
-            try{
-                const n1=normalizeUrl(url1),n2=normalizeUrl(url2);
-                if(n1===n2)return true;
-                const p1=new URL(n1),p2=new URL(n2);
-                if(p1.hostname===p2.hostname&&p1.pathname===p2.pathname)return true;
-                const host1=p1.hostname.replace(/^www\./,''),host2=p2.hostname.replace(/^www\./,'');
-                if(host1===host2&&p1.pathname===p2.pathname)return true;
-                return false;
-            }catch(e){return url1.trim().toLowerCase()===url2.trim().toLowerCase()}
+        function isSameUrl(u1,u2){try{var n1=normalizeUrl(u1),n2=normalizeUrl(u2);if(n1===n2)return true;var p1=new URL(n1),p2=new URL(n2);if(p1.hostname.replace(/^www\./,'')===p2.hostname.replace(/^www\./,'')&&p1.pathname.replace(/\/+$/,'')===p2.pathname.replace(/\/+$/,''))return true;return false}catch(e){return u1.trim().toLowerCase()===u2.trim().toLowerCase()}}
+
+        async function loadAllExistingUrls(){
+            try{var snap=await db.collection('links').select('url','title','ownerName').get();allExistingUrls=[];snap.docs.forEach(function(d){var data=d.data();if(data.url)allExistingUrls.push({url:data.url,title:data.title||'Untitled',ownerName:data.ownerName||'Anonymous',normalized:normalizeUrl(data.url)})})}catch(e){allExistingUrls=[]}
         }
 
-        async function loadExistingUrls(){
-            try{
-                const snap=await db.collection('links').select('url').get();
-                existingUrls.clear();
-                snap.docs.forEach(d=>{const u=d.data().url;if(u)existingUrls.add(normalizeUrl(u))});
-            }catch(e){console.error('Error loading existing URLs:',e)}
-        }
-
-        async function checkUrlUniqueness(url){
-            if(!url||!url.startsWith('http')){isUrlUnique=false;return{unique:false,reason:'invalid'}}
-            const normalized=normalizeUrl(url);
-            if(existingUrls.size===0)await loadExistingUrls();
-            for(const existing of existingUrls){if(isSameUrl(normalized,existing)){isUrlUnique=false;return{unique:false,reason:'duplicate',existingUrl:existing}}}
-            isUrlUnique=true;return{unique:true,reason:'new'}
+        function checkUrlExists(url){
+            if(!url||!url.startsWith('http'))return null;
+            var norm=normalizeUrl(url);
+            for(var i=0;i<allExistingUrls.length;i++){var existing=allExistingUrls[i];if(existing.normalized===norm||isSameUrl(norm,existing.normalized)){return existing}}
+            return null;
         }
 
         function updateUrlStatus(result){
-            const status=$('#urlStatus'),wrap=$('#urlInputWrap');
-            if(!result||result.reason==='invalid'){
-                status.className='url-status';status.innerHTML='';wrap.classList.remove('error','duplicate','success');return
-            }
-            if(result.reason==='duplicate'){
-                status.className='url-status duplicate';
-                status.innerHTML=`<span class="iconify" data-icon="ph:warning-circle" data-width="14"></span> This link has already been shared on LinkSocial`;
-                wrap.classList.remove('error','success');wrap.classList.add('duplicate');
-            }else if(result.reason==='new'){
-                status.className='url-status unique';
-                status.innerHTML=`<span class="iconify" data-icon="ph:check-circle" data-width="14"></span> This link is unique — ready to share!`;
-                wrap.classList.remove('error','duplicate');wrap.classList.add('success');
-            }
-            window.Iconify?.scan?.(status);
+            var status=$('#urlStatus'),wrap=$('#urlInputWrap');
+            if(!result||result==='invalid'){status.className='url-status';status.innerHTML='';wrap.classList.remove('error','duplicate','success');return}
+            if(result==='duplicate'){status.className='url-status duplicate';status.innerHTML='<span class="iconify" data-icon="ph:warning-circle" data-width="14"></span> This link has already been shared on LinkSocial';wrap.classList.remove('error','success');wrap.classList.add('duplicate')}
+            else{status.className='url-status unique';status.innerHTML='<span class="iconify" data-icon="ph:check-circle" data-width="14"></span> This link is unique — ready to share!';wrap.classList.remove('error','duplicate');wrap.classList.add('success')}
+            window.Iconify.scan(status);
         }
 
         function clearUrlStatus(){
-            const status=$('#urlStatus'),wrap=$('#urlInputWrap');
-            status.className='url-status checking';
-            status.innerHTML=`<span class="iconify" data-icon="ph:spinner" data-width="14" style="animation:spin 0.8s linear infinite;"></span> Checking if this link exists...`;
-            wrap.classList.remove('error','duplicate','success');
-            window.Iconify?.scan?.(status);
+            var status=$('#urlStatus'),wrap=$('#urlInputWrap');status.className='url-status checking';status.innerHTML='<span class="iconify" data-icon="ph:spinner" data-width="14" style="animation:spin 0.8s linear infinite;"></span> Checking if this link exists...';wrap.classList.remove('error','duplicate','success');window.Iconify.scan(status);
         }
 
-        function toast(m,t='success'){const el=document.createElement('div');el.className=`toast ${t}`;el.textContent=m;document.body.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(10px)';el.style.transition='all 0.3s';setTimeout(()=>el.remove(),300)},3000)}
-        function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add(`theme-${t}`);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
+        function toast(m,t){t=t||'success';var el=document.createElement('div');el.className='toast '+t;el.textContent=m;document.body.appendChild(el);setTimeout(function(){el.style.opacity='0';el.style.transform='translateX(-50%) translateY(10px)';el.style.transition='all 0.3s';setTimeout(function(){el.remove()},300)},3000)}
+        function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add('theme-'+t);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
+
+        function showDuplicateModal(existingLink){
+            $('#existingLinkDisplay').textContent=(existingLink.title||'Untitled')+' — shared by @'+(existingLink.ownerName||'Anonymous');
+            $('#duplicateOverlay').classList.add('active');
+        }
+        function closeDuplicateModal(){$('#duplicateOverlay').classList.remove('active');$('#shareUrl').focus()}
 
         function updateUserIndicator(){
-            if(currentUser){
-                $('#userDot').style.background=currentUser.accentColor||userColor(currentUser.username);
-                $('#userDot').textContent=(currentUser.emoji||(currentUser.username||'U')[0].toUpperCase());
-                $('#userName').textContent=currentUser.username||'User';
-            }else{
-                $('#userDot').style.background='linear-gradient(135deg, var(--text-tertiary), var(--text-secondary))';
-                $('#userDot').textContent='?';$('#userName').textContent='Anonymous';
-            }
+            if(currentUser){$('#userDot').style.background=currentUser.accentColor||userColor(currentUser.username);$('#userDot').textContent=(currentUser.emoji||(currentUser.username||'U')[0].toUpperCase());$('#userName').textContent=currentUser.username||'User'}
+            else{$('#userDot').style.background='linear-gradient(135deg, var(--text-tertiary), var(--text-secondary))';$('#userDot').textContent='?';$('#userName').textContent='Anonymous'}
         }
 
-        async function pasteFromClipboard(){try{const text=await navigator.clipboard.readText();if(text&&(text.includes('http')||text.includes('www.'))){$('#shareUrl').value=text.trim();handleUrlInput()}}catch(e){}}
+        async function pasteFromClipboard(){try{var text=await navigator.clipboard.readText();if(text&&(text.indexOf('http')!==-1||text.indexOf('www.')!==-1)){$('#shareUrl').value=text.trim();handleUrlInput()}}catch(e){}}
 
         async function loadCategoryData(){
-            try{const resp=await fetch('categories.json');const data=await resp.json();categoryData=data.categories}
-            catch(e){categoryData=[{name:'General',icon:'📌',keywords:['general']}]}
+            try{var resp=await fetch('categories.json');var data=await resp.json();categoryData=data.categories}catch(e){categoryData=[{name:'General',icon:'📌',keywords:['general']}]}
         }
 
         function detectCategoryFromText(title,description,url){
             if(!categoryData)return{name:'General',icon:'📌',confidence:0};
-            const text=`${title||''} ${description||''} ${url||''}`.toLowerCase();
-            const domain=getDomain(url||'').toLowerCase();
-            let bestCat=categoryData[0],bestScore=0;
-            for(const cat of categoryData){let score=0;for(const kw of cat.keywords){if(text.includes(kw))score+=1;if((title||'').toLowerCase().includes(kw))score+=2;if(domain.includes(kw)||domain.includes(kw.replace(/\s+/g,'-')))score+=3}if(score>bestScore){bestScore=score;bestCat=cat;}}
+            var text=((title||'')+' '+(description||'')+' '+(url||'')).toLowerCase();var domain=getDomain(url||'').toLowerCase();var bestCat=categoryData[0],bestScore=0;
+            for(var i=0;i<categoryData.length;i++){var cat=categoryData[i];var score=0;for(var j=0;j<cat.keywords.length;j++){var kw=cat.keywords[j];if(text.indexOf(kw)!==-1)score+=1;if((title||'').toLowerCase().indexOf(kw)!==-1)score+=2;if(domain.indexOf(kw)!==-1)score+=3}if(score>bestScore){bestScore=score;bestCat=cat}}
             return{name:bestCat.name,icon:bestCat.icon||'📌',confidence:Math.min(99,Math.round(bestScore*5))};
         }
 
-        function onContentChange(){updateCategoryDisplay();}
+        function onContentChange(){updateCategoryDisplay()}
         function updateCategoryDisplay(){
-            const title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim(),url=$('#shareUrl').value.trim();
+            var title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim(),url=$('#shareUrl').value.trim();
             if(!title&&!desc&&!url){$('#autoCatDisplay').style.display='none';return}
-            const result=detectCategoryFromText(title,desc,url);detectedCategory=result.name;
-            $('#autoCatDisplay').style.display='flex';$('#catEmoji').textContent=result.icon;
-            $('#detectedCatText').textContent=`${result.name} (${result.confidence}% match)`;
+            var result=detectCategoryFromText(title,desc,url);detectedCategory=result.name;
+            $('#autoCatDisplay').style.display='flex';$('#catEmoji').textContent=result.icon;$('#detectedCatText').textContent=result.name+' ('+result.confidence+'% match)';
         }
 
-        const SCAM_KEYWORDS=['hack','crack','free money','verify account','click here','you won','claim now','act now','limited offer','congratulations','you have been selected','urgent','password reset','confirm your account','suspended','security alert','unusual activity','login attempt','prize','lottery','inheritance','wire transfer','western union','money gram','cash app','venmo','paypal','bitcoin giveaway','eth giveaway','airdrop','free crypto','double your','guaranteed return','risk free','secret method','loophole','exploit','cheat','generator','bot net','keygen','cracked','warez','torrent','pirate','malware','virus','trojan','spyware','adware','rootkit','backdoor','keylogger','ransomware','scam','fraud','fake','counterfeit','replica','knockoff'];
-        const SHORTENERS=['bit.ly','tinyurl.com','cutt.ly','ow.ly','is.gd','buff.ly','goo.gl','t.co','lnkd.in','shorte.st','rb.gy','tiny.cc','v.gd','kl.am','short.link'];
+        var SCAM_WORDS=['hack','crack','free money','verify account','click here','you won','claim now','prize','lottery','inheritance','wire transfer','bitcoin giveaway','free crypto','double your','guaranteed return','secret method','loophole','cheat','generator','keygen','cracked','warez','torrent','pirate','malware','virus','trojan','spyware','ransomware','scam','fraud'];
+        var SHORTENERS=['bit.ly','tinyurl.com','cutt.ly','ow.ly','is.gd','buff.ly','goo.gl','t.co','lnkd.in','shorte.st','rb.gy','tiny.cc'];
 
-        function validateURL(url){try{const u=new URL(url);return u.protocol==='http:'||u.protocol==='https:'}catch{return false}}
-        function checkHTTPS(url){return url.startsWith('https://')}
-        function scanScamKeywords(text){return SCAM_KEYWORDS.filter(k=>text.includes(k))}
-        function isShortened(url){const d=getDomain(url).toLowerCase();return SHORTENERS.some(s=>d===s||d.includes(s))}
-        function hasExcessiveParams(url){try{const p=new URL(url).searchParams;return p.toString().length>100}catch{return false}}
-        function hasIPAddress(url){const d=getDomain(url);return /^\d+\.\d+\.\d+\.\d+$/.test(d)}
-        function hasSuspiciousTLD(url){const d=getDomain(url).toLowerCase();const bad=['.xyz','.tk','.ml','.ga','.cf','.top','.info','.buzz','.click','.loan','.work','.date','.men','.win','.download','.party'];return bad.some(t=>d.endsWith(t))}
-        function hasSpecialChars(url){return /[<>{}|\\^~\[\]`]/.test(url)}
-
-        function calculateTrust(url,title,desc){
-            const text=`${title||''} ${desc||''} ${url||''}`.toLowerCase();let score=100;
-            if(!validateURL(url)){score=0;return{score:0,level:'danger',summary:'Invalid URL format'}}
-            if(!checkHTTPS(url))score-=25;
-            const scams=scanScamKeywords(text);if(scams.length>0)score-=Math.min(70,scams.length*14);
-            if(isShortened(url))score-=15;
-            if(hasExcessiveParams(url))score-=10;
-            if(hasIPAddress(url))score-=30;
-            if(hasSuspiciousTLD(url))score-=20;
-            if(hasSpecialChars(url))score-=15;
-            if(getDomain(url).split('.').length>4)score-=10;
-            score=Math.max(0,Math.min(100,score));
-            let level='trusted',summary='This link appears safe to visit';
-            if(score<60){level='warning';summary='Exercise caution with this link'}
-            if(score<40){level='danger';summary='This link may be dangerous'}
-            if(scams.length>0)summary=`${scams.length} suspicious terms detected`;
-            if(!checkHTTPS(url))summary='No HTTPS encryption - data not secure';
-            return{score,level,summary};
+        function calcTrust(url,title,desc,fetchFailed){
+            var text=((title||'')+' '+(desc||'')+' '+(url||'')).toLowerCase();var score=100;
+            try{new URL(url)}catch(e){return{score:0,level:'danger',summary:'Invalid URL format'}}
+            if(!url.startsWith('https://'))score-=25;
+            var scams=[];for(var i=0;i<SCAM_WORDS.length;i++){if(text.indexOf(SCAM_WORDS[i])!==-1)scams.push(SCAM_WORDS[i])}
+            if(scams.length>0)score-=Math.min(70,scams.length*14);
+            var d=getDomain(url).toLowerCase();for(var j=0;j<SHORTENERS.length;j++){if(d===SHORTENERS[j]||d.indexOf(SHORTENERS[j])!==-1){score-=15;break}}
+            if(/^\d+\.\d+\.\d+\.\d+$/.test(d))score-=30;
+            var bad=['.xyz','.tk','.ml','.ga','.cf','.top','.info','.buzz','.click','.loan','.work','.date','.men','.win','.download','.party'];
+            for(var k=0;k<bad.length;k++){if(d.indexOf(bad[k])!==-1){score-=20;break}}
+            if(fetchFailed)score-=15;
+            score=Math.max(0,Math.min(100,score));var level='trusted',summary='This link appears safe to visit';
+            if(score<60){level='warning';summary='Exercise caution with this link'}if(score<40){level='danger';summary='This link may be dangerous'}
+            if(scams.length>0)summary=scams.length+' suspicious terms detected';if(!url.startsWith('https://'))summary='No HTTPS encryption';if(fetchFailed)summary='Link preview unavailable — trust reduced';
+            return{score:score,level:level,summary:summary};
         }
 
         function renderTrustUI(data){
-            const box=$('#trustBox');box.style.display='block';box.className=`trust-box ${data.level}`;
-            $('#trustScoreNumber').textContent=data.score;
-            $('#trustScoreNumber').className=`trust-score-number ${data.level==='trusted'?'high':data.level==='warning'?'medium':'low'}`;
-            const shields=$('#trustShields');
-            const filledCount=data.level==='trusted'?5:data.level==='warning'?Math.max(3,Math.ceil(data.score/20)):Math.max(1,Math.ceil(data.score/20));
-            const fillClass=data.level==='trusted'?'filled-green':data.level==='warning'?'filled-orange':'filled-red';
-            shields.querySelectorAll('.trust-shield').forEach((s,i)=>{
-                if(i<filledCount){s.className=`trust-shield ${fillClass}`;s.querySelector('.iconify').setAttribute('data-icon','ph:shield-check-bold')}
-                else{s.className='trust-shield empty';s.querySelector('.iconify').setAttribute('data-icon','ph:shield')}
-            });
-            $('#trustSummaryText').textContent=data.summary;
-            $('#trustSummaryText').style.color=data.level==='trusted'?'var(--success)':data.level==='warning'?'var(--warning)':'var(--danger)';
-            window.Iconify?.scan?.(shields);
+            var box=$('#trustBox');box.style.display='block';box.className='trust-box '+data.level;
+            $('#trustScoreNumber').textContent=data.score;$('#trustScoreNumber').className='trust-score-number '+(data.level==='trusted'?'high':data.level==='warning'?'medium':'low');
+            var filled=data.level==='trusted'?5:data.level==='warning'?Math.max(3,Math.ceil(data.score/20)):Math.max(1,Math.ceil(data.score/20));
+            var cls=data.level==='trusted'?'filled-green':data.level==='warning'?'filled-orange':'filled-red';
+            var shields=$$('#trustShields .trust-shield');shields.forEach(function(s,i){if(i<filled){s.className='trust-shield '+cls;s.querySelector('.iconify').setAttribute('data-icon','ph:shield-check-bold')}else{s.className='trust-shield empty';s.querySelector('.iconify').setAttribute('data-icon','ph:shield')}});
+            $('#trustSummaryText').textContent=data.summary;$('#trustSummaryText').style.color=data.level==='trusted'?'var(--success)':data.level==='warning'?'var(--warning)':'var(--danger)';
+            window.Iconify.scan(box);
         }
 
         async function handleUrlInput(){
-            const url=$('#shareUrl').value.trim();
-            clearTimeout(debounceTimer);clearTimeout(duplicateCheckTimer);
-            updateCategoryDisplay();
-            if(!url||!url.startsWith('http')){$('#trustBox').style.display='none';clearUrlStatus();updateUrlStatus(null);showPlaceholder();return}
-            clearUrlStatus();
-            duplicateCheckTimer=setTimeout(async()=>{
-                const result=await checkUrlUniqueness(url);
-                updateUrlStatus(result);
-                const title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim();
-                const trustData=calculateTrust(url,title,desc);trustScoreData=trustData;renderTrustUI(trustData);
-            },500);
-            debounceTimer=setTimeout(()=>fetchPreview(url),700);
+            var url=$('#shareUrl').value.trim();clearTimeout(debounceTimer);clearTimeout(duplicateCheckTimer);updateCategoryDisplay();
+            if(!url||!url.startsWith('http')){$('#trustBox').style.display='none';clearUrlStatus();updateUrlStatus('invalid');showPlaceholder();return}
+            clearUrlStatus();var title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim();
+            var fetchFailed=false;var td=calcTrust(url,title,desc,fetchFailed);trustScoreData=td;renderTrustUI(td);
+            duplicateCheckTimer=setTimeout(function(){
+                if(allExistingUrls.length===0){loadAllExistingUrls().then(function(){var exists=checkUrlExists(url);updateUrlStatus(exists?'duplicate':'unique')})}
+                else{var exists=checkUrlExists(url);updateUrlStatus(exists?'duplicate':'unique')}
+            },400);
+            debounceTimer=setTimeout(function(){fetchPreview(url)},600);
         }
 
         async function fetchPreview(url){
             if(!url||!url.startsWith('http')){showPlaceholder();return}
             $('#previewPlaceholder').style.display='none';$('#previewContent').style.display='block';
-            $('#previewContent').innerHTML=`<div style="text-align:center;padding:2.5rem;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="font-size:0.8rem;color:var(--text-tertiary);margin-top:0.75rem;">Loading preview...</p></div>`;
+            $('#previewContent').innerHTML='<div style="text-align:center;padding:2.5rem;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="font-size:0.8rem;color:var(--text-tertiary);margin-top:0.75rem;">Loading preview...</p></div>';
+            var fetchFailed=false;
             try{
-                const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true`);
-                const d=await r.json();
-                if(d.status==='success'&&d.data){
-                    previewData=d.data;
-                    const img=d.data.screenshot?.url||d.data.image?.url||'',domain=getDomain(url),fv=faviconUrl(url);
-                    $('#previewContent').innerHTML=`
-                        <div class="preview-card">
-                            ${img?`<img src="${esc(img)}" class="preview-card-image" alt="Preview" onerror="this.style.display='none'">`:''}
-                            <div class="preview-card-body"><div class="preview-card-domain">${fv?`<img src="${fv}" alt="" onerror="this.style.display='none'">`:''} ${esc(domain)}</div><div class="preview-card-title">${esc(d.data.title||domain)}</div>${d.data.description?`<div class="preview-card-desc">${esc(d.data.description)}</div>`:''}</div>
-                        </div>`;
-                    if(!$('#shareTitle').value&&d.data.title)$('#shareTitle').value=d.data.title;
-                    if(!$('#shareDesc').value&&d.data.description)$('#shareDesc').value=d.data.description;
-                    updateCategoryDisplay();
-                    if(trustScoreData)renderTrustUI(trustScoreData);
-                }else{showPlaceholder('Could not load preview');}
-            }catch(e){showPlaceholder('Error loading preview');}
+                var r=await fetch('https://api.microlink.io/?url='+encodeURIComponent(url)+'&screenshot=true');var d=await r.json();
+                if(d.status==='success'&&d.data){previewData=d.data;var img=(d.data.screenshot&&d.data.screenshot.url)?d.data.screenshot.url:((d.data.image&&d.data.image.url)?d.data.image.url:'');var domain=getDomain(url);var fv=faviconUrl(url);
+                    $('#previewContent').innerHTML='<div class="preview-card">'+(img?'<img src="'+esc(img)+'" class="preview-card-image" alt="Preview" onerror="this.style.display=\'none\'">':'')+'<div class="preview-card-body"><div class="preview-card-domain">'+(fv?'<img src="'+fv+'" alt="" onerror="this.style.display=\'none\'">':'')+' '+esc(domain)+'</div><div class="preview-card-title">'+esc(d.data.title||domain)+'</div>'+(d.data.description?'<div class="preview-card-desc">'+esc(d.data.description)+'</div>':'')+'</div></div>';
+                    if(!$('#shareTitle').value&&d.data.title)$('#shareTitle').value=d.data.title;if(!$('#shareDesc').value&&d.data.description)$('#shareDesc').value=d.data.description;updateCategoryDisplay();}
+                else{fetchFailed=true;showPlaceholder('Could not load preview — trust score reduced by 15 points')}
+            }catch(e){fetchFailed=true;showPlaceholder('Error loading preview — trust score reduced by 15 points')}
+            if(fetchFailed&&trustScoreData){trustScoreData=calcTrust(url,$('#shareTitle').value.trim(),$('#shareDesc').value.trim(),true);renderTrustUI(trustScoreData)}
         }
 
-        function showPlaceholder(msg='Enter a URL to see a live preview'){
-            $('#previewContent').style.display='none';$('#previewPlaceholder').style.display='block';
-            $('#previewPlaceholder').innerHTML=msg==='Enter a URL to see a live preview'?`<div class="preview-placeholder-icon">🔗</div><p style="font-weight:600;font-size:0.9rem;">No preview yet</p><p style="font-size:0.8rem;">${msg}</p>`:`<div class="preview-placeholder-icon">⚠️</div><p style="font-weight:600;font-size:0.9rem;">Preview unavailable</p><p style="font-size:0.8rem;">${msg}</p>`;
-        }
+        function showPlaceholder(msg){msg=msg||'Enter a URL to see a live preview';$('#previewContent').style.display='none';$('#previewPlaceholder').style.display='block';$('#previewPlaceholder').innerHTML=msg==='Enter a URL to see a live preview'?'<div class="preview-placeholder-icon">🔗</div><p style="font-weight:600;font-size:0.9rem;">No preview yet</p><p style="font-size:0.8rem;">'+msg+'</p>':'<div class="preview-placeholder-icon">⚠️</div><p style="font-weight:600;font-size:0.9rem;">Preview unavailable</p><p style="font-size:0.8rem;color:var(--danger);">'+msg+'</p>'}
 
-        async function publishLink(){
-            const title=$('#shareTitle').value.trim(),url=$('#shareUrl').value.trim(),desc=$('#shareDesc').value.trim();
+        async function handlePublish(){
+            var title=$('#shareTitle').value.trim(),url=$('#shareUrl').value.trim(),desc=$('#shareDesc').value.trim();
             if(!title||!url){toast('Title and URL are required','error');return}
-            const finalUrl=url.startsWith('http')?url:'https://'+url;
-            if(!isUrlUnique){
-                const recheck=await checkUrlUniqueness(finalUrl);
-                updateUrlStatus(recheck);
-                if(!recheck.unique){toast('⚠️ This link has already been shared on LinkSocial','error');$('#urlInputWrap').classList.add('error');setTimeout(()=>$('#urlInputWrap').classList.remove('error'),2000);return}
+            var finalUrl=url.startsWith('http')?url:'https://'+url;
+            var btn=$('#publishBtn');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span> Scanning all links...';
+
+            await loadAllExistingUrls();
+            var duplicate=checkUrlExists(finalUrl);
+            if(duplicate){
+                btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';
+                $('#urlInputWrap').classList.add('duplicate');
+                updateUrlStatus('duplicate');
+                showDuplicateModal(duplicate);
+                setTimeout(function(){$('#urlInputWrap').classList.remove('duplicate')},3000);
+                return;
             }
-            const btn=$('#publishBtn');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span> Publishing...';
-            const trustData=calculateTrust(finalUrl,title,desc);
-            const catResult=detectCategoryFromText(title,desc,finalUrl);
-            let screenshot='';
-            try{const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(finalUrl)}&screenshot=true`);const d=await r.json();if(d.status==='success'&&d.data)screenshot=d.data.screenshot?.url||d.data.image?.url||''}catch(e){}
-            const link={title,url:finalUrl,description:desc,categories:[catResult.name],category:catResult.name,screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0,trustScore:trustData.score,normalizedUrl:normalizeUrl(finalUrl)};
+
+            btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span> Publishing...';
+            var fetchFailed=false;var screenshot='';
+            try{var r=await fetch('https://api.microlink.io/?url='+encodeURIComponent(finalUrl)+'&screenshot=true');var d=await r.json();if(d.status==='success'&&d.data){screenshot=(d.data.screenshot&&d.data.screenshot.url)?d.data.screenshot.url:((d.data.image&&d.data.image.url)?d.data.image.url:'')}else{fetchFailed=true}}catch(e){fetchFailed=true}
+            var td=calcTrust(finalUrl,title,desc,fetchFailed);var cat=detectCategoryFromText(title,desc,finalUrl);
+            var link={title:title,url:finalUrl,description:desc,categories:[cat.name],category:cat.name,screenshot:screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0,trustScore:td.score,normalizedUrl:normalizeUrl(finalUrl),domain:getDomain(finalUrl).toLowerCase()};
             try{
                 await db.collection('links').add(link);
-                existingUrls.add(normalizeUrl(finalUrl));
+                allExistingUrls.push({url:finalUrl,title:title,ownerName:currentUser?currentUser.username:'Anonymous',normalized:normalizeUrl(finalUrl)});
                 if(currentUser)await db.collection('users').doc(currentUser.uid).update({linkCount:firebase.firestore.FieldValue.increment(1)});
-                toast('🎉 Published! Redirecting...','success');setTimeout(()=>window.location.href='index.html',1200);
+                toast('🎉 Published! Redirecting...','success');setTimeout(function(){window.location.href='index.html'},1200);
             }catch(e){toast('Error. Try again.','error');btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial'}
         }
 
-        auth.onAuthStateChanged(u=>{
-            if(u){db.collection('users').doc(u.uid).get().then(d=>{currentUser=d.exists?{uid:u.uid,...d.data()}:{uid:u.uid,username:u.email?.split('@')[0]||'user',email:u.email||'',accentColor:userColor(u.email?.split('@')[0]||'user'),emoji:'👤'};updateUserIndicator()})}
+        auth.onAuthStateChanged(function(u){
+            if(u){db.collection('users').doc(u.uid).get().then(function(d){currentUser=d.exists?{uid:u.uid,username:d.data().username,email:d.data().email,accentColor:d.data().accentColor,emoji:d.data().emoji}:{uid:u.uid,username:u.email.split('@')[0],accentColor:userColor(u.email.split('@')[0]),emoji:'👤'};updateUserIndicator()})}
             else{currentUser=null;updateUserIndicator()}
         });
 
-        document.addEventListener('DOMContentLoaded',async()=>{
-            const t=localStorage.getItem('ls-theme')||'light';setTheme(t);
-            $('#themeToggle').addEventListener('click',()=>{const cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')});
-            await Promise.all([loadCategoryData(),loadExistingUrls()]);
-            updateUserIndicator();
-            $('#shareUrl').addEventListener('paste',()=>setTimeout(()=>handleUrlInput(),100));
+        document.addEventListener('DOMContentLoaded',async function(){
+            var t=localStorage.getItem('ls-theme')||'light';setTheme(t);
+            $('#themeToggle').addEventListener('click',function(){var cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')});
+            await Promise.all([loadCategoryData(),loadAllExistingUrls()]);updateUserIndicator();
+            $('#shareUrl').addEventListener('paste',function(){setTimeout(handleUrlInput,100)});
         });
     </script>
 </body>
