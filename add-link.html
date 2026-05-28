@@ -28,73 +28,79 @@
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
         @keyframes spin{to{transform:rotate(360deg)}}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        @keyframes shieldFill{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
 
         .main-container{display:flex;gap:1.5rem;max-width:1050px;width:100%;align-items:flex-start}
         .form-panel{flex:1;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-2xl);padding:2.25rem;box-shadow:var(--shadow-lg);animation:fadeInUp 0.4s ease-out}
         .preview-panel{width:400px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-2xl);padding:1.5rem;box-shadow:var(--shadow-lg);position:sticky;top:1.5rem;animation:fadeInUp 0.4s ease-out 0.1s both;flex-shrink:0}
         .preview-panel-title{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-tertiary);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
 
-        .header-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.25rem}
+        .header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.25rem;flex-wrap:wrap;gap:0.75rem}
+        .header-left{display:flex;align-items:center;gap:0.75rem}
         .logo-icon{width:40px;height:40px;background-image:var(--logo-url);background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:var(--radius-sm);flex-shrink:0}
         h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px}
         .subtitle{color:var(--text-tertiary);font-size:0.875rem;margin-bottom:1.75rem;margin-top:0.25rem}
 
+        .user-indicator{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.75rem;background:var(--bg-hover);border-radius:var(--radius-full);font-size:0.8rem;font-weight:600;color:var(--text-secondary);border:1px solid var(--border)}
+        .user-indicator .user-dot{width:28px;height:28px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.7rem;flex-shrink:0}
+
         .form-section{margin-bottom:1.25rem}
         .form-label{display:flex;align-items:center;gap:0.4rem;font-size:0.8125rem;font-weight:700;margin-bottom:0.4rem;color:var(--text-primary);text-transform:uppercase;letter-spacing:0.5px}
         .form-label .required{color:var(--danger);font-size:0.7rem}
+        .form-label .auto-badge{font-size:0.6rem;background:var(--primary-light);color:var(--primary);padding:0.15rem 0.5rem;border-radius:var(--radius-full);font-weight:600;text-transform:none;letter-spacing:0}
 
         .url-input-wrap{position:relative;display:flex;align-items:stretch;background:var(--bg-input);border:2px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;transition:all var(--transition-fast)}
         .url-input-wrap:focus-within{border-color:var(--primary);box-shadow:0 0 0 4px rgba(108,71,255,0.08);background:var(--bg-surface)}
-        .url-input-wrap .url-protocol{display:flex;align-items:center;padding:0 0.75rem;font-size:0.85rem;font-weight:600;color:var(--text-tertiary);background:var(--border-light);border-right:1px solid var(--border);white-space:nowrap;user-select:none}
-        .url-input-wrap input{flex:1;border:none;background:transparent;padding:0.75rem 1rem;font-size:0.9rem;color:var(--text-primary);outline:none;font-family:var(--font-family);min-width:0}
+        .url-input-wrap .url-icon{display:flex;align-items:center;padding:0 0.85rem;font-size:1.1rem;color:var(--text-tertiary);border-right:1px solid var(--border)}
+        .url-input-wrap input{flex:1;border:none;background:transparent;padding:0.8rem 0.75rem;font-size:0.9rem;color:var(--text-primary);outline:none;font-family:var(--font-family);min-width:0}
         .url-input-wrap input::placeholder{color:var(--text-tertiary)}
-        .url-input-wrap .url-paste-btn{display:flex;align-items:center;padding:0 0.85rem;cursor:pointer;color:var(--text-tertiary);transition:all var(--transition-fast);font-size:0.8rem;font-weight:600;white-space:nowrap;border-left:1px solid var(--border)}
+        .url-input-wrap .url-paste-btn{display:flex;align-items:center;gap:0.3rem;padding:0 1rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);font-size:0.78rem;font-weight:600;white-space:nowrap;border-left:1px solid var(--border);background:transparent;font-family:var(--font-family)}
         .url-input-wrap .url-paste-btn:hover{background:var(--primary-light);color:var(--primary)}
 
-        .form-input,.form-textarea{width:100%;padding:0.75rem 1rem;border:2px solid var(--border);border-radius:var(--radius-xl);font-size:0.9rem;background:var(--bg-input);color:var(--text-primary);outline:none;font-family:var(--font-family);transition:all var(--transition-fast)}
+        .form-input,.form-textarea{width:100%;padding:0.8rem 1rem;border:2px solid var(--border);border-radius:var(--radius-xl);font-size:0.9rem;background:var(--bg-input);color:var(--text-primary);outline:none;font-family:var(--font-family);transition:all var(--transition-fast)}
         .form-input:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(108,71,255,0.08);background:var(--bg-surface)}
         .form-input::placeholder,.form-textarea::placeholder{color:var(--text-tertiary)}
         .form-textarea{resize:vertical;min-height:90px}
 
         .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.7rem 1.5rem;border-radius:var(--radius-full);font-weight:700;font-size:0.9rem;transition:all var(--transition-fast);cursor:pointer;font-family:var(--font-family);border:none;letter-spacing:0.2px}
         .btn:active{transform:scale(0.97)}
-        .btn-primary{background:var(--primary);color:#fff;width:100%;padding:0.85rem;font-size:0.95rem;box-shadow:0 4px 14px rgba(108,71,255,0.3)}
+        .btn-primary{background:var(--primary);color:#fff;width:100%;padding:0.9rem;font-size:0.95rem;box-shadow:0 4px 14px rgba(108,71,255,0.3)}
         .btn-primary:hover{background:var(--primary-hover);box-shadow:0 6px 20px rgba(108,71,255,0.4);transform:translateY(-1px)}
         .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;box-shadow:none}
 
-        .preview-placeholder{text-align:center;padding:2rem 1rem;color:var(--text-tertiary)}
-        .preview-placeholder-icon{font-size:3rem;margin-bottom:0.75rem;opacity:0.5}
+        .preview-placeholder{text-align:center;padding:2.5rem 1rem;color:var(--text-tertiary)}
+        .preview-placeholder-icon{font-size:3.5rem;margin-bottom:0.75rem;opacity:0.4}
         .preview-card{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;animation:fadeInUp 0.3s ease-out}
         .preview-card-image{width:100%;height:180px;object-fit:cover;background:var(--bg-hover)}
         .preview-card-body{padding:1rem}
-        .preview-card-domain{font-size:0.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--primary);margin-bottom:0.3rem}
+        .preview-card-domain{font-size:0.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--primary);margin-bottom:0.3rem;display:flex;align-items:center;gap:0.35rem}
+        .preview-card-domain img{width:14px;height:14px;border-radius:2px}
         .preview-card-title{font-weight:700;font-size:0.95rem;line-height:1.3;margin-bottom:0.35rem;color:var(--text-primary)}
         .preview-card-desc{font-size:0.8125rem;color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-        .preview-card-footer{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-top:1px solid var(--border-light);font-size:0.75rem;color:var(--text-tertiary)}
-        .preview-card-footer img{width:14px;height:14px;border-radius:2px}
 
-        /* Category Display */
-        .auto-cat-display{display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1rem;background:var(--primary-light);border-radius:var(--radius-xl);margin:0.75rem 0;font-size:0.85rem;font-weight:600;color:var(--primary);border:1.5px solid rgba(108,71,255,0.15)}
+        /* Category */
+        .auto-cat-display{display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1rem;background:var(--primary-light);border-radius:var(--radius-xl);margin:0.75rem 0;font-size:0.85rem;font-weight:600;color:var(--primary);border:1.5px solid rgba(108,71,255,0.12)}
         .auto-cat-display .cat-emoji{font-size:1.3rem}
 
-        /* Trust Score - Clean Display */
-        .trust-box{background:var(--bg-surface);border:2px solid var(--border);border-radius:var(--radius-xl);padding:1.25rem;margin:1rem 0;transition:all var(--transition-fast)}
-        .trust-box.trusted{border-color:#10b981;background:var(--success-bg)}
-        .trust-box.warning{border-color:#f59e0b;background:var(--warning-bg)}
-        .trust-box.danger{border-color:#ef4444;background:var(--danger-bg)}
-        .trust-box-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem}
-        .trust-score-big{font-size:2.5rem;font-weight:900;line-height:1}
-        .trust-score-big.high{color:#059669}.trust-score-big.medium{color:#d97706}.trust-score-big.low{color:#dc2626}
-        .trust-badge-pill{display:inline-flex;align-items:center;gap:0.35rem;padding:0.4rem 0.85rem;border-radius:var(--radius-full);font-size:0.8rem;font-weight:700}
-        .trust-badge-pill.trusted{background:#10b981;color:#fff}
-        .trust-badge-pill.warning{background:#f59e0b;color:#fff}
-        .trust-badge-pill.danger{background:#ef4444;color:#fff}
-        .trust-bar-wrap{width:100%;height:10px;background:var(--bg-hover);border-radius:var(--radius-full);overflow:hidden;margin-bottom:0.5rem}
-        .trust-bar-fill{height:100%;border-radius:var(--radius-full);transition:width 0.8s ease-out}
-        .trust-bar-fill.high{background:linear-gradient(90deg,#10b981,#34d399)}
-        .trust-bar-fill.medium{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
-        .trust-bar-fill.low{background:linear-gradient(90deg,#ef4444,#f87171)}
-        .trust-summary{font-size:0.8rem;font-weight:600}
+        /* Trust Shield Display */
+        .trust-box{background:var(--bg-surface);border:2px solid var(--border);border-radius:var(--radius-xl);padding:1.25rem 1.5rem;margin:1rem 0;transition:all var(--transition-fast)}
+        .trust-box.trusted{border-color:#10b981;background:linear-gradient(135deg,var(--success-bg),var(--bg-surface))}
+        .trust-box.warning{border-color:#f59e0b;background:linear-gradient(135deg,var(--warning-bg),var(--bg-surface))}
+        .trust-box.danger{border-color:#ef4444;background:linear-gradient(135deg,var(--danger-bg),var(--bg-surface))}
+        .trust-box-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+        .trust-score-row{display:flex;align-items:center;gap:0.5rem}
+        .trust-score-number{font-size:2.8rem;font-weight:900;line-height:1;letter-spacing:-1px}
+        .trust-score-number.high{color:#059669}.trust-score-number.medium{color:#d97706}.trust-score-number.low{color:#dc2626}
+        .trust-percent{font-size:1rem;font-weight:700;color:var(--text-tertiary)}
+        .trust-shields{display:flex;gap:0.3rem;margin-bottom:0.6rem}
+        .trust-shield{font-size:1.6rem;transition:all 0.3s ease;animation:shieldFill 0.4s ease-out backwards}
+        .trust-shield:nth-child(1){animation-delay:0.05s}.trust-shield:nth-child(2){animation-delay:0.15s}.trust-shield:nth-child(3){animation-delay:0.25s}.trust-shield:nth-child(4){animation-delay:0.35s}.trust-shield:nth-child(5){animation-delay:0.45s}
+        .trust-shield.filled-green{color:#10b981}
+        .trust-shield.filled-orange{color:#f59e0b}
+        .trust-shield.filled-red{color:#ef4444}
+        .trust-shield.empty{color:#d1d5db}
+        .dark .trust-shield.empty{color:#374151}
+        .trust-summary-text{font-size:0.8rem;font-weight:600;color:var(--text-secondary)}
 
         .back-link{display:inline-flex;align-items:center;gap:0.35rem;color:var(--text-tertiary);font-size:0.8125rem;font-weight:600;margin-bottom:1.5rem;cursor:pointer;transition:all var(--transition-fast);text-decoration:none}
         .back-link:hover{color:var(--primary)}
@@ -106,7 +112,7 @@
         .toast.success{background:var(--success);color:#fff}.toast.error{background:var(--danger);color:#fff}.toast.info{background:var(--primary);color:#fff}
 
         @media(max-width:768px){.main-container{flex-direction:column}.preview-panel{width:100%;position:static}}
-        @media(max-width:480px){.form-panel{padding:1.25rem}.preview-panel{padding:1rem}.url-input-wrap .url-protocol{display:none}.url-input-wrap .url-paste-btn{font-size:0.7rem;padding:0 0.5rem}}
+        @media(max-width:480px){.form-panel{padding:1.25rem}.preview-panel{padding:1rem}.url-input-wrap .url-paste-btn{padding:0 0.6rem;font-size:0.7rem}.trust-score-number{font-size:2rem}.trust-shield{font-size:1.3rem}}
     </style>
 </head>
 <body class="theme-light">
@@ -117,38 +123,55 @@
     <div class="main-container">
         <div class="form-panel">
             <a class="back-link" href="index.html"><span class="iconify" data-icon="ph:arrow-left" data-width="16"></span> Back to feed</a>
-            <div class="header-row"><div class="logo-icon"></div><h1>Share a Link</h1></div>
+            <div class="header-row">
+                <div class="header-left">
+                    <div class="logo-icon"></div>
+                    <h1>Share a Link</h1>
+                </div>
+                <div class="user-indicator" id="userIndicator">
+                    <div class="user-dot" id="userDot" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">?</div>
+                    <span id="userName">Loading...</span>
+                </div>
+            </div>
             <p class="subtitle">Curate the web. Share something valuable with the community.</p>
 
             <div class="form-section">
                 <label class="form-label">URL <span class="required">*</span></label>
                 <div class="url-input-wrap">
-                    <span class="url-protocol">🔗</span>
+                    <span class="url-icon"><span class="iconify" data-icon="ph:link-simple-bold" data-width="20"></span></span>
                     <input type="url" id="shareUrl" placeholder="example.com/amazing-article" oninput="handleUrlInput()" autofocus>
-                    <span class="url-paste-btn" onclick="pasteFromClipboard()">📋 Paste</span>
+                    <button class="url-paste-btn" onclick="pasteFromClipboard()"><span class="iconify" data-icon="ph:clipboard-text" data-width="16"></span> Paste</button>
                 </div>
             </div>
             <div class="form-section">
-                <label class="form-label">Title <span class="required">*</span></label>
+                <label class="form-label">Title <span class="required">*</span> <span class="auto-badge">auto-fill</span></label>
                 <input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()">
             </div>
             <div class="form-section">
-                <label class="form-label">Description</label>
+                <label class="form-label">Description <span class="auto-badge">auto-fill</span></label>
                 <textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing? Add context..." oninput="onContentChange()"></textarea>
             </div>
 
             <div class="auto-cat-display" id="autoCatDisplay" style="display:none;">
                 <span class="cat-emoji" id="catEmoji">🏷️</span>
-                <span>Auto-detected: <strong id="detectedCatText">—</strong></span>
+                <span>Category: <strong id="detectedCatText">—</strong></span>
             </div>
 
             <div class="trust-box" id="trustBox" style="display:none;">
                 <div class="trust-box-top">
-                    <span class="trust-score-big high" id="trustScoreBig">—</span>
-                    <span class="trust-badge-pill trusted" id="trustBadgePill">Analyzing...</span>
+                    <div class="trust-score-row">
+                        <span class="trust-score-number high" id="trustScoreNumber">—</span>
+                        <span class="trust-percent">/100</span>
+                    </div>
                 </div>
-                <div class="trust-bar-wrap"><div class="trust-bar-fill high" id="trustBarFill" style="width:0%;"></div></div>
-                <div class="trust-summary" id="trustSummary" style="color:var(--text-secondary);">Enter a URL to analyze safety</div>
+                <div class="trust-shields" id="trustShields">
+                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
+                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
+                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
+                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
+                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
+                </div>
+                <div class="trust-summary-text" id="trustSummaryText">Enter a URL to analyze safety</div>
             </div>
 
             <button class="btn btn-primary" id="publishBtn" onclick="publishLink()">
@@ -172,26 +195,34 @@
         const firebaseConfig={apiKey:"AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",authDomain:"joefootball-15e7a.firebaseapp.com",projectId:"joefootball-15e7a",storageBucket:"joefootball-15e7a.firebasestorage.app"};
         firebase.initializeApp(firebaseConfig);const db=firebase.firestore();const auth=firebase.auth();
 
-        let currentUser=null,previewData=null,debounceTimer=null,detectedCategory='',categoryData=null;
+        let currentUser=null,previewData=null,debounceTimer=null,detectedCategory='',categoryData=null,trustScoreData=null;
 
-        const $=s=>document.querySelector(s);const esc=s=>s?String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]):'';
+        const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
+        const esc=s=>s?String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]):'';
         const getDomain=u=>{try{return new URL(u).hostname.replace('www.','')}catch{return u}};
         const faviconUrl=u=>{try{return`https://www.google.com/s2/favicons?domain=${new URL(u).hostname}&sz=32`}catch{return''}};
+        const userColor=u=>{let h=0;for(let i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return`hsl(${Math.abs(h%360)},50%,45%)`};
 
         function toast(m,t='success'){const el=document.createElement('div');el.className=`toast ${t}`;el.textContent=m;document.body.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(10px)';el.style.transition='all 0.3s';setTimeout(()=>el.remove(),300)},3000)}
         function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add(`theme-${t}`);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
 
-        async function pasteFromClipboard(){try{const text=await navigator.clipboard.readText();if(text&&text.includes('http')){$('#shareUrl').value=text;handleUrlInput()}}catch(e){}}
-
-        // ============ LOAD CATEGORIES FROM JSON ============
-        async function loadCategoryData(){
-            try{
-                const resp=await fetch('categories.json');
-                const data=await resp.json();
-                categoryData=data.categories;
-            }catch(e){
-                categoryData=[{name:'General',icon:'📌',keywords:['general']}];
+        function updateUserIndicator(){
+            if(currentUser){
+                $('#userDot').style.background=currentUser.accentColor||userColor(currentUser.username);
+                $('#userDot').textContent=(currentUser.emoji||(currentUser.username||'U')[0].toUpperCase());
+                $('#userName').textContent=currentUser.username||'User';
+            }else{
+                $('#userDot').style.background='linear-gradient(135deg, var(--text-tertiary), var(--text-secondary))';
+                $('#userDot').textContent='?';
+                $('#userName').textContent='Anonymous';
             }
+        }
+
+        async function pasteFromClipboard(){try{const text=await navigator.clipboard.readText();if(text&&(text.includes('http')||text.includes('www.'))){$('#shareUrl').value=text.trim();handleUrlInput()}}catch(e){}}
+
+        async function loadCategoryData(){
+            try{const resp=await fetch('categories.json');const data=await resp.json();categoryData=data.categories}
+            catch(e){categoryData=[{name:'General',icon:'📌',keywords:['general']}]}
         }
 
         function detectCategoryFromText(title,description,url){
@@ -217,60 +248,59 @@
             if(!title&&!desc&&!url){$('#autoCatDisplay').style.display='none';return}
             const result=detectCategoryFromText(title,desc,url);
             detectedCategory=result.name;
-            $('#autoCatDisplay').style.display='flex';
-            $('#catEmoji').textContent=result.icon;
+            $('#autoCatDisplay').style.display='flex';$('#catEmoji').textContent=result.icon;
             $('#detectedCatText').textContent=`${result.name} (${result.confidence}% match)`;
         }
 
-        // ============ TRUST ENGINE ============
-        const SCAM_KEYWORDS=['hack','crack','free money','verify account','click here','you won','claim now','act now','limited offer','congratulations','you have been selected','urgent','password reset','confirm your account','suspended','security alert','unusual activity','login attempt','prize','lottery','inheritance','wire transfer','western union','money gram','cash app','venmo','paypal','bitcoin giveaway','eth giveaway','airdrop','free crypto','double your','guaranteed return','risk free','secret method','loophole','exploit','cheat','generator','bot net','keygen','cracked','warez','torrent','pirate'];
-        const SHORTENERS=['bit.ly','tinyurl.com','cutt.ly','ow.ly','is.gd','buff.ly','goo.gl','t.co','lnkd.in','shorte.st','rb.gy','tiny.cc'];
+        const SCAM_KEYWORDS=['hack','crack','free money','verify account','click here','you won','claim now','act now','limited offer','congratulations','you have been selected','urgent','password reset','confirm your account','suspended','security alert','unusual activity','login attempt','prize','lottery','inheritance','wire transfer','western union','money gram','cash app','venmo','paypal','bitcoin giveaway','eth giveaway','airdrop','free crypto','double your','guaranteed return','risk free','secret method','loophole','exploit','cheat','generator','bot net','keygen','cracked','warez','torrent','pirate','malware','virus','trojan','spyware','adware','rootkit','backdoor','keylogger','ransomware','scam','fraud','fake','counterfeit','replica','knockoff'];
+        const SHORTENERS=['bit.ly','tinyurl.com','cutt.ly','ow.ly','is.gd','buff.ly','goo.gl','t.co','lnkd.in','shorte.st','rb.gy','tiny.cc','v.gd','kl.am','short.link'];
 
-        function validateURL(url){try{new URL(url);return true}catch{return false}}
+        function validateURL(url){try{const u=new URL(url);return u.protocol==='http:'||u.protocol==='https:'}catch{return false}}
         function checkHTTPS(url){return url.startsWith('https://')}
         function scanScamKeywords(text){return SCAM_KEYWORDS.filter(k=>text.includes(k))}
         function isShortened(url){const d=getDomain(url).toLowerCase();return SHORTENERS.some(s=>d===s||d.includes(s))}
-
-        function estimateDomainAge(domain){
-            const old=['google.com','youtube.com','facebook.com','amazon.com','wikipedia.org','github.com','stackoverflow.com','microsoft.com','apple.com','nytimes.com','bbc.com','cnn.com','medium.com','reddit.com','twitter.com','linkedin.com','netflix.com'];
-            if(old.some(d=>domain.includes(d)))return{label:'Established domain',score:15};
-            const known=['dev.to','vercel.app','netlify.app','herokuapp.com','gitlab.io','supabase.co','firebaseapp.com','hashnode.com'];
-            if(known.some(d=>domain.includes(d)))return{label:'Known platform',score:8};
-            if(domain.split('.').length>3)return{label:'Suspicious subdomain',score:-15};
-            return{label:'Standard domain',score:0};
-        }
+        function hasExcessiveParams(url){try{const p=new URL(url).searchParams;return p.toString().length>100}catch{return false}}
+        function hasIPAddress(url){const d=getDomain(url);return /^\d+\.\d+\.\d+\.\d+$/.test(d)}
+        function hasSuspiciousTLD(url){const d=getDomain(url).toLowerCase();const bad=['.xyz','.tk','.ml','.ga','.cf','.top','.info','.buzz','.click','.loan','.work','.date','.men','.win','.download','.party'];return bad.some(t=>d.endsWith(t))}
+        function hasSpecialChars(url){return /[<>{}|\\^~\[\]`]/.test(url)}
 
         function calculateTrust(url,title,desc){
-            const results={total:100,level:'trusted',summary:''};
             const text=`${title||''} ${desc||''} ${url||''}`.toLowerCase();
-            if(!validateURL(url)){results.total=0;results.level='danger';results.summary='Invalid URL format';return results}
-            if(!checkHTTPS(url)){results.total-=20;results.summary='No HTTPS encryption'}
-            else{results.total+=5}
+            let score=100;
+            if(!validateURL(url)){score=0;return{score:0,level:'danger',summary:'Invalid URL format'}}
+            if(!checkHTTPS(url))score-=25;
             const scams=scanScamKeywords(text);
-            if(scams.length>0){results.total-=Math.min(60,scams.length*15);results.summary=`Suspicious content detected`}
-            if(isShortened(url)){results.total-=10;if(!results.summary)results.summary='Shortened URL'}
-            const domainAge=estimateDomainAge(getDomain(url));
-            results.total+=domainAge.score;
-            results.total=Math.max(0,Math.min(100,results.total));
-            if(results.total>=70)results.level='trusted';
-            else if(results.total>=40)results.level='warning';
-            else results.level='danger';
-            if(!results.summary){if(results.total>=70)results.summary='This link appears safe';else if(results.total>=40)results.summary='Exercise caution with this link';else results.summary='This link may be dangerous'}
-            return results;
+            if(scams.length>0)score-=Math.min(70,scams.length*14);
+            if(isShortened(url))score-=15;
+            if(hasExcessiveParams(url))score-=10;
+            if(hasIPAddress(url))score-=30;
+            if(hasSuspiciousTLD(url))score-=20;
+            if(hasSpecialChars(url))score-=15;
+            if(getDomain(url).split('.').length>4)score-=10;
+            score=Math.max(0,Math.min(100,score));
+            let level='trusted',summary='This link appears safe to visit';
+            if(score<60){level='warning';summary='Exercise caution with this link'}
+            if(score<40){level='danger';summary='This link may be dangerous'}
+            if(scams.length>0)summary=`${scams.length} suspicious terms detected`;
+            if(!checkHTTPS(url))summary='No HTTPS encryption - data not secure';
+            return{score,level,summary};
         }
 
         function renderTrustUI(data){
             const box=$('#trustBox');box.style.display='block';
             box.className=`trust-box ${data.level}`;
-            $('#trustScoreBig').textContent=data.total;
-            $('#trustScoreBig').className=`trust-score-big ${data.total>=70?'high':data.total>=40?'medium':'low'}`;
-            const badge=$('#trustBadgePill');
-            if(data.total>=70){badge.className='trust-badge-pill trusted';badge.innerHTML='🟢 Trusted'}
-            else if(data.total>=40){badge.className='trust-badge-pill warning';badge.innerHTML='🟡 Warning'}
-            else{badge.className='trust-badge-pill danger';badge.innerHTML='🔴 Dangerous'}
-            const bar=$('#trustBarFill');bar.style.width=`${data.total}%`;
-            bar.className=`trust-bar-fill ${data.total>=70?'high':data.total>=40?'medium':'low'}`;
-            $('#trustSummary').textContent=data.summary;
+            $('#trustScoreNumber').textContent=data.score;
+            $('#trustScoreNumber').className=`trust-score-number ${data.level==='trusted'?'high':data.level==='warning'?'medium':'low'}`;
+            const shields=$('#trustShields');
+            const filledCount=data.level==='trusted'?5:data.level==='warning'?Math.max(3,Math.ceil(data.score/20)):Math.max(1,Math.ceil(data.score/20));
+            const fillClass=data.level==='trusted'?'filled-green':data.level==='warning'?'filled-orange':'filled-red';
+            shields.querySelectorAll('.trust-shield').forEach((s,i)=>{
+                if(i<filledCount){s.className=`trust-shield ${fillClass}`;s.querySelector('.iconify').setAttribute('data-icon','ph:shield-check-bold')}
+                else{s.className='trust-shield empty';s.querySelector('.iconify').setAttribute('data-icon','ph:shield')}
+            });
+            $('#trustSummaryText').textContent=data.summary;
+            $('#trustSummaryText').style.color=data.level==='trusted'?'var(--success)':data.level==='warning'?'var(--warning)':'var(--danger)';
+            window.Iconify?.scan?.(shields);
         }
 
         async function handleUrlInput(){
@@ -280,14 +310,15 @@
             if(!url||!url.startsWith('http')){$('#trustBox').style.display='none';showPlaceholder();return}
             const title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim();
             const trustData=calculateTrust(url,title,desc);
+            trustScoreData=trustData;
             renderTrustUI(trustData);
-            debounceTimer=setTimeout(()=>fetchPreview(url),700);
+            debounceTimer=setTimeout(()=>fetchPreview(url),600);
         }
 
         async function fetchPreview(url){
             if(!url||!url.startsWith('http')){showPlaceholder();return}
             $('#previewPlaceholder').style.display='none';$('#previewContent').style.display='block';
-            $('#previewContent').innerHTML=`<div style="text-align:center;padding:2rem;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="font-size:0.8rem;color:var(--text-tertiary);margin-top:0.75rem;">Loading preview...</p></div>`;
+            $('#previewContent').innerHTML=`<div style="text-align:center;padding:2.5rem;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="font-size:0.8rem;color:var(--text-tertiary);margin-top:0.75rem;">Loading preview...</p></div>`;
             try{
                 const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true`);
                 const d=await r.json();
@@ -297,11 +328,16 @@
                     $('#previewContent').innerHTML=`
                         <div class="preview-card">
                             ${img?`<img src="${esc(img)}" class="preview-card-image" alt="Preview" onerror="this.style.display='none'">`:''}
-                            <div class="preview-card-body"><div class="preview-card-domain">${esc(domain)}</div><div class="preview-card-title">${esc(d.data.title||domain)}</div>${d.data.description?`<div class="preview-card-desc">${esc(d.data.description)}</div>`:''}</div>
-                            <div class="preview-card-footer">${fv?`<img src="${fv}" alt="" onerror="this.style.display='none'">`:''}<span>${esc(domain)}</span></div>
+                            <div class="preview-card-body">
+                                <div class="preview-card-domain">${fv?`<img src="${fv}" alt="" onerror="this.style.display='none'">`:''} ${esc(domain)}</div>
+                                <div class="preview-card-title">${esc(d.data.title||domain)}</div>
+                                ${d.data.description?`<div class="preview-card-desc">${esc(d.data.description)}</div>`:''}
+                            </div>
                         </div>`;
                     if(!$('#shareTitle').value&&d.data.title)$('#shareTitle').value=d.data.title;
+                    if(!$('#shareDesc').value&&d.data.description)$('#shareDesc').value=d.data.description;
                     updateCategoryDisplay();
+                    if(trustScoreData)renderTrustUI(trustScoreData);
                 }else{showPlaceholder('Could not load preview');}
             }catch(e){showPlaceholder('Error loading preview');}
         }
@@ -320,15 +356,20 @@
             const catResult=detectCategoryFromText(title,desc,finalUrl);
             let screenshot='';
             try{const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(finalUrl)}&screenshot=true`);const d=await r.json();if(d.status==='success'&&d.data)screenshot=d.data.screenshot?.url||d.data.image?.url||''}catch(e){}
-            const link={title,url:finalUrl,description:desc,categories:[catResult.name],category:catResult.name,screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0,trustScore:trustData.total};
+            const link={title,url:finalUrl,description:desc,categories:[catResult.name],category:catResult.name,screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0,trustScore:trustData.score};
             try{await db.collection('links').add(link);if(currentUser)await db.collection('users').doc(currentUser.uid).update({linkCount:firebase.firestore.FieldValue.increment(1)});toast('🎉 Published! Redirecting...','success');setTimeout(()=>window.location.href='index.html',1200)}catch(e){toast('Error. Try again.','error');btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial'}
         }
 
-        auth.onAuthStateChanged(u=>{if(u){db.collection('users').doc(u.uid).get().then(d=>{currentUser=d.exists?{uid:u.uid,...d.data()}:{uid:u.uid,username:u.email?.split('@')[0]||'user'}})}else currentUser=null});
+        auth.onAuthStateChanged(u=>{
+            if(u){db.collection('users').doc(u.uid).get().then(d=>{currentUser=d.exists?{uid:u.uid,...d.data()}:{uid:u.uid,username:u.email?.split('@')[0]||'user',email:u.email||'',accentColor:userColor(u.email?.split('@')[0]||'user'),emoji:'👤'};updateUserIndicator()})}
+            else{currentUser=null;updateUserIndicator()}
+        });
+
         document.addEventListener('DOMContentLoaded',async()=>{
             const t=localStorage.getItem('ls-theme')||'light';setTheme(t);
             $('#themeToggle').addEventListener('click',()=>{const cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')});
             await loadCategoryData();
+            updateUserIndicator();
             $('#shareUrl').addEventListener('paste',()=>setTimeout(()=>handleUrlInput(),100));
         });
     </script>
