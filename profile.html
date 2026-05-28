@@ -22,13 +22,12 @@
         .theme-dark{--bg-main:#1a1a2e;--bg-surface:#16213e;--bg-hover:#1a2744;--bg-input:#0f3460;--border:#2a3a5e;--border-light:#1e2d4a;--text-primary:#e8e8e8;--text-secondary:#b0b0b0;--text-tertiary:#8a8a8a;--primary:#8b6cff;--primary-hover:#7b5ce8;--primary-light:#1e1a3a;--secondary:#60a5fa;--success:#22c55e;--success-bg:#0a2a1a;--warning:#f59e0b;--danger:#ef4444;--danger-bg:#2a0a0a;--card-shadow:0 0 0 1px rgba(255,255,255,0.05);--shadow-lg:0 10px 25px rgba(0,0,0,0.3);--logo-url:url('https://i.ibb.co/jPxVQH4X/L-2.png')}
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
-        body{font-family:var(--font-family);background:var(--bg-main);color:var(--text-primary);line-height:1.5;min-height:100vh;transition:background var(--transition-base),color var(--transition-base)}
+        body{font-family:var(--font-family);background:var(--bg-main);color:var(--text-primary);line-height:1.5;min-height:100vh;transition:background var(--transition-base),color var(--transition-base);overflow-x:hidden}
 
         @keyframes fadeInUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
         @keyframes spin{to{transform:rotate(360deg)}}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 
         .navbar{position:sticky;top:0;z-index:100;background:var(--bg-surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 1.5rem;box-shadow:0 0 0 1px rgba(0,0,0,0.04)}
         .navbar-inner{max-width:1128px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem}
@@ -36,6 +35,10 @@
         .navbar-logo{width:34px;height:34px;background-image:var(--logo-url);background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:var(--radius-sm);flex-shrink:0}
         .navbar-title{font-size:1.125rem;font-weight:600;letter-spacing:-0.2px}
         .navbar-actions{display:flex;align-items:center;gap:0.5rem}
+        .search-input-wrap{display:flex;align-items:center;background:var(--bg-input);border-radius:var(--radius-sm);padding:0 0.75rem;height:34px;gap:0.5rem;transition:all var(--transition-fast);border:1px solid transparent;max-width:300px}
+        .search-input-wrap:focus-within{background:var(--bg-surface);border-color:var(--primary);box-shadow:0 0 0 2px rgba(108,71,255,0.1)}
+        .search-input-wrap input{flex:1;border:none;background:transparent;outline:none;font-size:0.875rem;color:var(--text-primary);font-family:var(--font-family)}
+        .search-input-wrap input::placeholder{color:var(--text-tertiary)}
 
         .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.3rem;padding:0.5rem 1rem;border-radius:var(--radius-full);font-weight:600;font-size:0.875rem;transition:all var(--transition-fast);cursor:pointer;font-family:var(--font-family);border:none;white-space:nowrap}
         .btn:active{transform:scale(0.97)}
@@ -77,13 +80,14 @@
         .stat-label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-top:0.15rem}
 
         .tab-content{animation:fadeInUp 0.3s ease-out}
-        .link-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:0.5rem;box-shadow:var(--card-shadow);transition:all var(--transition-fast);display:flex;gap:0.75rem;cursor:pointer}
+        .link-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:0.5rem;box-shadow:var(--card-shadow);transition:all var(--transition-fast);display:flex;gap:0.75rem}
         .link-card:hover{box-shadow:var(--shadow-lg)}
         .link-card-screenshot{width:120px;height:80px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;background:var(--bg-hover);border:1px solid var(--border-light)}
         .link-card-screenshot img{width:100%;height:100%;object-fit:cover}
         .link-card-screenshot .no-img{display:flex;align-items:center;justify-content:center;height:100%;font-size:1.5rem;color:var(--text-tertiary)}
         .link-card-info{flex:1;min-width:0}
-        .link-card-title{font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;line-height:1.3}
+        .link-card-title{font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;line-height:1.3;cursor:pointer}
+        .link-card-title:hover{color:var(--primary)}
         .link-card-stats{display:flex;gap:0.75rem;font-size:0.72rem;color:var(--text-tertiary);margin-top:0.35rem;flex-wrap:wrap}
         .link-card-stat{display:flex;align-items:center;gap:0.2rem}
         .link-card-actions{display:flex;gap:0.35rem;margin-top:0.5rem}
@@ -107,13 +111,20 @@
         .loading-spinner{display:flex;align-items:center;justify-content:center;padding:3rem}
         .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite}
 
-        /* Banner Editor */
-        .banner-editor{position:absolute;bottom:0.5rem;right:0.5rem;display:flex;gap:0.3rem;z-index:3}
-        .color-option{width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;border:2px solid transparent;transition:all var(--transition-fast)}
-        .color-option:hover{transform:scale(1.15);border-color:#fff}
-        .color-option.selected{border-color:#fff;box-shadow:0 0 0 2px var(--primary)}
+        /* Modals */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:all var(--transition-base)}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal{background:var(--bg-surface);border-radius:var(--radius-2xl);padding:1.75rem;width:100%;max-width:460px;box-shadow:var(--shadow-lg);animation:fadeInUp 0.2s ease-out;max-height:85vh;overflow-y:auto}
+        .modal h3{font-weight:700;font-size:1.1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem}
+        .modal-input,.modal-textarea{width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:var(--radius-md);font-size:0.875rem;background:var(--bg-input);color:var(--text-primary);outline:none;font-family:var(--font-family);margin-bottom:0.75rem;resize:vertical}
+        .modal-input:focus,.modal-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,71,255,0.08)}
+        .modal-textarea{min-height:80px}
+        .color-grid{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem}
+        .color-swatch{width:38px;height:38px;border-radius:var(--radius-full);cursor:pointer;border:3px solid transparent;transition:all var(--transition-fast);position:relative}
+        .color-swatch:hover{transform:scale(1.15)}
+        .color-swatch.selected{border-color:var(--text-primary);box-shadow:0 0 0 3px var(--primary-light)}
+        .gradient-preview{width:100%;height:60px;border-radius:var(--radius-lg);margin:0.75rem 0;border:1px solid var(--border)}
 
-        /* Chat Panel */
         .chat-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;opacity:0;visibility:hidden;transition:all var(--transition-base)}
         .chat-panel-overlay.active{opacity:1;visibility:visible}
         .chat-panel{position:fixed;bottom:0;right:1.5rem;width:370px;max-width:100vw;height:460px;max-height:70vh;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-xl) var(--radius-xl) 0 0;z-index:510;transform:translateY(100%);transition:transform var(--transition-base);display:flex;flex-direction:column;box-shadow:0 -4px 20px rgba(0,0,0,0.15)}
@@ -128,20 +139,14 @@
         .toast{padding:0.75rem 1.25rem;border-radius:var(--radius-md);font-size:0.8125rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15);animation:slideIn 0.3s ease-out;pointer-events:all}
         .toast.success{background:var(--success);color:#fff}.toast.error{background:var(--danger);color:#fff}.toast.info{background:var(--primary);color:#fff}
 
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:all var(--transition-base)}
-        .modal-overlay.active{opacity:1;visibility:visible}
-        .modal{background:var(--bg-surface);border-radius:var(--radius-2xl);padding:1.5rem;width:100%;max-width:440px;box-shadow:var(--shadow-lg);animation:fadeInUp 0.2s ease-out}
-        .modal h3{font-weight:700;margin-bottom:1rem}
-        .modal input,.modal textarea{width:100%;padding:0.6rem 0.85rem;border:1.5px solid var(--border);border-radius:var(--radius-md);font-size:0.875rem;background:var(--bg-input);color:var(--text-primary);outline:none;font-family:var(--font-family);margin-bottom:0.75rem}
-        .modal input:focus,.modal textarea:focus{border-color:var(--primary)}
-
-        @media(max-width:768px){.profile-cover{height:120px;margin-bottom:44px}.profile-avatar-wrap{left:1rem;width:76px;height:76px;bottom:-38px}.profile-avatar{width:66px;height:66px;font-size:1.6rem}.profile-name{font-size:1.25rem}.stat-item{padding:0.75rem 0.25rem}.stat-value{font-size:1rem}.chat-panel{width:100%;right:0;border-radius:var(--radius-xl) var(--radius-xl) 0 0}}
+        @media(max-width:768px){.profile-cover{height:120px;margin-bottom:44px}.profile-avatar-wrap{left:1rem;width:76px;height:76px;bottom:-38px}.profile-avatar{width:66px;height:66px;font-size:1.6rem}.profile-name{font-size:1.25rem}.stat-item{padding:0.75rem 0.25rem}.stat-value{font-size:1rem}.chat-panel{width:100%;right:0;border-radius:var(--radius-xl) var(--radius-xl) 0 0}.navbar-search{display:none}}
     </style>
 </head>
 <body class="theme-light">
     <nav class="navbar">
         <div class="navbar-inner">
             <a class="navbar-brand" href="index.html"><div class="navbar-logo"></div><span class="navbar-title">LinkSocial</span></a>
+            <div class="navbar-search"><div class="search-input-wrap"><span class="iconify" data-icon="ph:magnifying-glass" data-width="16" style="color:var(--text-tertiary)"></span><input type="text" id="searchInput" placeholder="Search links..."></div></div>
             <div class="navbar-actions">
                 <button class="btn btn-icon btn-ghost" id="headerMsgBtn" title="Messages"><span class="iconify" data-icon="ph:chats-circle" data-width="22"></span></button>
                 <button class="btn btn-icon btn-ghost" id="themeToggle" title="Toggle theme"><span class="iconify" data-icon="ph:moon" data-width="20" id="themeIcon"></span></button>
@@ -154,9 +159,7 @@
     <div class="container">
         <div class="profile-cover" id="profileCover" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
             <div class="profile-cover-edit" id="coverEditBtns" style="display:none;"></div>
-            <div class="profile-avatar-wrap">
-                <div class="profile-avatar" id="profileAvatar" style="background:var(--primary);"><span class="iconify" data-icon="ph:user" data-width="40"></span></div>
-            </div>
+            <div class="profile-avatar-wrap"><div class="profile-avatar" id="profileAvatar" style="background:var(--primary);"><span class="iconify" data-icon="ph:user" data-width="40"></span></div></div>
         </div>
         <div class="profile-info">
             <div class="profile-name-row">
@@ -188,15 +191,27 @@
         </div>
     </div>
 
+    <!-- BIO EDIT MODAL -->
+    <div class="modal-overlay" id="bioModal"><div class="modal"><h3><span class="iconify" data-icon="ph:pencil-simple" data-width="20"></span> Edit Bio</h3><textarea class="modal-textarea" id="bioTextarea" placeholder="Write something about yourself..."></textarea><div style="display:flex;gap:0.5rem;"><button class="btn btn-primary btn-sm" id="saveBioBtn" style="flex:1;">Save</button><button class="btn btn-ghost btn-sm" id="cancelBioBtn">Cancel</button></div></div></div>
+
     <!-- BANNER EDITOR MODAL -->
-    <div class="modal-overlay" id="bannerModal"><div class="modal"><h3>Edit Banner</h3><div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;" id="colorOptions"></div><label style="font-size:0.8rem;font-weight:600;">Or choose gradient direction:</label><select id="gradientDir" style="width:100%;padding:0.5rem;border:1.5px solid var(--border);border-radius:var(--radius-md);margin:0.5rem 0;background:var(--bg-input);color:var(--text-primary);"><option value="135deg">Diagonal (default)</option><option value="90deg">Horizontal</option><option value="180deg">Vertical</option><option value="225deg">Reverse Diagonal</option><option value="0deg">Left to Right</option></select><button class="btn btn-primary btn-sm" id="applyBannerBtn" style="width:100%;">Apply Banner</button><button class="btn btn-ghost btn-sm" id="resetBannerBtn" style="width:100%;margin-top:0.5rem;">Reset to Default</button></div></div>
+    <div class="modal-overlay" id="bannerModal"><div class="modal"><h3><span class="iconify" data-icon="ph:paint-brush" data-width="20"></span> Edit Banner</h3>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+            <button class="btn btn-sm" id="solidModeBtn" style="flex:1;background:var(--primary-light);color:var(--primary);">Solid Color</button>
+            <button class="btn btn-sm btn-ghost" id="gradientModeBtn" style="flex:1;">Gradient</button>
+        </div>
+        <div id="solidSection"><label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:0.5rem;">Choose one color:</label><div class="color-grid" id="solidColors"></div></div>
+        <div id="gradientSection" style="display:none;"><label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:0.5rem;">Choose 2 colors:</label><div class="color-grid" id="gradientColor1"></div><label style="font-size:0.8rem;font-weight:600;display:block;margin:0.75rem 0 0.5rem;">Second color:</label><div class="color-grid" id="gradientColor2"></div><label style="font-size:0.8rem;font-weight:600;display:block;margin:0.75rem 0 0.5rem;">Direction:</label><select id="gradientDir" style="width:100%;padding:0.5rem;border:1.5px solid var(--border);border-radius:var(--radius-md);background:var(--bg-input);color:var(--text-primary);font-family:var(--font-family);"><option value="135deg">Diagonal</option><option value="90deg">Horizontal</option><option value="180deg">Vertical</option><option value="225deg">Reverse Diagonal</option><option value="0deg">Left to Right</option></select></div>
+        <div class="gradient-preview" id="gradientPreview" style="background:var(--primary);"></div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.75rem;"><button class="btn btn-primary btn-sm" id="applyBannerBtn" style="flex:1;">Apply</button><button class="btn btn-ghost btn-sm" id="resetBannerBtn">Reset Default</button></div>
+    </div></div>
+
+    <!-- EDIT LINK MODAL -->
+    <div class="modal-overlay" id="editLinkModal"><div class="modal"><h3><span class="iconify" data-icon="ph:pencil-simple" data-width="20"></span> Edit Link</h3><input type="text" class="modal-input" id="editLinkTitle" placeholder="Link title"><input type="url" class="modal-input" id="editLinkUrl" placeholder="URL"><textarea class="modal-textarea" id="editLinkDesc" placeholder="Description"></textarea><div style="display:flex;gap:0.5rem;"><button class="btn btn-primary btn-sm" id="saveLinkBtn" style="flex:1;">Save Changes</button><button class="btn btn-ghost btn-sm" id="cancelLinkBtn">Cancel</button></div></div></div>
 
     <!-- CHAT PANEL -->
     <div class="chat-panel-overlay" id="chatPanelOverlay"></div>
-    <div class="chat-panel" id="chatPanel">
-        <div class="chat-panel-header"><span>💬 Messages</span><button class="chat-panel-close" id="chatPanelClose"><span class="iconify" data-icon="ph:x" data-width="18"></span></button></div>
-        <div class="chat-panel-list" id="chatPanelList"><div class="chat-panel-empty">No conversations yet</div></div>
-    </div>
+    <div class="chat-panel" id="chatPanel"><div class="chat-panel-header"><span><span class="iconify" data-icon="ph:chats-circle" data-width="18"></span> Messages</span><button class="chat-panel-close" id="chatPanelClose"><span class="iconify" data-icon="ph:x" data-width="18"></span></button></div><div class="chat-panel-list" id="chatPanelList"><div class="chat-panel-empty">No conversations yet</div></div></div>
 
     <div class="toast-container" id="toastContainer"></div>
 
@@ -212,53 +227,68 @@
         function fmtNum(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return String(n)}
         function userColor(u){var h=0;for(var i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return'hsl('+Math.abs(h%360)+',50%,45%)'}
 
-        var currentUser=null,profileUser=null,profileUid=null,allUserLinks=[],activeTab='links',isFollowing=false;
-        var BANNER_COLORS=['#6c47ff','#3b82f6','#10b981','#f59e0b','#ef4444','#ec4899','#8b5cf6','#06b6d4','#84cc16','#f97316','#6366f1','#14b8a6','#0f172a','#1e293b','#334155'];
+        var currentUser=null,profileUser=null,profileUid=null,allUserLinks=[],allLinksFiltered=[],activeTab='links',isFollowing=false;
+        var BANNER_COLORS=['#6c47ff','#3b82f6','#10b981','#f59e0b','#ef4444','#ec4899','#8b5cf6','#06b6d4','#84cc16','#f97316','#6366f1','#14b8a6','#0f172a','#1e293b','#334155','#ffffff','#000000','#dc2626','#eab308','#22c55e'];
+        var bannerMode='solid',selectedSolidColor='#6c47ff',selectedGradColor1='#6c47ff',selectedGradColor2='#3b82f6',selectedGradDir='135deg',editingLinkId=null;
 
         function toast(m,t){t=t||'success';var el=document.createElement('div');el.className='toast '+t;el.textContent=m;$('#toastContainer').appendChild(el);setTimeout(function(){el.style.opacity='0';el.style.transform='translateY(10px)';el.style.transition='all 0.3s';setTimeout(function(){el.remove()},300)},2500)}
         function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add('theme-'+t);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
 
         function renderAuthUI(){
             var a=$('#authArea');
-            if(currentUser){var color=currentUser.accentColor||userColor(currentUser.username);var initial=currentUser.emoji||(currentUser.username||'U')[0].toUpperCase();a.innerHTML='<button class="btn btn-ghost btn-sm" id="profileBtn" style="display:flex;align-items:center;gap:6px;"><span style="width:26px;height:26px;border-radius:50%;background:'+color+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:0.65rem;">'+initial+'</span>'+esc(currentUser.username||'User')+'</button>';setTimeout(function(){var b=$('#profileBtn');if(b)b.onclick=function(){window.open('index.html','_self')}},50)}
-            else{a.innerHTML='<button class="btn btn-primary btn-sm" id="signinBtn">Sign In</button>';setTimeout(function(){var b=$('#signinBtn');if(b)b.onclick=function(){window.open('index.html','_self')}},50)}
+            if(currentUser){var color=currentUser.accentColor||userColor(currentUser.username);var initial=currentUser.emoji||(currentUser.username||'U')[0].toUpperCase();a.innerHTML='<button class="btn btn-ghost btn-sm" id="profileBtn" style="display:flex;align-items:center;gap:6px;"><span style="width:26px;height:26px;border-radius:50%;background:'+color+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:0.65rem;">'+initial+'</span>'+esc(currentUser.username||'User')+'</button>'}
+            else{a.innerHTML='<button class="btn btn-primary btn-sm" id="signinBtn">Sign In</button>'}
         }
 
-        function showBannerEditor(){
-            var own=currentUser&&currentUser.uid===profileUid;
-            if(!own)return;
-            var html='';
-            BANNER_COLORS.forEach(function(c){html+='<div class="color-option" style="background:'+c+';" onclick="selectBannerColor(\''+c+'\')" data-color="'+c+'"></div>'});
-            $('#colorOptions').innerHTML=html;
-            $('#bannerModal').classList.add('active');
-            setTimeout(function(){
-                $('#applyBannerBtn').onclick=applyBanner;
-                $('#resetBannerBtn').onclick=resetBanner;
-            },50);
+        function bindButtons(){
+            var pb=$('#profileBtn');if(pb)pb.onclick=function(){window.open('index.html','_self')};
+            var sb=$('#signinBtn');if(sb)sb.onclick=function(){window.open('index.html','_self')};
+            var fb=$('#followBtn');if(fb)fb.onclick=toggleFollow;
+            var mb=$('#msgBtn');if(mb)mb.onclick=openChat;
+            var eb=$('#editBioBtn');if(eb)eb.onclick=openBioModal;
+            var eb2=$('#editBannerBtn2');if(eb2)eb2.onclick=openBannerModal;
         }
-        function selectBannerColor(c){
-            $$('.color-option').forEach(function(o){o.classList.remove('selected')});
-            var el=$('.color-option[data-color="'+c+'"]');if(el)el.classList.add('selected');
-            selectedBannerColor=c;
+
+        function openBioModal(){
+            $('#bioTextarea').value=profileUser.bio||'Hey! Text me for a Link!';
+            $('#bioModal').classList.add('active');
         }
-        var selectedBannerColor='#6c47ff';
+        function saveBio(){
+            var b=$('#bioTextarea').value.trim();
+            db.collection('users').doc(profileUid).update({bio:b}).then(function(){
+                profileUser.bio=b;renderHeader();$('#bioModal').classList.remove('active');toast('Bio updated!','success');
+            });
+        }
+
+        function openBannerModal(){
+            bannerMode='solid';selectedSolidColor='#6c47ff';selectedGradColor1='#6c47ff';selectedGradColor2='#3b82f6';selectedGradDir='135deg';
+            renderBannerUI();$('#bannerModal').classList.add('active');
+        }
+        function renderBannerUI(){
+            if(bannerMode==='solid'){
+                $('#solidSection').style.display='block';$('#gradientSection').style.display='none';
+                $('#solidModeBtn').style.background='var(--primary-light)';$('#solidModeBtn').style.color='var(--primary)';
+                $('#gradientModeBtn').style.background='transparent';$('#gradientModeBtn').style.color='var(--text-secondary)';
+                var h='';BANNER_COLORS.forEach(function(c){h+='<div class="color-swatch'+(c===selectedSolidColor?' selected':'')+'" style="background:'+c+';" data-color="'+c+'" onclick="selectSolidColor(\''+c+'\')"></div>'});
+                $('#solidColors').innerHTML=h;$('#gradientPreview').style.background=selectedSolidColor;
+            }else{
+                $('#solidSection').style.display='none';$('#gradientSection').style.display='block';
+                $('#gradientModeBtn').style.background='var(--primary-light)';$('#gradientModeBtn').style.color='var(--primary)';
+                $('#solidModeBtn').style.background='transparent';$('#solidModeBtn').style.color='var(--text-secondary)';
+                var h1='',h2='';BANNER_COLORS.forEach(function(c){h1+='<div class="color-swatch'+(c===selectedGradColor1?' selected':'')+'" style="background:'+c+';" data-color="'+c+'" onclick="selectGradColor1(\''+c+'\')"></div>';h2+='<div class="color-swatch'+(c===selectedGradColor2?' selected':'')+'" style="background:'+c+';" data-color="'+c+'" onclick="selectGradColor2(\''+c+'\')"></div>'});
+                $('#gradientColor1').innerHTML=h1;$('#gradientColor2').innerHTML=h2;
+                $('#gradientPreview').style.background='linear-gradient('+selectedGradDir+', '+selectedGradColor1+', '+selectedGradColor2+')';
+            }
+        }
+        function selectSolidColor(c){selectedSolidColor=c;renderBannerUI()}
+        function selectGradColor1(c){selectedGradColor1=c;renderBannerUI()}
+        function selectGradColor2(c){selectedGradColor2=c;renderBannerUI()}
         function applyBanner(){
-            var dir=$('#gradientDir').value||'135deg';
-            var style='linear-gradient('+dir+', '+selectedBannerColor+', '+selectedBannerColor+'cc)';
-            $('#profileCover').style.background=style;
-            profileUser.bannerStyle=style;
-            db.collection('users').doc(profileUid).update({bannerStyle:style});
-            $('#bannerModal').classList.remove('active');
-            toast('Banner updated!','success');
+            var style;if(bannerMode==='solid'){style=selectedSolidColor}else{style='linear-gradient('+selectedGradDir+', '+selectedGradColor1+', '+selectedGradColor2+')'}
+            $('#profileCover').style.background=style;profileUser.bannerStyle=style;
+            db.collection('users').doc(profileUid).update({bannerStyle:style});$('#bannerModal').classList.remove('active');toast('Banner updated!','success');
         }
-        function resetBanner(){
-            var style='linear-gradient(135deg, var(--primary), var(--secondary))';
-            $('#profileCover').style.background=style;
-            profileUser.bannerStyle=style;
-            db.collection('users').doc(profileUid).update({bannerStyle:style});
-            $('#bannerModal').classList.remove('active');
-            toast('Banner reset!','info');
-        }
+        function resetBanner(){var style='linear-gradient(135deg, var(--primary), var(--secondary))';$('#profileCover').style.background=style;profileUser.bannerStyle=style;db.collection('users').doc(profileUid).update({bannerStyle:style});$('#bannerModal').classList.remove('active');toast('Banner reset!','info')}
 
         async function loadProfile(){
             var p=new URLSearchParams(window.location.search);profileUid=p.get('uid');
@@ -266,50 +296,35 @@
             var doc=await db.collection('users').doc(profileUid).get();
             if(!doc.exists){$('#tabContent').innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="ph:user-circle" data-width="40"></span></div><p class="empty-state-title">User not found</p></div>';window.Iconify.scan($('#tabContent'));return}
             profileUser=doc.data();profileUser.uid=profileUid;
+            if(!profileUser.bio)profileUser.bio='Hey! Text me for a Link!';
             var followers=profileUser.followers||[];
             isFollowing=currentUser&&followers.indexOf(currentUser.uid)!==-1;
             renderHeader();
             var snap=await db.collection('links').where('ownerId','==',profileUid).orderBy('createdAt','desc').get();
             allUserLinks=[];snap.docs.forEach(function(d){var data=d.data();data.id=d.id;data.upvotes=data.upvotes||0;data.downvotes=data.downvotes||0;data.comments=data.comments||[];data.views=data.views||0;allUserLinks.push(data)});
+            allLinksFiltered=allUserLinks.slice();
             updateStats();loadTopLinks();renderTab('links');
             var own=currentUser&&currentUser.uid===profileUid;
-            if(own){$('#analyticsTab').style.display='';$('#coverEditBtns').style.display='';renderCoverEditBtns()}else{$('#analyticsTab').style.display='none';$('#coverEditBtns').style.display='none'}
+            if(own){$('#analyticsTab').style.display='';$('#coverEditBtns').style.display='';$('#coverEditBtns').innerHTML='<button class="btn btn-xs btn-ghost" id="editBannerBtn" style="background:rgba(0,0,0,0.3);color:#fff;"><span class="iconify" data-icon="ph:paint-brush" data-width="12"></span> Edit</button>';setTimeout(function(){var b=$('#editBannerBtn');if(b)b.onclick=openBannerModal},50)}
+            else{$('#analyticsTab').style.display='none';$('#coverEditBtns').style.display='none'}
             if(profileUser.bannerStyle){$('#profileCover').style.background=profileUser.bannerStyle}
-        }
-
-        function renderCoverEditBtns(){
-            $('#coverEditBtns').innerHTML='<button class="btn btn-xs btn-ghost" id="editBannerBtn" style="background:rgba(0,0,0,0.3);color:#fff;"><span class="iconify" data-icon="ph:paint-brush" data-width="12"></span> Edit</button>';
-            setTimeout(function(){var b=$('#editBannerBtn');if(b)b.onclick=showBannerEditor},50);
         }
 
         function renderHeader(){
             $('#profileName').textContent=(profileUser.emoji||'')+' '+esc(profileUser.username||'User');
             $('#profileUsername').textContent='@'+esc(profileUser.username||'user');
-            $('#profileBio').textContent=profileUser.bio||'';
+            $('#profileBio').textContent=profileUser.bio||'Hey! Text me for a Link!';
             $('#profileAvatar').style.background=profileUser.accentColor||userColor(profileUser.username);
             if(profileUser.emoji){$('#profileAvatar').innerHTML='<span style="font-size:2.2rem;">'+profileUser.emoji+'</span>'}
             else{$('#profileAvatar').innerHTML='<span style="font-size:2.2rem;font-weight:700;">'+(profileUser.username||'U')[0].toUpperCase()+'</span>'}
             var joinDate='--';if(profileUser.createdAt){joinDate=new Date(profileUser.createdAt).toLocaleDateString('en-US',{month:'long',year:'numeric'})}
             $('#profileJoined').innerHTML='<span class="iconify" data-icon="ph:calendar-blank" data-width="14"></span> Joined '+joinDate;
             if(profileUser.website){$('#profileWebsite').style.display='';$('#profileWebsite').innerHTML='<a href="'+esc(profileUser.website)+'" target="_blank" rel="noopener" style="color:var(--primary);display:flex;align-items:center;gap:0.35rem;"><span class="iconify" data-icon="ph:globe" data-width="14"></span> '+esc(getDomain(profileUser.website))+'</a>'}else{$('#profileWebsite').style.display='none'}
-            var own=currentUser&&currentUser.uid===profileUid;
-            var h='';
-            if(own){
-                h='<button class="btn btn-outline btn-sm" id="editBioBtn"><span class="iconify" data-icon="ph:pencil-simple" data-width="14"></span> Edit Bio</button>';
-                h+='<button class="btn btn-ghost btn-sm" id="editBannerBtn2"><span class="iconify" data-icon="ph:paint-brush" data-width="14"></span> Banner</button>';
-            }else if(currentUser){
-                var icon=isFollowing?'ph:user-minus':'ph:user-plus';var label=isFollowing?'Unfollow':'Follow';var btnClass=isFollowing?'btn-outline':'btn-primary';
-                h='<button class="btn '+btnClass+' btn-sm" id="followBtn"><span class="iconify" data-icon="'+icon+'" data-width="14"></span> '+label+'</button>';
-                if(isFollowing){h+='<button class="btn btn-outline btn-sm" id="msgBtn"><span class="iconify" data-icon="ph:chat-circle" data-width="14"></span> Message</button>'}
-            }else{h='<button class="btn btn-primary btn-sm" id="followBtn"><span class="iconify" data-icon="ph:user-plus" data-width="14"></span> Follow</button>'}
-            $('#profileActions').innerHTML=h;window.Iconify.scan($('#profileActions'));
-            setTimeout(function(){
-                var fb=$('#followBtn');if(fb)fb.onclick=toggleFollow;
-                var mb=$('#msgBtn');if(mb)mb.onclick=openChat;
-                var eb=$('#editBioBtn');if(eb)eb.onclick=editBio;
-                var eb2=$('#editBannerBtn2');if(eb2)eb2.onclick=showBannerEditor;
-            },50);
-        }
+            var own=currentUser&&currentUser.uid===profileUid;var h='';
+            if(own){h='<button class="btn btn-outline btn-sm" id="editBioBtn"><span class="iconify" data-icon="ph:pencil-simple" data-width="14"></span> Edit Bio</button><button class="btn btn-ghost btn-sm" id="editBannerBtn2"><span class="iconify" data-icon="ph:paint-brush" data-width="14"></span> Banner</button>'}
+            else if(currentUser){var icon=isFollowing?'ph:user-minus':'ph:user-plus';var label=isFollowing?'Unfollow':'Follow';var btnClass=isFollowing?'btn-outline':'btn-primary';h='<button class="btn '+btnClass+' btn-sm" id="followBtn"><span class="iconify" data-icon="'+icon+'" data-width="14"></span> '+label+'</button>';if(isFollowing){h+='<button class="btn btn-outline btn-sm" id="msgBtn"><span class="iconify" data-icon="ph:chat-circle" data-width="14"></span> Message</button>'}}
+            else{h='<button class="btn btn-primary btn-sm" id="followBtn"><span class="iconify" data-icon="ph:user-plus" data-width="14"></span> Follow</button>'}
+            $('#profileActions').innerHTML=h;window.Iconify.scan($('#profileActions'));bindButtons();}
 
         function updateStats(){
             $('#statLinks').textContent=fmtNum(allUserLinks.length);
@@ -317,48 +332,46 @@
             $('#statFollowers').textContent=fmtNum(followers.length);$('#statFollowing').textContent=fmtNum(following.length);
             var avgTrust='-';if(allUserLinks.length>0){var total=0;allUserLinks.forEach(function(l){total+=(l.trustScore||50)});avgTrust=Math.round(total/allUserLinks.length)}
             var tc='high';if(typeof avgTrust==='number'){if(avgTrust<40)tc='low';else if(avgTrust<70)tc='medium'}
-            $('#profileTrustBadge').innerHTML='<span class="iconify" data-icon="ph:shield-check" data-width="12"></span> '+avgTrust+'%';
-            $('#profileTrustBadge').className='trust-badge-sm '+tc;
-        }
+            $('#profileTrustBadge').innerHTML='<span class="iconify" data-icon="ph:shield-check" data-width="12"></span> '+avgTrust+'%';$('#profileTrustBadge').className='trust-badge-sm '+tc;}
 
         function loadTopLinks(){
             var sorted=allUserLinks.slice().sort(function(a,b){return(b.upvotes-b.downvotes)-(a.upvotes-a.downvotes)});var top=sorted.slice(0,3);
             if(top.length===0){$('#topLinksList').innerHTML='<p style="font-size:0.8rem;color:var(--text-tertiary);">No links yet</p>';return}
-            var html='';top.forEach(function(l,i){var net=(l.upvotes||0)-(l.downvotes||0);html+='<div style="padding:0.4rem 0;font-size:0.8rem;cursor:pointer;" onclick="window.open(\'index.html?link='+l.id+'\',\'_self\')"><strong>#'+(i+1)+'</strong> '+esc(l.title||'Untitled')+'<br><span style="color:var(--text-tertiary);font-size:0.7rem;"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="10"></span> '+fmtNum(net)+'</span></div>'});
-            $('#topLinksList').innerHTML=html;window.Iconify.scan($('#topLinksList'));
-        }
+            var html='';top.forEach(function(l,i){var net=(l.upvotes||0)-(l.downvotes||0);html+='<div style="padding:0.4rem 0;font-size:0.8rem;cursor:pointer;" onclick="window.open(\''+esc(l.url)+'\',\'_self\')"><strong>#'+(i+1)+'</strong> '+esc(l.title||'Untitled')+'<br><span style="color:var(--text-tertiary);font-size:0.7rem;"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="10"></span> '+fmtNum(net)+'</span></div>'});
+            $('#topLinksList').innerHTML=html;window.Iconify.scan($('#topLinksList'));}
 
-        async function renderTab(tab){
+        function filterLinks(){var q=$('#searchInput').value.toLowerCase().trim();if(!q){allLinksFiltered=allUserLinks.slice()}else{allLinksFiltered=allUserLinks.filter(function(l){return(l.title||'').toLowerCase().indexOf(q)!==-1||(l.description||'').toLowerCase().indexOf(q)!==-1||(l.url||'').toLowerCase().indexOf(q)!==-1})}renderTab('links')}
+
+        function renderTab(tab){
             activeTab=tab;$$('.stat-item').forEach(function(s){s.classList.remove('active')});var el=$('.stat-item[data-tab="'+tab+'"]');if(el)el.classList.add('active');
             var c=$('#tabContent');
-            if(tab==='links')renderLinksTab(c);
-            else if(tab==='followers'||tab==='following')await renderPeopleTab(c,tab);
-            else if(tab==='analytics')renderAnalyticsTab(c);
+            if(tab==='links')renderLinksTab(c);else if(tab==='followers'||tab==='following')renderPeopleTab(c,tab);else if(tab==='analytics')renderAnalyticsTab(c);
         }
 
         function renderLinksTab(c){
-            var own=currentUser&&currentUser.uid===profileUid;
-            if(allUserLinks.length===0){c.innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="ph:link-simple" data-width="40"></span></div><p class="empty-state-title">No links shared yet</p></div>';window.Iconify.scan(c);return}
-            var html='';allUserLinks.forEach(function(l){var sc=l.screenshot||l.previewImage||'';var net=(l.upvotes||0)-(l.downvotes||0);
-            html+='<div class="link-card"><div class="link-card-screenshot">'+(sc?'<img src="'+esc(sc)+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img><span class=iconify data-icon=ph:link-simple data-width=24></span></span>\'">':'<span class="no-img"><span class="iconify" data-icon="ph:link-simple" data-width="24"></span></span>')+'</div><div class="link-card-info"><div class="link-card-title" onclick="window.open(\''+esc(l.url)+'\',\'_self\')">'+esc(l.title||'Untitled')+'</div><div class="link-card-stats"><span class="link-card-stat"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="12"></span> '+fmtNum(net)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:chat-circle" data-width="12"></span> '+fmtNum((l.comments||[]).length)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:eye" data-width="12"></span> '+fmtNum(l.views||0)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:shield-check" data-width="12"></span> '+(l.trustScore||50)+'%</span><span class="link-card-stat"><span class="iconify" data-icon="ph:clock" data-width="12"></span> '+timeAgo(l.createdAt)+'</span></div>'+(own?'<div class="link-card-actions"><button class="btn btn-xs btn-outline" onclick="event.stopPropagation();editLink(\''+l.id+'\')"><span class="iconify" data-icon="ph:pencil-simple" data-width="10"></span> Edit</button><button class="btn btn-xs btn-danger" onclick="event.stopPropagation();deleteLink(\''+l.id+'\')"><span class="iconify" data-icon="ph:trash" data-width="10"></span> Delete</button></div>':'')+'</div></div>';
-            });c.innerHTML=html;window.Iconify.scan(c)}
+            var own=currentUser&&currentUser.uid===profileUid;var links=allLinksFiltered;
+            if(links.length===0){c.innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="ph:link-simple" data-width="40"></span></div><p class="empty-state-title">No links found</p></div>';window.Iconify.scan(c);return}
+            var html='';links.forEach(function(l){var sc=l.screenshot||l.previewImage||'';var net=(l.upvotes||0)-(l.downvotes||0);
+            html+='<div class="link-card"><div class="link-card-screenshot">'+(sc?'<img src="'+esc(sc)+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img><span class=iconify data-icon=ph:link-simple data-width=24></span></span>\'">':'<span class="no-img"><span class="iconify" data-icon="ph:link-simple" data-width="24"></span></span>')+'</div><div class="link-card-info"><div class="link-card-title" onclick="window.open(\''+esc(l.url)+'\',\'_self\')">'+esc(l.title||'Untitled')+'</div><div class="link-card-stats"><span class="link-card-stat"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="12"></span> '+fmtNum(net)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:chat-circle" data-width="12"></span> '+fmtNum((l.comments||[]).length)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:eye" data-width="12"></span> '+fmtNum(l.views||0)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:shield-check" data-width="12"></span> '+(l.trustScore||50)+'%</span><span class="link-card-stat"><span class="iconify" data-icon="ph:clock" data-width="12"></span> '+timeAgo(l.createdAt)+'</span></div>'+(own?'<div class="link-card-actions"><button class="btn btn-xs btn-outline" onclick="event.stopPropagation();openEditLinkModal(\''+l.id+'\')"><span class="iconify" data-icon="ph:pencil-simple" data-width="10"></span> Edit</button><button class="btn btn-xs btn-danger" onclick="event.stopPropagation();deleteLink(\''+l.id+'\')"><span class="iconify" data-icon="ph:trash" data-width="10"></span> Delete</button></div>':'')+'</div></div>';});
+            c.innerHTML=html;window.Iconify.scan(c);}
 
         async function renderPeopleTab(c,tab){
             var list=profileUser[tab]||[];if(list.length===0){var icon=tab==='followers'?'ph:users':'ph:user';var title=tab==='followers'?'No followers yet':'Not following anyone';c.innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="'+icon+'" data-width="40"></span></div><p class="empty-state-title">'+title+'</p></div>';window.Iconify.scan(c);return}
             c.innerHTML='<div class="loading-spinner"><div class="spinner"></div></div>';var users=[];for(var i=0;i<list.length;i++){var d=await db.collection('users').doc(list[i]).get();if(d.exists){var u=d.data();u.uid=list[i];users.push(u)}}
-            var html='';users.forEach(function(u){var color=u.accentColor||userColor(u.username);var initial=u.emoji||(u.username||'U')[0].toUpperCase();html+='<div class="person-card" onclick="window.open(\'profile.html?uid='+u.uid+'\',\'_self\')"><div class="person-avatar" style="background:'+color+';">'+(u.emoji?'<span style="font-size:1.2rem;">'+u.emoji+'</span>':initial)+'</div><div><div class="person-name">'+esc(u.username||'User')+'</div><div class="person-username">@'+esc(u.username||'user')+'</div></div></div>'});c.innerHTML=html;window.Iconify.scan(c)}
+            var html='';users.forEach(function(u){var color=u.accentColor||userColor(u.username);var initial=u.emoji||(u.username||'U')[0].toUpperCase();html+='<div class="person-card" onclick="window.open(\'profile.html?uid='+u.uid+'\',\'_self\')"><div class="person-avatar" style="background:'+color+';">'+(u.emoji?'<span style="font-size:1.2rem;">'+u.emoji+'</span>':initial)+'</div><div><div class="person-name">'+esc(u.username||'User')+'</div><div class="person-username">@'+esc(u.username||'user')+'</div></div></div>'});c.innerHTML=html;window.Iconify.scan(c);}
 
         function renderAnalyticsTab(c){
             if(!(currentUser&&currentUser.uid===profileUid)){c.innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="ph:lock-simple" data-width="40"></span></div><p class="empty-state-title">Only visible to profile owner</p></div>';return}
-            var totalViews=0,totalUpvotes=0,totalDownvotes=0,totalComments=0,totalSaves=0;allUserLinks.forEach(function(l){totalViews+=(l.views||0);totalUpvotes+=(l.upvotes||0);totalDownvotes+=(l.downvotes||0);totalComments+=(l.comments||[]).length;totalSaves+=(l.saves||0)});
-            var avgTrust='-';if(allUserLinks.length>0){var t=0;allUserLinks.forEach(function(l){t+=(l.trustScore||50)});avgTrust=Math.round(t/allUserLinks.length)+'%'}
-            var html='<div class="analytics-grid"><div class="analytics-card"><div class="analytics-value">'+fmtNum(allUserLinks.length)+'</div><div class="analytics-label">Total Links</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(totalViews)+'</div><div class="analytics-label">Total Views</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(totalUpvotes)+'</div><div class="analytics-label">Upvotes</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(totalComments)+'</div><div class="analytics-label">Comments</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(totalSaves)+'</div><div class="analytics-label">Saves</div></div><div class="analytics-card"><div class="analytics-value">'+avgTrust+'</div><div class="analytics-label">Avg Trust</div></div></div>';
-            var best=[...allUserLinks].sort(function(a,b){return(b.upvotes-b.downvotes)-(a.upvotes-a.downvotes)}).slice(0,5);
-            if(best.length>0){html+='<div style="font-weight:700;font-size:0.85rem;margin:1rem 0 0.5rem;">🏆 Best Performing Links</div>';best.forEach(function(l,i){html+='<div class="link-card" onclick="window.open(\''+esc(l.url)+'\',\'_self\')"><div class="link-card-info"><div class="link-card-title">#'+(i+1)+' '+esc(l.title||'Untitled')+'</div><div class="link-card-stats">👍 '+fmtNum((l.upvotes||0)-(l.downvotes||0))+' · 👁 '+fmtNum(l.views||0)+' · 💬 '+fmtNum((l.comments||[]).length)+'</div></div></div>'})}
-            c.innerHTML=html;window.Iconify.scan(c)}
+            var tv=0,tu=0,td=0,tc2=0,ts=0;allUserLinks.forEach(function(l){tv+=(l.views||0);tu+=(l.upvotes||0);td+=(l.downvotes||0);tc2+=(l.comments||[]).length;ts+=(l.saves||0)});
+            var at='-';if(allUserLinks.length>0){var t=0;allUserLinks.forEach(function(l){t+=(l.trustScore||50)});at=Math.round(t/allUserLinks.length)+'%'}
+            var html='<div class="analytics-grid"><div class="analytics-card"><div class="analytics-value">'+fmtNum(allUserLinks.length)+'</div><div class="analytics-label">Total Links</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(tv)+'</div><div class="analytics-label">Views</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(tu)+'</div><div class="analytics-label">Upvotes</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(tc2)+'</div><div class="analytics-label">Comments</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(ts)+'</div><div class="analytics-label">Saves</div></div><div class="analytics-card"><div class="analytics-value">'+at+'</div><div class="analytics-label">Avg Trust</div></div></div>';
+            var best=[].concat(allUserLinks).sort(function(a,b){return(b.upvotes-b.downvotes)-(a.upvotes-a.downvotes)}).slice(0,5);
+            if(best.length>0){html+='<div style="font-weight:700;font-size:0.85rem;margin:1rem 0 0.5rem;display:flex;align-items:center;gap:0.4rem;"><span class="iconify" data-icon="ph:trophy" data-width="16"></span> Best Performing</div>';best.forEach(function(l,i){html+='<div class="link-card" onclick="window.open(\''+esc(l.url)+'\',\'_self\')"><div class="link-card-info"><div class="link-card-title">#'+(i+1)+' '+esc(l.title||'Untitled')+'</div><div class="link-card-stats"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="10"></span> '+fmtNum((l.upvotes||0)-(l.downvotes||0))+' · <span class="iconify" data-icon="ph:eye" data-width="10"></span> '+fmtNum(l.views||0)+' · <span class="iconify" data-icon="ph:chat-circle" data-width="10"></span> '+fmtNum((l.comments||[]).length)+'</div></div></div>'})}
+            c.innerHTML=html;window.Iconify.scan(c);}
 
-        async function editLink(id){var l=allUserLinks.find(function(x){return x.id===id});if(!l)return;var nt=prompt('Edit title:',l.title||'');if(nt&&nt.trim()){await db.collection('links').doc(id).update({title:nt.trim()});l.title=nt.trim();renderTab('links');toast('Link updated!','success')}}
-        async function deleteLink(id){if(!confirm('Delete this link permanently?'))return;await db.collection('links').doc(id).delete();allUserLinks=allUserLinks.filter(function(l){return l.id!==id});updateStats();loadTopLinks();renderTab('links');toast('Link deleted','info')}
+        function openEditLinkModal(id){var l=allUserLinks.find(function(x){return x.id===id});if(!l)return;editingLinkId=id;$('#editLinkTitle').value=l.title||'';$('#editLinkUrl').value=l.url||'';$('#editLinkDesc').value=l.description||'';$('#editLinkModal').classList.add('active')}
+        function saveLinkEdit(){var id=editingLinkId;if(!id)return;var t=$('#editLinkTitle').value.trim();var u=$('#editLinkUrl').value.trim();var d=$('#editLinkDesc').value.trim();if(!t||!u){toast('Title and URL required','error');return}db.collection('links').doc(id).update({title:t,url:u,description:d}).then(function(){var l=allUserLinks.find(function(x){return x.id===id});if(l){l.title=t;l.url=u;l.description=d}renderTab('links');$('#editLinkModal').classList.remove('active');toast('Link updated!','success')})}
+        async function deleteLink(id){if(!confirm('Delete this link permanently?'))return;await db.collection('links').doc(id).delete();allUserLinks=allUserLinks.filter(function(l){return l.id!==id});allLinksFiltered=allLinksFiltered.filter(function(l){return l.id!==id});updateStats();loadTopLinks();renderTab('links');toast('Link deleted','info')}
 
         async function toggleFollow(){
             if(!currentUser||!profileUid)return;var ref=db.collection('users').doc(profileUid);var doc=await ref.get();if(!doc.exists)return;
@@ -368,18 +381,16 @@
             await ref.update({followers:followers});profileUser.followers=followers;
             var me=await db.collection('users').doc(currentUser.uid).get();
             if(me.exists){var f=me.data().following||[];if(isFollowing){if(f.indexOf(profileUid)===-1)f.push(profileUid)}else{f=f.filter(function(u){return u!==profileUid})}await db.collection('users').doc(currentUser.uid).update({following:f})}
-            updateStats();renderHeader();
-        }
+            updateStats();renderHeader();}
 
         function openChat(){if(!currentUser){toast('Sign in to chat','error');return}var followers=profileUser.followers||[];if(followers.indexOf(currentUser.uid)===-1){toast('Follow to message','error');return}window.open('chat.html?uid='+profileUid,'_self')}
-        async function editBio(){var b=prompt('Edit your bio:',profileUser.bio||'');if(b!==null){await db.collection('users').doc(profileUid).update({bio:b});profileUser.bio=b;renderHeader();toast('Bio updated!','success')}}
 
         function openChatPanel(){$('#chatPanelOverlay').classList.add('active');$('#chatPanel').classList.add('active');loadConversations()}
         function closeChatPanel(){$('#chatPanelOverlay').classList.remove('active');$('#chatPanel').classList.remove('active')}
         async function loadConversations(){if(!currentUser){$('#chatPanelList').innerHTML='<div class="chat-panel-empty">Sign in to use messages</div>';return}var snap=await db.collection('messages').where('participants','array-contains',currentUser.uid).orderBy('lastMessageAt','desc').get();var convs=snap.docs.map(function(d){return{id:d.id,data:d.data()}});if(convs.length===0){$('#chatPanelList').innerHTML='<div class="chat-panel-empty">No conversations yet</div>';return}var html='';convs.forEach(function(c){var otherId=c.data.participants.find(function(p){return p!==currentUser.uid});var otherName=(c.data.participantNames||{})[otherId]||'User';html+='<div style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem;border-radius:var(--radius-md);cursor:pointer;margin-bottom:0.25rem;" onclick="window.open(\'chat.html?uid='+otherId+'\',\'_self\')"><div style="width:36px;height:36px;border-radius:50%;background:'+userColor(otherName)+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:0.7rem;">'+(otherName||'U')[0].toUpperCase()+'</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.8rem;">'+esc(otherName)+'</div><div style="font-size:0.7rem;color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(c.data.lastMessage||'')+'</div></div></div>'});$('#chatPanelList').innerHTML=html}
 
         $$('#statsBar .stat-item').forEach(function(s){s.addEventListener('click',function(){renderTab(this.dataset.tab)})});
-        auth.onAuthStateChanged(async function(u){if(u){var d=await db.collection('users').doc(u.uid).get();if(d.exists){currentUser=d.data();currentUser.uid=u.uid}else{currentUser={uid:u.uid,username:(u.email||'user').split('@')[0],accentColor:userColor((u.email||'user').split('@')[0]),emoji:'👤'}}}else{currentUser=null}renderAuthUI()});
+        auth.onAuthStateChanged(async function(u){if(u){var d=await db.collection('users').doc(u.uid).get();if(d.exists){currentUser=d.data();currentUser.uid=u.uid}else{currentUser={uid:u.uid,username:(u.email||'user').split('@')[0],accentColor:userColor((u.email||'user').split('@')[0]),emoji:'👤'}}}else{currentUser=null}renderAuthUI();bindButtons()});
 
         document.addEventListener('DOMContentLoaded',function(){
             var t=localStorage.getItem('ls-theme')||'light';setTheme(t);
@@ -388,7 +399,18 @@
             $('#headerMsgBtn').addEventListener('click',openChatPanel);
             $('#chatPanelClose').addEventListener('click',closeChatPanel);
             $('#chatPanelOverlay').addEventListener('click',closeChatPanel);
+            $('#searchInput').addEventListener('input',function(){currentPage=1;filterLinks()});
+            $('#saveBioBtn').addEventListener('click',saveBio);
+            $('#cancelBioBtn').addEventListener('click',function(){$('#bioModal').classList.remove('active')});
+            $('#solidModeBtn').addEventListener('click',function(){bannerMode='solid';renderBannerUI()});
+            $('#gradientModeBtn').addEventListener('click',function(){bannerMode='gradient';renderBannerUI()});
+            $('#applyBannerBtn').addEventListener('click',applyBanner);
+            $('#resetBannerBtn').addEventListener('click',resetBanner);
             $('#bannerModal').addEventListener('click',function(e){if(e.target===$('#bannerModal'))$('#bannerModal').classList.remove('active')});
+            $('#bioModal').addEventListener('click',function(e){if(e.target===$('#bioModal'))$('#bioModal').classList.remove('active')});
+            $('#saveLinkBtn').addEventListener('click',saveLinkEdit);
+            $('#cancelLinkBtn').addEventListener('click',function(){$('#editLinkModal').classList.remove('active')});
+            $('#editLinkModal').addEventListener('click',function(e){if(e.target===$('#editLinkModal'))$('#editLinkModal').classList.remove('active')});
             renderAuthUI();loadProfile();
         });
     </script>
