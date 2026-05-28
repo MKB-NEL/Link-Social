@@ -35,7 +35,6 @@
         .navbar-logo{width:34px;height:34px;background-image:var(--logo-url);background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:var(--radius-sm)}
         .navbar-title{font-size:1.125rem;font-weight:600;letter-spacing:-0.2px}
         .navbar-actions{display:flex;align-items:center;gap:0.5rem}
-        .msg-count{position:absolute;top:-4px;right:-6px;background:var(--danger);color:#fff;font-size:0.6rem;font-weight:700;min-width:16px;height:16px;border-radius:var(--radius-full);display:none;align-items:center;justify-content:center;padding:0 4px}
 
         .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.25rem;padding:0.5rem 1rem;border-radius:var(--radius-full);font-weight:600;font-size:0.875rem;transition:all var(--transition-fast);cursor:pointer;font-family:var(--font-family);border:none;white-space:nowrap}
         .btn:active{transform:scale(0.97)}
@@ -113,7 +112,7 @@
         <div class="navbar-inner">
             <a class="navbar-brand" href="index.html"><div class="navbar-logo"></div><span class="navbar-title">LinkSocial</span></a>
             <div class="navbar-actions">
-                <button class="btn btn-icon btn-ghost" style="position:relative;" id="headerMsgBtn" title="Messages"><span class="iconify" data-icon="ph:chats-circle" data-width="22"></span><span class="msg-count" id="headerMsgCount">0</span></button>
+                <button class="btn btn-icon btn-ghost" id="headerMsgBtn" title="Messages"><span class="iconify" data-icon="ph:chats-circle" data-width="22"></span></button>
                 <button class="btn btn-icon btn-ghost" id="themeToggle" title="Toggle theme"><span class="iconify" data-icon="ph:moon" data-width="20" id="themeIcon"></span></button>
                 <button class="btn btn-outline btn-sm" id="shareBtn"><span class="iconify" data-icon="ph:plus" data-width="14"></span> Share</button>
                 <div id="authArea"></div>
@@ -138,7 +137,7 @@
             <div class="profile-actions" id="profileActions"></div>
         </div>
 
-        <div class="stats-bar">
+        <div class="stats-bar" id="statsBar">
             <div class="stat-item active" data-tab="links"><div class="stat-value" id="statLinks">0</div><div class="stat-label">Links</div></div>
             <div class="stat-item" data-tab="followers"><div class="stat-value" id="statFollowers">0</div><div class="stat-label">Followers</div></div>
             <div class="stat-item" data-tab="following"><div class="stat-value" id="statFollowing">0</div><div class="stat-label">Following</div></div>
@@ -156,132 +155,391 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        const firebaseConfig={apiKey:"AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",authDomain:"joefootball-15e7a.firebaseapp.com",projectId:"joefootball-15e7a",storageBucket:"joefootball-15e7a.firebasestorage.app"};
+        // Firebase init
+        var firebaseConfig = {
+            apiKey: "AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",
+            authDomain: "joefootball-15e7a.firebaseapp.com",
+            projectId: "joefootball-15e7a",
+            storageBucket: "joefootball-15e7a.firebasestorage.app"
+        };
         firebase.initializeApp(firebaseConfig);
-        const db=firebase.firestore();
-        const auth=firebase.auth();
+        var db = firebase.firestore();
+        var auth = firebase.auth();
 
-        const $=s=>document.querySelector(s);
-        const $$=s=>document.querySelectorAll(s);
-        const esc=s=>s?String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]):'');
-        const getDomain=u=>{try{return new URL(u).hostname.replace('www.','')}catch{return u}};
-        const timeAgo=ts=>{if(!ts)return'';const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'};
-        const fmtNum=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(n);
-        const userColor=u=>{let h=0;for(let i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return`hsl(${Math.abs(h%360)},50%,45%)`};
-
-        let currentUser=null,profileUser=null,profileUid=null,allUserLinks=[],activeTab='links',isFollowing=false;
-
-        function toast(m,t='success'){const el=document.createElement('div');el.className=`toast ${t}`;el.textContent=m;$('#toastContainer').appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateY(10px)';el.style.transition='all 0.3s';setTimeout(()=>el.remove(),300)},2500)}
-        function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add(`theme-${t}`);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
-
-        function renderAuthUI(){
-            const a=$('#authArea');
-            if(currentUser){a.innerHTML=`<button class="btn btn-ghost btn-sm" id="profileBtn" style="display:flex;align-items:center;gap:6px;"><span style="width:26px;height:26px;border-radius:50%;background:${currentUser.accentColor||userColor(currentUser.username)};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:0.65rem;">${currentUser.emoji||(currentUser.username||'U')[0].toUpperCase()}</span>${esc(currentUser.username||'User')}</button>`;setTimeout(()=>{const b=$('#profileBtn');if(b)b.onclick=()=>window.open('index.html','_self')},50)}
-            else{a.innerHTML=`<button class="btn btn-primary btn-sm" id="signinBtn">Sign In</button>`;setTimeout(()=>{const b=$('#signinBtn');if(b)b.onclick=()=>window.open('index.html','_self')},50)}
+        // Helpers
+        function $(s) { return document.querySelector(s); }
+        function $$(s) { return document.querySelectorAll(s); }
+        function esc(s) {
+            if (!s) return '';
+            return String(s).replace(/[&<>"']/g, function(m) {
+                return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[m];
+            });
+        }
+        function getDomain(u) {
+            try { return new URL(u).hostname.replace('www.', ''); } catch(e) { return u; }
+        }
+        function timeAgo(ts) {
+            if (!ts) return '';
+            var s = Math.floor((Date.now() - ts) / 1000);
+            if (s < 60) return 'now';
+            if (s < 3600) return Math.floor(s / 60) + 'm';
+            if (s < 86400) return Math.floor(s / 3600) + 'h';
+            return Math.floor(s / 86400) + 'd';
+        }
+        function fmtNum(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+            return String(n);
+        }
+        function userColor(u) {
+            var h = 0;
+            for (var i = 0; i < (u || 'a').length; i++) {
+                h = u.charCodeAt(i) + ((h << 5) - h);
+            }
+            return 'hsl(' + Math.abs(h % 360) + ',50%,45%)';
         }
 
-        async function loadProfile(){
-            const p=new URLSearchParams(window.location.search);profileUid=p.get('uid');
-            if(!profileUid){$('#tabContent').innerHTML='<div class="empty-state"><div class="empty-state-icon">⚠️</div><p class="empty-state-title">No user specified</p></div>';return}
-            const doc=await db.collection('users').doc(profileUid).get();
-            if(!doc.exists){$('#tabContent').innerHTML='<div class="empty-state"><div class="empty-state-icon">👤</div><p class="empty-state-title">User not found</p></div>';return}
-            profileUser={uid:profileUid,...doc.data()};
-            isFollowing=currentUser&&(profileUser.followers||[]).includes(currentUser.uid);
+        // State
+        var currentUser = null;
+        var profileUser = null;
+        var profileUid = null;
+        var allUserLinks = [];
+        var activeTab = 'links';
+        var isFollowing = false;
+
+        // Toast
+        function toast(msg, type) {
+            type = type || 'success';
+            var el = document.createElement('div');
+            el.className = 'toast ' + type;
+            el.textContent = msg;
+            $('#toastContainer').appendChild(el);
+            setTimeout(function() {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(10px)';
+                el.style.transition = 'all 0.3s';
+                setTimeout(function() { el.remove(); }, 300);
+            }, 2500);
+        }
+
+        // Theme
+        function setTheme(t) {
+            document.body.classList.remove('theme-light', 'theme-dark');
+            document.body.classList.add('theme-' + t);
+            $('#themeIcon').setAttribute('data-icon', t === 'dark' ? 'ph:sun' : 'ph:moon');
+            localStorage.setItem('ls-theme', t);
+        }
+
+        // Auth UI
+        function renderAuthUI() {
+            var a = $('#authArea');
+            if (currentUser) {
+                var color = currentUser.accentColor || userColor(currentUser.username);
+                var initial = currentUser.emoji || (currentUser.username || 'U')[0].toUpperCase();
+                var name = esc(currentUser.username || 'User');
+                a.innerHTML = '<button class="btn btn-ghost btn-sm" id="profileBtn" style="display:flex;align-items:center;gap:6px;"><span style="width:26px;height:26px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:0.65rem;">' + initial + '</span>' + name + '</button>';
+                setTimeout(function() {
+                    var b = $('#profileBtn');
+                    if (b) b.onclick = function() { window.open('index.html', '_self'); };
+                }, 50);
+            } else {
+                a.innerHTML = '<button class="btn btn-primary btn-sm" id="signinBtn">Sign In</button>';
+                setTimeout(function() {
+                    var b = $('#signinBtn');
+                    if (b) b.onclick = function() { window.open('index.html', '_self'); };
+                }, 50);
+            }
+        }
+
+        // Load profile
+        async function loadProfile() {
+            var p = new URLSearchParams(window.location.search);
+            profileUid = p.get('uid');
+            if (!profileUid) {
+                $('#tabContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p class="empty-state-title">No user specified</p></div>';
+                return;
+            }
+            var doc = await db.collection('users').doc(profileUid).get();
+            if (!doc.exists) {
+                $('#tabContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">👤</div><p class="empty-state-title">User not found</p></div>';
+                return;
+            }
+            profileUser = doc.data();
+            profileUser.uid = profileUid;
+            var followers = profileUser.followers || [];
+            isFollowing = currentUser && followers.includes(currentUser.uid);
             renderHeader();
-            const snap=await db.collection('links').where('ownerId','==',profileUid).orderBy('createdAt','desc').get();
-            allUserLinks=snap.docs.map(d=>({id:d.id,...d.data(),upvotes:d.data().upvotes||0,downvotes:d.data().downvotes||0,comments:d.data().comments||[],views:d.data().views||0}));
+            var snap = await db.collection('links').where('ownerId', '==', profileUid).orderBy('createdAt', 'desc').get();
+            allUserLinks = [];
+            snap.docs.forEach(function(d) {
+                var data = d.data();
+                data.id = d.id;
+                data.upvotes = data.upvotes || 0;
+                data.downvotes = data.downvotes || 0;
+                data.comments = data.comments || [];
+                data.views = data.views || 0;
+                allUserLinks.push(data);
+            });
             updateStats();
             loadTopLinks();
             renderTab('links');
         }
 
-        function renderHeader(){
-            $('#profileName').textContent=(profileUser.emoji||'')+' '+esc(profileUser.username||'User');
-            $('#profileUsername').textContent='@'+esc(profileUser.username||'user');
-            $('#profileBio').textContent=profileUser.bio||'';
-            $('#profileAvatar').style.background=profileUser.accentColor||userColor(profileUser.username);
-            $('#profileAvatar').textContent=profileUser.emoji||(profileUser.username||'U')[0].toUpperCase();
-            $('#profileJoined').innerHTML=`<span class="iconify" data-icon="ph:calendar" data-width="14"></span> Joined ${profileUser.createdAt?new Date(profileUser.createdAt).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'--'}`;
-            if(profileUser.website){$('#profileWebsite').style.display='';$('#profileWebsite').innerHTML=`<a href="${esc(profileUser.website)}" target="_blank" rel="noopener" style="color:var(--primary);"><span class="iconify" data-icon="ph:globe" data-width="14"></span> ${esc(getDomain(profileUser.website))}</a>`}else{$('#profileWebsite').style.display='none'}
-            const own=currentUser&&currentUser.uid===profileUid;
-            let h='';
-            if(own)h=`<button class="btn btn-outline btn-sm" onclick="editBio()"><span class="iconify" data-icon="ph:pencil" data-width="14"></span> Edit Bio</button>`;
-            else if(currentUser)h=`<button class="btn ${isFollowing?'btn-outline':'btn-primary'} btn-sm" id="followBtn"><span class="iconify" data-icon="${isFollowing?'ph:user-minus':'ph:user-plus'}" data-width="14"></span> ${isFollowing?'Unfollow':'Follow'}</button>${isFollowing?`<button class="btn btn-outline btn-sm" id="msgBtn"><span class="iconify" data-icon="ph:chat-circle" data-width="14"></span> Message</button>`:''}`;
-            else h=`<button class="btn btn-primary btn-sm" onclick="window.open('index.html','_self')"><span class="iconify" data-icon="ph:user-plus" data-width="14"></span> Follow</button>`;
-            $('#profileActions').innerHTML=h;
-            window.Iconify?.scan?.($('#profileActions'));
-            setTimeout(()=>{
-                const fb=$('#followBtn');if(fb)fb.onclick=toggleFollow;
-                const mb=$('#msgBtn');if(mb)mb.onclick=openChat;
-            },50);
-        }
-
-        function updateStats(){
-            $('#statLinks').textContent=fmtNum(allUserLinks.length);
-            $('#statFollowers').textContent=fmtNum((profileUser.followers||[]).length);
-            $('#statFollowing').textContent=fmtNum((profileUser.following||[]).length);
-            const avg=allUserLinks.length>0?Math.round(allUserLinks.reduce((s,l)=>s+(l.trustScore||50),0)/allUserLinks.length):'-';
-            $('#profileTrustBadge').textContent=`🛡 ${avg}%`;
-            $('#profileTrustBadge').className=`trust-badge-sm ${typeof avg==='number'?(avg>=70?'high':avg>=40?'medium':'low'):'high'}`;
-        }
-
-        function loadTopLinks(){
-            const top=[...allUserLinks].sort((a,b)=>(b.upvotes-b.downvotes)-(a.upvotes-a.downvotes)).slice(0,3);
-            $('#topLinksList').innerHTML=top.length?top.map((l,i)=>`<div style="padding:0.4rem 0;font-size:0.8rem;cursor:pointer;" onclick="window.open('index.html?link=${l.id}','_self')"><strong>#${i+1}</strong> ${esc(l.title||'Untitled')}<br><span style="color:var(--text-tertiary);font-size:0.7rem;">👍 ${fmtNum((l.upvotes||0)-(l.downvotes||0))}</span></div>`).join(''):'<p style="font-size:0.8rem;color:var(--text-tertiary);">No links yet</p>';
-        }
-
-        async function renderTab(tab){
-            activeTab=tab;
-            $$('.stat-item').forEach(s=>s.classList.remove('active'));
-            $(`.stat-item[data-tab="${tab}"]`)?.classList.add('active');
-            const c=$('#tabContent');
-            if(tab==='links'){
-                if(!allUserLinks.length){c.innerHTML='<div class="empty-state"><div class="empty-state-icon">🔗</div><p class="empty-state-title">No links shared yet</p></div>';return}
-                c.innerHTML=allUserLinks.map(l=>{const sc=l.screenshot||l.previewImage||'';return`<div class="link-card" onclick="window.open('index.html?link=${l.id}','_self')"><div class="link-card-screenshot">${sc?`<img src="${esc(sc)}" alt="" loading="lazy" onerror="this.innerHTML='<span class=no-img>🔗</span>'">`:'<span class="no-img">🔗</span>'}</div><div class="link-card-info"><div class="link-card-title">${esc(l.title||'Untitled')}</div>${l.description?`<div class="link-card-desc">${esc(l.description)}</div>`:''}<div class="link-card-stats"><span class="link-card-stat"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="12"></span> ${fmtNum((l.upvotes||0)-(l.downvotes||0))}</span><span class="link-card-stat"><span class="iconify" data-icon="ph:chat-circle" data-width="12"></span> ${fmtNum((l.comments||[]).length)}</span><span class="link-card-stat"><span class="iconify" data-icon="ph:eye" data-width="12"></span> ${fmtNum(l.views||0)}</span><span class="link-card-stat">🛡 ${l.trustScore||50}%</span><span class="link-card-stat">${timeAgo(l.createdAt)}</span></div></div></div>`}).join('');
-            }else{
-                const list=profileUser[tab]||[];
-                if(!list.length){c.innerHTML=`<div class="empty-state"><div class="empty-state-icon">${tab==='followers'?'👥':'👤'}</div><p class="empty-state-title">${tab==='followers'?'No followers yet':'Not following anyone'}</p></div>`;return}
-                c.innerHTML='<div class="loading-spinner"><div class="spinner"></div></div>';
-                const users=await Promise.all(list.map(async uid=>{const d=await db.collection('users').doc(uid).get();return d.exists?{uid,...d.data()}:null}));
-                c.innerHTML=users.filter(Boolean).map(u=>`<div class="person-card" onclick="window.open('profile.html?uid=${u.uid}','_self')"><div class="person-avatar" style="background:${u.accentColor||userColor(u.username)};">${u.emoji||(u.username||'U')[0].toUpperCase()}</div><div><div class="person-name">${esc(u.username||'User')}</div><div class="person-username">@${esc(u.username||'user')}</div></div></div>`).join('');
+        function renderHeader() {
+            $('#profileName').textContent = (profileUser.emoji || '') + ' ' + esc(profileUser.username || 'User');
+            $('#profileUsername').textContent = '@' + esc(profileUser.username || 'user');
+            $('#profileBio').textContent = profileUser.bio || '';
+            $('#profileAvatar').style.background = profileUser.accentColor || userColor(profileUser.username);
+            $('#profileAvatar').textContent = profileUser.emoji || (profileUser.username || 'U')[0].toUpperCase();
+            
+            var joinDate = '--';
+            if (profileUser.createdAt) {
+                joinDate = new Date(profileUser.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
             }
-            window.Iconify?.scan?.(c);
+            $('#profileJoined').innerHTML = '<span class="iconify" data-icon="ph:calendar" data-width="14"></span> Joined ' + joinDate;
+            
+            if (profileUser.website) {
+                $('#profileWebsite').style.display = '';
+                $('#profileWebsite').innerHTML = '<a href="' + esc(profileUser.website) + '" target="_blank" rel="noopener" style="color:var(--primary);"><span class="iconify" data-icon="ph:globe" data-width="14"></span> ' + esc(getDomain(profileUser.website)) + '</a>';
+            } else {
+                $('#profileWebsite').style.display = 'none';
+            }
+            
+            var own = currentUser && currentUser.uid === profileUid;
+            var h = '';
+            if (own) {
+                h = '<button class="btn btn-outline btn-sm" id="editBioBtn"><span class="iconify" data-icon="ph:pencil" data-width="14"></span> Edit Bio</button>';
+            } else if (currentUser) {
+                var icon = isFollowing ? 'ph:user-minus' : 'ph:user-plus';
+                var label = isFollowing ? 'Unfollow' : 'Follow';
+                var btnClass = isFollowing ? 'btn-outline' : 'btn-primary';
+                h = '<button class="btn ' + btnClass + ' btn-sm" id="followBtn"><span class="iconify" data-icon="' + icon + '" data-width="14"></span> ' + label + '</button>';
+                if (isFollowing) {
+                    h += '<button class="btn btn-outline btn-sm" id="msgBtn"><span class="iconify" data-icon="ph:chat-circle" data-width="14"></span> Message</button>';
+                }
+            } else {
+                h = '<button class="btn btn-primary btn-sm" id="followBtn"><span class="iconify" data-icon="ph:user-plus" data-width="14"></span> Follow</button>';
+            }
+            $('#profileActions').innerHTML = h;
+            window.Iconify.scan($('#profileActions'));
+            
+            setTimeout(function() {
+                var fb = $('#followBtn');
+                if (fb) fb.onclick = toggleFollow;
+                var mb = $('#msgBtn');
+                if (mb) mb.onclick = openChat;
+                var eb = $('#editBioBtn');
+                if (eb) eb.onclick = editBio;
+            }, 50);
         }
 
-        async function toggleFollow(){
-            if(!currentUser||!profileUid)return;
-            const ref=db.collection('users').doc(profileUid);
-            const doc=await ref.get();if(!doc.exists)return;
-            let followers=doc.data().followers||[];
-            if(followers.includes(currentUser.uid)){followers=followers.filter(u=>u!==currentUser.uid);isFollowing=false;toast('Unfollowed','info')}
-            else{followers.push(currentUser.uid);isFollowing=true;toast('Following!','success')}
-            await ref.update({followers});
-            const me=await db.collection('users').doc(currentUser.uid).get();
-            if(me.exists){let f=me.data().following||[];f=isFollowing?[...new Set([...f,profileUid])]:f.filter(u=>u!==profileUid);await db.collection('users').doc(currentUser.uid).update({following:f})}
-            profileUser.followers=followers;updateStats();renderHeader();
+        function updateStats() {
+            $('#statLinks').textContent = fmtNum(allUserLinks.length);
+            var followers = profileUser.followers || [];
+            var following = profileUser.following || [];
+            $('#statFollowers').textContent = fmtNum(followers.length);
+            $('#statFollowing').textContent = fmtNum(following.length);
+            
+            var avgTrust = '-';
+            if (allUserLinks.length > 0) {
+                var total = 0;
+                allUserLinks.forEach(function(l) { total += (l.trustScore || 50); });
+                avgTrust = Math.round(total / allUserLinks.length);
+            }
+            var tc = 'high';
+            if (typeof avgTrust === 'number') {
+                if (avgTrust < 40) tc = 'low';
+                else if (avgTrust < 70) tc = 'medium';
+            }
+            $('#profileTrustBadge').textContent = '🛡 ' + avgTrust + '%';
+            $('#profileTrustBadge').className = 'trust-badge-sm ' + tc;
         }
 
-        function openChat(){
-            if(!currentUser)return toast('Sign in to chat','error');
-            if(!(profileUser.followers||[]).includes(currentUser.uid))return toast('Follow to message','error');
-            window.open(`chat.html?uid=${profileUid}`,'_self');
+        function loadTopLinks() {
+            var sorted = allUserLinks.slice().sort(function(a, b) {
+                return (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
+            });
+            var top = sorted.slice(0, 3);
+            if (top.length === 0) {
+                $('#topLinksList').innerHTML = '<p style="font-size:0.8rem;color:var(--text-tertiary);">No links yet</p>';
+                return;
+            }
+            var html = '';
+            top.forEach(function(l, i) {
+                var net = (l.upvotes || 0) - (l.downvotes || 0);
+                html += '<div style="padding:0.4rem 0;font-size:0.8rem;cursor:pointer;" onclick="window.open(\'index.html?link=' + l.id + '\',\'_self\')"><strong>#' + (i + 1) + '</strong> ' + esc(l.title || 'Untitled') + '<br><span style="color:var(--text-tertiary);font-size:0.7rem;">👍 ' + fmtNum(net) + '</span></div>';
+            });
+            $('#topLinksList').innerHTML = html;
         }
 
-        async function editBio(){const b=prompt('Edit bio:',profileUser.bio||'');if(b!==null){await db.collection('users').doc(profileUid).update({bio:b});profileUser.bio=b;renderHeader();toast('Bio updated!','success')}}
+        async function renderTab(tab) {
+            activeTab = tab;
+            $$('.stat-item').forEach(function(s) { s.classList.remove('active'); });
+            var el = $('.stat-item[data-tab="' + tab + '"]');
+            if (el) el.classList.add('active');
+            var c = $('#tabContent');
+            
+            if (tab === 'links') {
+                if (allUserLinks.length === 0) {
+                    c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔗</div><p class="empty-state-title">No links shared yet</p></div>';
+                    return;
+                }
+                var html = '';
+                allUserLinks.forEach(function(l) {
+                    var sc = l.screenshot || l.previewImage || '';
+                    var net = (l.upvotes || 0) - (l.downvotes || 0);
+                    html += '<div class="link-card" onclick="window.open(\'index.html?link=' + l.id + '\',\'_self\')">';
+                    html += '<div class="link-card-screenshot">';
+                    if (sc) {
+                        html += '<img src="' + esc(sc) + '" alt="" loading="lazy" onerror="this.innerHTML=\'<span class=no-img>🔗</span>\'">';
+                    } else {
+                        html += '<span class="no-img">🔗</span>';
+                    }
+                    html += '</div>';
+                    html += '<div class="link-card-info">';
+                    html += '<div class="link-card-title">' + esc(l.title || 'Untitled') + '</div>';
+                    if (l.description) {
+                        html += '<div class="link-card-desc">' + esc(l.description) + '</div>';
+                    }
+                    html += '<div class="link-card-stats">';
+                    html += '<span class="link-card-stat"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="12"></span> ' + fmtNum(net) + '</span>';
+                    html += '<span class="link-card-stat"><span class="iconify" data-icon="ph:chat-circle" data-width="12"></span> ' + fmtNum((l.comments || []).length) + '</span>';
+                    html += '<span class="link-card-stat"><span class="iconify" data-icon="ph:eye" data-width="12"></span> ' + fmtNum(l.views || 0) + '</span>';
+                    html += '<span class="link-card-stat">🛡 ' + (l.trustScore || 50) + '%</span>';
+                    html += '<span class="link-card-stat">' + timeAgo(l.createdAt) + '</span>';
+                    html += '</div></div></div>';
+                });
+                c.innerHTML = html;
+            } else {
+                var list = profileUser[tab] || [];
+                if (list.length === 0) {
+                    var icon = tab === 'followers' ? '👥' : '👤';
+                    var title = tab === 'followers' ? 'No followers yet' : 'Not following anyone';
+                    c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">' + icon + '</div><p class="empty-state-title">' + title + '</p></div>';
+                    return;
+                }
+                c.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+                var users = [];
+                for (var i = 0; i < list.length; i++) {
+                    var d = await db.collection('users').doc(list[i]).get();
+                    if (d.exists) {
+                        var u = d.data();
+                        u.uid = list[i];
+                        users.push(u);
+                    }
+                }
+                var html = '';
+                users.forEach(function(u) {
+                    var color = u.accentColor || userColor(u.username);
+                    var initial = u.emoji || (u.username || 'U')[0].toUpperCase();
+                    html += '<div class="person-card" onclick="window.open(\'profile.html?uid=' + u.uid + '\',\'_self\')">';
+                    html += '<div class="person-avatar" style="background:' + color + ';">' + initial + '</div>';
+                    html += '<div><div class="person-name">' + esc(u.username || 'User') + '</div>';
+                    html += '<div class="person-username">@' + esc(u.username || 'user') + '</div></div></div>';
+                });
+                c.innerHTML = html;
+            }
+            window.Iconify.scan(c);
+        }
 
-        $$('#statsBar .stat-item').forEach(s=>s.addEventListener('click',()=>renderTab(s.dataset.tab)));
-        auth.onAuthStateChanged(async u=>{
-            if(u){const d=await db.collection('users').doc(u.uid).get();currentUser=d.exists?{uid:u.uid,...d.data()}:{uid:u.uid,username:u.email?.split('@')[0]||'user',accentColor:userColor(u.email?.split('@')[0]||'user'),emoji:'👤'}}
-            else currentUser=null;
+        async function toggleFollow() {
+            if (!currentUser || !profileUid) return;
+            var ref = db.collection('users').doc(profileUid);
+            var doc = await ref.get();
+            if (!doc.exists) return;
+            var followers = doc.data().followers || [];
+            if (followers.includes(currentUser.uid)) {
+                followers = followers.filter(function(u) { return u !== currentUser.uid; });
+                isFollowing = false;
+                toast('Unfollowed', 'info');
+            } else {
+                followers.push(currentUser.uid);
+                isFollowing = true;
+                toast('Following!', 'success');
+            }
+            await ref.update({ followers: followers });
+            var me = await db.collection('users').doc(currentUser.uid).get();
+            if (me.exists) {
+                var f = me.data().following || [];
+                if (isFollowing) {
+                    if (f.indexOf(profileUid) === -1) f.push(profileUid);
+                } else {
+                    f = f.filter(function(u) { return u !== profileUid; });
+                }
+                await db.collection('users').doc(currentUser.uid).update({ following: f });
+            }
+            profileUser.followers = followers;
+            updateStats();
+            renderHeader();
+        }
+
+        function openChat() {
+            if (!currentUser) {
+                toast('Sign in to chat', 'error');
+                return;
+            }
+            var followers = profileUser.followers || [];
+            if (followers.indexOf(currentUser.uid) === -1) {
+                toast('Follow to message', 'error');
+                return;
+            }
+            window.open('chat.html?uid=' + profileUid, '_self');
+        }
+
+        async function editBio() {
+            var b = prompt('Edit bio:', profileUser.bio || '');
+            if (b !== null) {
+                await db.collection('users').doc(profileUid).update({ bio: b });
+                profileUser.bio = b;
+                renderHeader();
+                toast('Bio updated!', 'success');
+            }
+        }
+
+        // Stats bar clicks
+        $$('#statsBar .stat-item').forEach(function(s) {
+            s.addEventListener('click', function() {
+                renderTab(this.dataset.tab);
+            });
+        });
+
+        // Auth state
+        auth.onAuthStateChanged(async function(u) {
+            if (u) {
+                var d = await db.collection('users').doc(u.uid).get();
+                if (d.exists) {
+                    currentUser = d.data();
+                    currentUser.uid = u.uid;
+                } else {
+                    currentUser = {
+                        uid: u.uid,
+                        username: (u.email || 'user').split('@')[0],
+                        accentColor: userColor((u.email || 'user').split('@')[0]),
+                        emoji: '👤'
+                    };
+                }
+            } else {
+                currentUser = null;
+            }
             renderAuthUI();
         });
 
-        document.addEventListener('DOMContentLoaded',()=>{
-            const t=localStorage.getItem('ls-theme')||'light';setTheme(t);
-            $('#themeToggle').addEventListener('click',()=>setTheme(document.body.classList.contains('theme-dark')?'light':'dark'));
-            $('#shareBtn').addEventListener('click',()=>window.open('add-link.html','_self'));
-            $('#headerMsgBtn').addEventListener('click',()=>window.open('chat.html','_self'));
-            renderAuthUI();loadProfile();
+        // Init
+        document.addEventListener('DOMContentLoaded', function() {
+            var t = localStorage.getItem('ls-theme') || 'light';
+            setTheme(t);
+            $('#themeToggle').addEventListener('click', function() {
+                var cur = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
+                setTheme(cur === 'dark' ? 'light' : 'dark');
+            });
+            $('#shareBtn').addEventListener('click', function() {
+                window.open('add-link.html', '_self');
+            });
+            $('#headerMsgBtn').addEventListener('click', function() {
+                window.open('chat.html', '_self');
+            });
+            renderAuthUI();
+            loadProfile();
         });
     </script>
 </body>
