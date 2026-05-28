@@ -29,6 +29,8 @@
         @keyframes spin{to{transform:rotate(360deg)}}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
         @keyframes shieldFill{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+        @keyframes shake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-4px)}20%,40%,60%,80%{transform:translateX(4px)}}
+        @keyframes modalIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
 
         .main-container{display:flex;gap:1.5rem;max-width:1050px;width:100%;align-items:flex-start}
         .form-panel{flex:1;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-2xl);padding:2.25rem;box-shadow:var(--shadow-lg);animation:fadeInUp 0.4s ease-out}
@@ -51,11 +53,17 @@
 
         .url-input-wrap{position:relative;display:flex;align-items:stretch;background:var(--bg-input);border:2px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;transition:all var(--transition-fast)}
         .url-input-wrap:focus-within{border-color:var(--primary);box-shadow:0 0 0 4px rgba(108,71,255,0.08);background:var(--bg-surface)}
+        .url-input-wrap.error{border-color:var(--danger);box-shadow:0 0 0 4px rgba(220,38,38,0.08);animation:shake 0.5s ease-out}
+        .url-input-wrap.duplicate{border-color:var(--warning);box-shadow:0 0 0 4px rgba(217,119,6,0.1)}
+        .url-input-wrap.success{border-color:var(--success);box-shadow:0 0 0 4px rgba(5,150,105,0.08)}
         .url-input-wrap .url-icon{display:flex;align-items:center;padding:0 0.85rem;font-size:1.1rem;color:var(--text-tertiary);border-right:1px solid var(--border)}
         .url-input-wrap input{flex:1;border:none;background:transparent;padding:0.8rem 0.75rem;font-size:0.9rem;color:var(--text-primary);outline:none;font-family:var(--font-family);min-width:0}
         .url-input-wrap input::placeholder{color:var(--text-tertiary)}
         .url-input-wrap .url-paste-btn{display:flex;align-items:center;gap:0.3rem;padding:0 1rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);font-size:0.78rem;font-weight:600;white-space:nowrap;border-left:1px solid var(--border);background:transparent;font-family:var(--font-family)}
         .url-input-wrap .url-paste-btn:hover{background:var(--primary-light);color:var(--primary)}
+
+        .url-status{display:flex;align-items:center;gap:0.5rem;margin-top:0.4rem;font-size:0.75rem;font-weight:600;min-height:1.25rem}
+        .url-status.duplicate{color:var(--warning)}.url-status.unique{color:var(--success)}.url-status.error{color:var(--danger)}.url-status.checking{color:var(--info)}
 
         .form-input,.form-textarea{width:100%;padding:0.8rem 1rem;border:2px solid var(--border);border-radius:var(--radius-xl);font-size:0.9rem;background:var(--bg-input);color:var(--text-primary);outline:none;font-family:var(--font-family);transition:all var(--transition-fast)}
         .form-input:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(108,71,255,0.08);background:var(--bg-surface)}
@@ -78,11 +86,9 @@
         .preview-card-title{font-weight:700;font-size:0.95rem;line-height:1.3;margin-bottom:0.35rem;color:var(--text-primary)}
         .preview-card-desc{font-size:0.8125rem;color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 
-        /* Category */
         .auto-cat-display{display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1rem;background:var(--primary-light);border-radius:var(--radius-xl);margin:0.75rem 0;font-size:0.85rem;font-weight:600;color:var(--primary);border:1.5px solid rgba(108,71,255,0.12)}
         .auto-cat-display .cat-emoji{font-size:1.3rem}
 
-        /* Trust Shield Display */
         .trust-box{background:var(--bg-surface);border:2px solid var(--border);border-radius:var(--radius-xl);padding:1.25rem 1.5rem;margin:1rem 0;transition:all var(--transition-fast)}
         .trust-box.trusted{border-color:#10b981;background:linear-gradient(135deg,var(--success-bg),var(--bg-surface))}
         .trust-box.warning{border-color:#f59e0b;background:linear-gradient(135deg,var(--warning-bg),var(--bg-surface))}
@@ -95,11 +101,8 @@
         .trust-shields{display:flex;gap:0.3rem;margin-bottom:0.6rem}
         .trust-shield{font-size:1.6rem;transition:all 0.3s ease;animation:shieldFill 0.4s ease-out backwards}
         .trust-shield:nth-child(1){animation-delay:0.05s}.trust-shield:nth-child(2){animation-delay:0.15s}.trust-shield:nth-child(3){animation-delay:0.25s}.trust-shield:nth-child(4){animation-delay:0.35s}.trust-shield:nth-child(5){animation-delay:0.45s}
-        .trust-shield.filled-green{color:#10b981}
-        .trust-shield.filled-orange{color:#f59e0b}
-        .trust-shield.filled-red{color:#ef4444}
-        .trust-shield.empty{color:#d1d5db}
-        .dark .trust-shield.empty{color:#374151}
+        .trust-shield.filled-green{color:#10b981}.trust-shield.filled-orange{color:#f59e0b}.trust-shield.filled-red{color:#ef4444}
+        .trust-shield.empty{color:#d1d5db}.dark .trust-shield.empty{color:#374151}
         .trust-summary-text{font-size:0.8rem;font-weight:600;color:var(--text-secondary)}
 
         .back-link{display:inline-flex;align-items:center;gap:0.35rem;color:var(--text-tertiary);font-size:0.8125rem;font-weight:600;margin-bottom:1.5rem;cursor:pointer;transition:all var(--transition-fast);text-decoration:none}
@@ -110,6 +113,12 @@
         .loading-dots{display:inline-flex;gap:3px}.loading-dots span{width:5px;height:5px;border-radius:50%;background:var(--primary);animation:pulse 1.4s infinite}.loading-dots span:nth-child(2){animation-delay:0.2s}.loading-dots span:nth-child(3){animation-delay:0.4s}
         .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);padding:0.8rem 1.5rem;border-radius:var(--radius-lg);font-size:0.85rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:100;animation:slideIn 0.3s ease-out}
         .toast.success{background:var(--success);color:#fff}.toast.error{background:var(--danger);color:#fff}.toast.info{background:var(--primary);color:#fff}
+
+        .duplicate-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:all var(--transition-base)}
+        .duplicate-modal-overlay.active{opacity:1;visibility:visible}
+        .duplicate-modal{background:var(--bg-surface);border-radius:var(--radius-2xl);padding:2rem;max-width:440px;width:100%;text-align:center;box-shadow:var(--shadow-lg);animation:modalIn .2s ease-out}
+        .duplicate-modal h3{font-size:1.2rem;margin-bottom:0.5rem}
+        .duplicate-modal p{color:var(--text-secondary);font-size:0.875rem;margin-bottom:1.25rem}
 
         @media(max-width:768px){.main-container{flex-direction:column}.preview-panel{width:100%;position:static}}
         @media(max-width:480px){.form-panel{padding:1.25rem}.preview-panel{padding:1rem}.url-input-wrap .url-paste-btn{padding:0 0.6rem;font-size:0.7rem}.trust-score-number{font-size:2rem}.trust-shield{font-size:1.3rem}}
@@ -124,88 +133,74 @@
         <div class="form-panel">
             <a class="back-link" href="index.html"><span class="iconify" data-icon="ph:arrow-left" data-width="16"></span> Back to feed</a>
             <div class="header-row">
-                <div class="header-left">
-                    <div class="logo-icon"></div>
-                    <h1>Share a Link</h1>
-                </div>
-                <div class="user-indicator" id="userIndicator">
-                    <div class="user-dot" id="userDot" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">?</div>
-                    <span id="userName">Loading...</span>
-                </div>
+                <div class="header-left"><div class="logo-icon"></div><h1>Share a Link</h1></div>
+                <div class="user-indicator" id="userIndicator"><div class="user-dot" id="userDot" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">?</div><span id="userName">Loading...</span></div>
             </div>
             <p class="subtitle">Curate the web. Share something valuable with the community.</p>
-
-            <div class="form-section">
-                <label class="form-label">URL <span class="required">*</span></label>
-                <div class="url-input-wrap">
-                    <span class="url-icon"><span class="iconify" data-icon="ph:link-simple-bold" data-width="20"></span></span>
-                    <input type="url" id="shareUrl" placeholder="example.com/amazing-article" oninput="handleUrlInput()" autofocus>
-                    <button class="url-paste-btn" onclick="pasteFromClipboard()"><span class="iconify" data-icon="ph:clipboard-text" data-width="16"></span> Paste</button>
-                </div>
-            </div>
-            <div class="form-section">
-                <label class="form-label">Title <span class="required">*</span> <span class="auto-badge">auto-fill</span></label>
-                <input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()">
-            </div>
-            <div class="form-section">
-                <label class="form-label">Description <span class="auto-badge">auto-fill</span></label>
-                <textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing? Add context..." oninput="onContentChange()"></textarea>
-            </div>
-
-            <div class="auto-cat-display" id="autoCatDisplay" style="display:none;">
-                <span class="cat-emoji" id="catEmoji">🏷️</span>
-                <span>Category: <strong id="detectedCatText">—</strong></span>
-            </div>
-
-            <div class="trust-box" id="trustBox" style="display:none;">
-                <div class="trust-box-top">
-                    <div class="trust-score-row">
-                        <span class="trust-score-number high" id="trustScoreNumber">—</span>
-                        <span class="trust-percent">/100</span>
-                    </div>
-                </div>
-                <div class="trust-shields" id="trustShields">
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                    <span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span>
-                </div>
-                <div class="trust-summary-text" id="trustSummaryText">Enter a URL to analyze safety</div>
-            </div>
-
-            <button class="btn btn-primary" id="publishBtn" onclick="publishLink()">
-                <span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span>
-                Publish to LinkSocial
-            </button>
+            <div class="form-section"><label class="form-label">URL <span class="required">*</span></label><div class="url-input-wrap" id="urlInputWrap"><span class="url-icon"><span class="iconify" data-icon="ph:link-simple-bold" data-width="20"></span></span><input type="url" id="shareUrl" placeholder="example.com/amazing-article" oninput="onUrlInput()" autofocus><button class="url-paste-btn" onclick="pasteFromClipboard()"><span class="iconify" data-icon="ph:clipboard-text" data-width="16"></span> Paste</button></div><div class="url-status" id="urlStatus"></div></div>
+            <div class="form-section"><label class="form-label">Title <span class="required">*</span> <span class="auto-badge">auto-fill</span></label><input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()"></div>
+            <div class="form-section"><label class="form-label">Description <span class="auto-badge">auto-fill</span></label><textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing? Add context..." oninput="onContentChange()"></textarea></div>
+            <div class="auto-cat-display" id="autoCatDisplay" style="display:none;"><span class="cat-emoji" id="catEmoji">🏷️</span><span>Category: <strong id="detectedCatText">—</strong></span></div>
+            <div class="trust-box" id="trustBox" style="display:none;"><div class="trust-box-top"><div class="trust-score-row"><span class="trust-score-number high" id="trustScoreNumber">—</span><span class="trust-percent">/100</span></div></div><div class="trust-shields" id="trustShields"><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="28"></span></span></div><div class="trust-summary-text" id="trustSummaryText">Enter a URL to analyze safety</div></div>
+            <button class="btn btn-primary" id="publishBtn" onclick="handlePublish()"><span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span>Publish to LinkSocial</button>
         </div>
+        <div class="preview-panel"><div class="preview-panel-title"><span class="iconify" data-icon="ph:eye" data-width="16"></span> Live Preview</div><div class="preview-placeholder" id="previewPlaceholder"><div class="preview-placeholder-icon">🔗</div><p style="font-weight:600;font-size:0.9rem;">No preview yet</p><p style="font-size:0.8rem;">Enter a URL to see a live preview</p></div><div id="previewContent" style="display:none;"></div></div>
+    </div>
 
-        <div class="preview-panel">
-            <div class="preview-panel-title"><span class="iconify" data-icon="ph:eye" data-width="16"></span> Live Preview</div>
-            <div class="preview-placeholder" id="previewPlaceholder">
-                <div class="preview-placeholder-icon">🔗</div>
-                <p style="font-weight:600;font-size:0.9rem;margin-bottom:0.25rem;">No preview yet</p>
-                <p style="font-size:0.8rem;">Enter a URL to see a live preview</p>
-            </div>
-            <div id="previewContent" style="display:none;"></div>
+    <div class="duplicate-modal-overlay" id="duplicateModalOverlay">
+        <div class="duplicate-modal">
+            <span class="iconify" data-icon="ph:warning-circle" data-width="48" style="color:var(--warning);margin-bottom:0.75rem;"></span>
+            <h3>Duplicate Link Detected</h3>
+            <p>This exact link has already been shared on LinkSocial. Please share something unique!</p>
+            <button class="btn btn-primary" onclick="closeDuplicateModal()">OK, I'll share something else</button>
         </div>
     </div>
 
     <script>
         const firebaseConfig={apiKey:"AIzaSyBbrRHlakmOdKwuDGwYAx5qf-e6DOHW7s0",authDomain:"joefootball-15e7a.firebaseapp.com",projectId:"joefootball-15e7a",storageBucket:"joefootball-15e7a.firebasestorage.app"};
-        firebase.initializeApp(firebaseConfig);const db=firebase.firestore();const auth=firebase.auth();
+        firebase.initializeApp(firebaseConfig);
+        const db=firebase.firestore();
+        const auth=firebase.auth();
 
-        let currentUser=null,previewData=null,debounceTimer=null,detectedCategory='',categoryData=null,trustScoreData=null;
+        // ============ GLOBAL STATE ============
+        let currentUser=null;
+        let previewData=null;
+        let detectedCategory='';
+        let categoryData=null;
+        let trustScoreData=null;
+        let existingUrlsSet=new Set();
+        let urlCheckTimeout=null;
+        let previewTimeout=null;
 
-        const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
+        // ============ DOM HELPERS ============
+        const $=s=>document.querySelector(s);
         const esc=s=>s?String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]):'';
         const getDomain=u=>{try{return new URL(u).hostname.replace('www.','')}catch{return u}};
         const faviconUrl=u=>{try{return`https://www.google.com/s2/favicons?domain=${new URL(u).hostname}&sz=32`}catch{return''}};
         const userColor=u=>{let h=0;for(let i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return`hsl(${Math.abs(h%360)},50%,45%)`};
 
-        function toast(m,t='success'){const el=document.createElement('div');el.className=`toast ${t}`;el.textContent=m;document.body.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(10px)';el.style.transition='all 0.3s';setTimeout(()=>el.remove(),300)},3000)}
-        function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add(`theme-${t}`);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
+        // ============ TOAST ============
+        function toast(m,t='success'){
+            const el=document.createElement('div');
+            el.className=`toast ${t}`;
+            el.textContent=m;
+            document.body.appendChild(el);
+            setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(10px)';el.style.transition='all 0.3s';setTimeout(()=>el.remove(),300)},3000);
+        }
 
+        // ============ DUPLICATE MODAL ============
+        function showDuplicateModal(){$('#duplicateModalOverlay').classList.add('active')}
+        function closeDuplicateModal(){$('#duplicateModalOverlay').classList.remove('active')}
+
+        // ============ THEME ============
+        function setTheme(t){
+            document.body.classList.remove('theme-light','theme-dark');
+            document.body.classList.add(`theme-${t}`);
+            $('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');
+            localStorage.setItem('ls-theme',t);
+        }
+
+        // ============ USER INDICATOR ============
         function updateUserIndicator(){
             if(currentUser){
                 $('#userDot').style.background=currentUser.accentColor||userColor(currentUser.username);
@@ -218,18 +213,33 @@
             }
         }
 
-        async function pasteFromClipboard(){try{const text=await navigator.clipboard.readText();if(text&&(text.includes('http')||text.includes('www.'))){$('#shareUrl').value=text.trim();handleUrlInput()}}catch(e){}}
-
-        async function loadCategoryData(){
-            try{const resp=await fetch('categories.json');const data=await resp.json();categoryData=data.categories}
-            catch(e){categoryData=[{name:'General',icon:'📌',keywords:['general']}]}
+        // ============ CLIPBOARD ============
+        async function pasteFromClipboard(){
+            try{
+                const text=await navigator.clipboard.readText();
+                if(text&&(text.includes('http')||text.includes('www.'))){
+                    $('#shareUrl').value=text.trim();
+                    onUrlInput();
+                }
+            }catch(e){}
         }
 
-        function detectCategoryFromText(title,description,url){
+        // ============ CATEGORY DATA ============
+        async function loadCategoryData(){
+            try{
+                const resp=await fetch('categories.json');
+                const data=await resp.json();
+                categoryData=data.categories;
+            }catch(e){
+                categoryData=[{name:'General',icon:'📌',keywords:['general']}];
+            }
+        }
+
+        function detectCategory(title,desc,url){
             if(!categoryData)return{name:'General',icon:'📌',confidence:0};
-            const text=`${title||''} ${description||''} ${url||''}`.toLowerCase();
+            const text=`${title||''} ${desc||''} ${url||''}`.toLowerCase();
             const domain=getDomain(url||'').toLowerCase();
-            let bestCat=categoryData[0],bestScore=0;
+            let best=categoryData[0],bestScore=0;
             for(const cat of categoryData){
                 let score=0;
                 for(const kw of cat.keywords){
@@ -237,94 +247,162 @@
                     if((title||'').toLowerCase().includes(kw))score+=2;
                     if(domain.includes(kw)||domain.includes(kw.replace(/\s+/g,'-')))score+=3;
                 }
-                if(score>bestScore){bestScore=score;bestCat=cat;}
+                if(score>bestScore){bestScore=score;best=cat;}
             }
-            return{name:bestCat.name,icon:bestCat.icon||'📌',confidence:Math.min(99,Math.round(bestScore*5))};
+            return{name:best.name,icon:best.icon||'📌',confidence:Math.min(99,Math.round(bestScore*5))};
         }
 
-        function onContentChange(){updateCategoryDisplay();}
         function updateCategoryDisplay(){
-            const title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim(),url=$('#shareUrl').value.trim();
+            const title=$('#shareTitle').value.trim();
+            const desc=$('#shareDesc').value.trim();
+            const url=$('#shareUrl').value.trim();
             if(!title&&!desc&&!url){$('#autoCatDisplay').style.display='none';return}
-            const result=detectCategoryFromText(title,desc,url);
+            const result=detectCategory(title,desc,url);
             detectedCategory=result.name;
-            $('#autoCatDisplay').style.display='flex';$('#catEmoji').textContent=result.icon;
+            $('#autoCatDisplay').style.display='flex';
+            $('#catEmoji').textContent=result.icon;
             $('#detectedCatText').textContent=`${result.name} (${result.confidence}% match)`;
         }
 
-        const SCAM_KEYWORDS=['hack','crack','free money','verify account','click here','you won','claim now','act now','limited offer','congratulations','you have been selected','urgent','password reset','confirm your account','suspended','security alert','unusual activity','login attempt','prize','lottery','inheritance','wire transfer','western union','money gram','cash app','venmo','paypal','bitcoin giveaway','eth giveaway','airdrop','free crypto','double your','guaranteed return','risk free','secret method','loophole','exploit','cheat','generator','bot net','keygen','cracked','warez','torrent','pirate','malware','virus','trojan','spyware','adware','rootkit','backdoor','keylogger','ransomware','scam','fraud','fake','counterfeit','replica','knockoff'];
-        const SHORTENERS=['bit.ly','tinyurl.com','cutt.ly','ow.ly','is.gd','buff.ly','goo.gl','t.co','lnkd.in','shorte.st','rb.gy','tiny.cc','v.gd','kl.am','short.link'];
+        function onContentChange(){updateCategoryDisplay();}
 
-        function validateURL(url){try{const u=new URL(url);return u.protocol==='http:'||u.protocol==='https:'}catch{return false}}
-        function checkHTTPS(url){return url.startsWith('https://')}
-        function scanScamKeywords(text){return SCAM_KEYWORDS.filter(k=>text.includes(k))}
-        function isShortened(url){const d=getDomain(url).toLowerCase();return SHORTENERS.some(s=>d===s||d.includes(s))}
-        function hasExcessiveParams(url){try{const p=new URL(url).searchParams;return p.toString().length>100}catch{return false}}
-        function hasIPAddress(url){const d=getDomain(url);return /^\d+\.\d+\.\d+\.\d+$/.test(d)}
-        function hasSuspiciousTLD(url){const d=getDomain(url).toLowerCase();const bad=['.xyz','.tk','.ml','.ga','.cf','.top','.info','.buzz','.click','.loan','.work','.date','.men','.win','.download','.party'];return bad.some(t=>d.endsWith(t))}
-        function hasSpecialChars(url){return /[<>{}|\\^~\[\]`]/.test(url)}
+        // ============ TRUST ENGINE ============
+        const SCAM_WORDS=['hack','crack','free money','verify account','click here','you won','claim now','act now','limited offer','congratulations','you have been selected','urgent','password reset','confirm your account','suspended','security alert','unusual activity','prize','lottery','inheritance','wire transfer','western union','money gram','paypal giveaway','bitcoin giveaway','eth giveaway','airdrop','free crypto','double your','guaranteed return','risk free','secret method','loophole','cheat','generator','bot net','keygen','cracked','warez','torrent','pirate','malware','virus','trojan','spyware','rootkit','keylogger','ransomware','scam','fraud','counterfeit','knockoff'];
+        const SHORTENERS=['bit.ly','tinyurl.com','cutt.ly','ow.ly','is.gd','buff.ly','goo.gl','t.co','lnkd.in','shorte.st','rb.gy','tiny.cc'];
 
-        function calculateTrust(url,title,desc){
+        function calcTrust(url,title,desc){
             const text=`${title||''} ${desc||''} ${url||''}`.toLowerCase();
             let score=100;
-            if(!validateURL(url)){score=0;return{score:0,level:'danger',summary:'Invalid URL format'}}
-            if(!checkHTTPS(url))score-=25;
-            const scams=scanScamKeywords(text);
+            try{new URL(url)}catch{return{score:0,level:'danger',summary:'Invalid URL format'}}
+            if(!url.startsWith('https://'))score-=25;
+            const scams=SCAM_WORDS.filter(k=>text.includes(k));
             if(scams.length>0)score-=Math.min(70,scams.length*14);
-            if(isShortened(url))score-=15;
-            if(hasExcessiveParams(url))score-=10;
-            if(hasIPAddress(url))score-=30;
-            if(hasSuspiciousTLD(url))score-=20;
-            if(hasSpecialChars(url))score-=15;
-            if(getDomain(url).split('.').length>4)score-=10;
+            if(SHORTENERS.some(s=>getDomain(url).toLowerCase().includes(s)))score-=15;
+            if(/^\d+\.\d+\.\d+\.\d+$/.test(getDomain(url)))score-=30;
+            const badTLD=['.xyz','.tk','.ml','.ga','.cf','.top','.info','.buzz','.click','.loan','.work','.date','.men','.win','.download','.party'];
+            if(badTLD.some(t=>getDomain(url).toLowerCase().endsWith(t)))score-=20;
             score=Math.max(0,Math.min(100,score));
             let level='trusted',summary='This link appears safe to visit';
             if(score<60){level='warning';summary='Exercise caution with this link'}
             if(score<40){level='danger';summary='This link may be dangerous'}
             if(scams.length>0)summary=`${scams.length} suspicious terms detected`;
-            if(!checkHTTPS(url))summary='No HTTPS encryption - data not secure';
+            if(!url.startsWith('https://'))summary='No HTTPS encryption';
             return{score,level,summary};
         }
 
         function renderTrustUI(data){
-            const box=$('#trustBox');box.style.display='block';
+            const box=$('#trustBox');
+            box.style.display='block';
             box.className=`trust-box ${data.level}`;
             $('#trustScoreNumber').textContent=data.score;
             $('#trustScoreNumber').className=`trust-score-number ${data.level==='trusted'?'high':data.level==='warning'?'medium':'low'}`;
-            const shields=$('#trustShields');
-            const filledCount=data.level==='trusted'?5:data.level==='warning'?Math.max(3,Math.ceil(data.score/20)):Math.max(1,Math.ceil(data.score/20));
-            const fillClass=data.level==='trusted'?'filled-green':data.level==='warning'?'filled-orange':'filled-red';
-            shields.querySelectorAll('.trust-shield').forEach((s,i)=>{
-                if(i<filledCount){s.className=`trust-shield ${fillClass}`;s.querySelector('.iconify').setAttribute('data-icon','ph:shield-check-bold')}
+            const filled=data.level==='trusted'?5:data.level==='warning'?Math.max(3,Math.ceil(data.score/20)):Math.max(1,Math.ceil(data.score/20));
+            const cls=data.level==='trusted'?'filled-green':data.level==='warning'?'filled-orange':'filled-red';
+            const shields=$$('#trustShields .trust-shield');
+            shields.forEach((s,i)=>{
+                if(i<filled){s.className=`trust-shield ${cls}`;s.querySelector('.iconify').setAttribute('data-icon','ph:shield-check-bold')}
                 else{s.className='trust-shield empty';s.querySelector('.iconify').setAttribute('data-icon','ph:shield')}
             });
             $('#trustSummaryText').textContent=data.summary;
             $('#trustSummaryText').style.color=data.level==='trusted'?'var(--success)':data.level==='warning'?'var(--warning)':'var(--danger)';
-            window.Iconify?.scan?.(shields);
+            window.Iconify?.scan?.(box);
         }
 
-        async function handleUrlInput(){
-            const url=$('#shareUrl').value.trim();
-            clearTimeout(debounceTimer);
+        // ============ URL NORMALIZATION ============
+        function normalizeUrl(url){
+            try{
+                let u=url.trim().toLowerCase();
+                if(!u.startsWith('http'))u='https://'+u;
+                const p=new URL(u);
+                let n=p.hostname.replace(/^www\./,'')+p.pathname.replace(/\/+$/,'');
+                const skip=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','ref','source','ref_src','ref_url'];
+                const params=[...new URLSearchParams(p.search)].filter(([k])=>!skip.includes(k)).sort();
+                if(params.length)n+='?'+params.map(([k,v])=>`${k}=${v}`).join('&');
+                return n;
+            }catch{return url.trim().toLowerCase()}
+        }
+
+        // ============ FULL DUPLICATE SCAN ============
+        async function performFullDuplicateScan(url){
+            if(!url||!url.startsWith('http'))return false;
+            const norm=normalizeUrl(url);
+            const domain=getDomain(url).toLowerCase();
+            
+            // Query 1: Exact normalized URL match
+            const exactSnap=await db.collection('links').where('normalizedUrl','==',norm).limit(1).get();
+            if(!exactSnap.empty)return true;
+            
+            // Query 2: Same domain + check all URLs for similarity
+            const domainSnap=await db.collection('links').where('domain','==',domain).limit(50).get();
+            for(const doc of domainSnap.docs){
+                const existing=doc.data().url||'';
+                const existingNorm=doc.data().normalizedUrl||normalizeUrl(existing);
+                if(existingNorm===norm)return true;
+                if(normalizeUrl(existing)===norm)return true;
+            }
+            
+            // Query 3: Broad scan - check recent 100 links
+            const recentSnap=await db.collection('links').orderBy('createdAt','desc').limit(100).get();
+            for(const doc of recentSnap.docs){
+                const existing=doc.data().url||'';
+                if(normalizeUrl(existing)===norm)return true;
+            }
+            
+            return false;
+        }
+
+        // ============ URL STATUS INDICATOR ============
+        function setUrlStatus(type,message){
+            const s=$('#urlStatus'),w=$('#urlInputWrap');
+            s.className=`url-status ${type}`;
+            s.innerHTML=message;
+            w.classList.remove('error','duplicate','success');
+            if(type==='duplicate')w.classList.add('duplicate');
+            if(type==='unique')w.classList.add('success');
+            if(type==='error')w.classList.add('error');
+            window.Iconify?.scan?.(s);
+        }
+
+        // ============ URL INPUT HANDLER ============
+        function onUrlInput(){
+            clearTimeout(urlCheckTimeout);
+            clearTimeout(previewTimeout);
             updateCategoryDisplay();
-            if(!url||!url.startsWith('http')){$('#trustBox').style.display='none';showPlaceholder();return}
-            const title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim();
-            const trustData=calculateTrust(url,title,desc);
-            trustScoreData=trustData;
-            renderTrustUI(trustData);
-            debounceTimer=setTimeout(()=>fetchPreview(url),600);
+            const url=$('#shareUrl').value.trim();
+            if(!url||!url.startsWith('http')){
+                $('#trustBox').style.display='none';
+                setUrlStatus('','');
+                showPlaceholder();
+                return;
+            }
+            setUrlStatus('checking','<span class="iconify" data-icon="ph:spinner" data-width="14" style="animation:spin 0.8s linear infinite;"></span> Checking...');
+            const title=$('#shareTitle').value.trim();
+            const desc=$('#shareDesc').value.trim();
+            const td=calcTrust(url,title,desc);
+            trustScoreData=td;
+            renderTrustUI(td);
+            urlCheckTimeout=setTimeout(async()=>{
+                const isDup=await performFullDuplicateScan(url);
+                if(isDup)setUrlStatus('duplicate','<span class="iconify" data-icon="ph:warning-circle" data-width="14"></span> This link has already been shared on LinkSocial');
+                else setUrlStatus('unique','<span class="iconify" data-icon="ph:check-circle" data-width="14"></span> This link is unique — ready to share!');
+            },400);
+            previewTimeout=setTimeout(()=>fetchPreview(url),600);
         }
 
+        // ============ FETCH PREVIEW ============
         async function fetchPreview(url){
             if(!url||!url.startsWith('http')){showPlaceholder();return}
-            $('#previewPlaceholder').style.display='none';$('#previewContent').style.display='block';
-            $('#previewContent').innerHTML=`<div style="text-align:center;padding:2.5rem;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="font-size:0.8rem;color:var(--text-tertiary);margin-top:0.75rem;">Loading preview...</p></div>`;
+            $('#previewPlaceholder').style.display='none';
+            $('#previewContent').style.display='block';
+            $('#previewContent').innerHTML='<div style="text-align:center;padding:2.5rem;"><div class="loading-dots"><span></span><span></span><span></span></div><p style="font-size:0.8rem;color:var(--text-tertiary);margin-top:0.75rem;">Loading preview...</p></div>';
             try{
                 const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true`);
                 const d=await r.json();
                 if(d.status==='success'&&d.data){
                     previewData=d.data;
-                    const img=d.data.screenshot?.url||d.data.image?.url||'',domain=getDomain(url),fv=faviconUrl(url);
+                    const img=d.data.screenshot?.url||d.data.image?.url||'';
+                    const domain=getDomain(url);
+                    const fv=faviconUrl(url);
                     $('#previewContent').innerHTML=`
                         <div class="preview-card">
                             ${img?`<img src="${esc(img)}" class="preview-card-image" alt="Preview" onerror="this.style.display='none'">`:''}
@@ -337,40 +415,119 @@
                     if(!$('#shareTitle').value&&d.data.title)$('#shareTitle').value=d.data.title;
                     if(!$('#shareDesc').value&&d.data.description)$('#shareDesc').value=d.data.description;
                     updateCategoryDisplay();
-                    if(trustScoreData)renderTrustUI(trustScoreData);
                 }else{showPlaceholder('Could not load preview');}
             }catch(e){showPlaceholder('Error loading preview');}
         }
 
         function showPlaceholder(msg='Enter a URL to see a live preview'){
-            $('#previewContent').style.display='none';$('#previewPlaceholder').style.display='block';
-            $('#previewPlaceholder').innerHTML=msg==='Enter a URL to see a live preview'?`<div class="preview-placeholder-icon">🔗</div><p style="font-weight:600;font-size:0.9rem;">No preview yet</p><p style="font-size:0.8rem;">${msg}</p>`:`<div class="preview-placeholder-icon">⚠️</div><p style="font-weight:600;font-size:0.9rem;">Preview unavailable</p><p style="font-size:0.8rem;">${msg}</p>`;
+            $('#previewContent').style.display='none';
+            $('#previewPlaceholder').style.display='block';
+            $('#previewPlaceholder').innerHTML=msg==='Enter a URL to see a live preview'
+                ?'<div class="preview-placeholder-icon">🔗</div><p style="font-weight:600;font-size:0.9rem;">No preview yet</p><p style="font-size:0.8rem;">'+msg+'</p>'
+                :'<div class="preview-placeholder-icon">⚠️</div><p style="font-weight:600;font-size:0.9rem;">Preview unavailable</p><p style="font-size:0.8rem;">'+msg+'</p>';
         }
 
-        async function publishLink(){
-            const title=$('#shareTitle').value.trim(),url=$('#shareUrl').value.trim(),desc=$('#shareDesc').value.trim();
+        // ============ PUBLISH WITH MANDATORY DUPLICATE CHECK ============
+        async function handlePublish(){
+            const title=$('#shareTitle').value.trim();
+            const url=$('#shareUrl').value.trim();
+            const desc=$('#shareDesc').value.trim();
+            
             if(!title||!url){toast('Title and URL are required','error');return}
+            
             const finalUrl=url.startsWith('http')?url:'https://'+url;
-            const btn=$('#publishBtn');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span> Publishing...';
-            const trustData=calculateTrust(finalUrl,title,desc);
-            const catResult=detectCategoryFromText(title,desc,finalUrl);
+            const btn=$('#publishBtn');
+            
+            // Disable button & show scanning state
+            btn.disabled=true;
+            btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span> Scanning for duplicates...';
+            
+            // MANDATORY full duplicate scan
+            const isDuplicate=await performFullDuplicateScan(finalUrl);
+            
+            if(isDuplicate){
+                btn.disabled=false;
+                btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';
+                setUrlStatus('duplicate','<span class="iconify" data-icon="ph:warning-circle" data-width="14"></span> This link has already been shared on LinkSocial');
+                $('#urlInputWrap').classList.add('duplicate');
+                showDuplicateModal();
+                setTimeout(()=>$('#urlInputWrap').classList.remove('duplicate'),3000);
+                return;
+            }
+            
+            // Proceed with publish
+            btn.innerHTML='<span style="display:inline-block;width:18px;height:18px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite;"></span> Publishing...';
+            
+            const td=calcTrust(finalUrl,title,desc);
+            const cat=detectCategory(title,desc,finalUrl);
             let screenshot='';
-            try{const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(finalUrl)}&screenshot=true`);const d=await r.json();if(d.status==='success'&&d.data)screenshot=d.data.screenshot?.url||d.data.image?.url||''}catch(e){}
-            const link={title,url:finalUrl,description:desc,categories:[catResult.name],category:catResult.name,screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0,trustScore:trustData.score};
-            try{await db.collection('links').add(link);if(currentUser)await db.collection('users').doc(currentUser.uid).update({linkCount:firebase.firestore.FieldValue.increment(1)});toast('🎉 Published! Redirecting...','success');setTimeout(()=>window.location.href='index.html',1200)}catch(e){toast('Error. Try again.','error');btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial'}
+            try{
+                const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(finalUrl)}&screenshot=true`);
+                const d=await r.json();
+                if(d.status==='success'&&d.data)screenshot=d.data.screenshot?.url||d.data.image?.url||'';
+            }catch(e){}
+            
+            const link={
+                title,
+                url:finalUrl,
+                description:desc,
+                categories:[cat.name],
+                category:cat.name,
+                screenshot,
+                previewImage:screenshot,
+                ownerId:currentUser?currentUser.uid:'anonymous',
+                ownerName:currentUser?currentUser.username:'Anonymous',
+                createdAt:Date.now(),
+                upvotes:1,
+                downvotes:0,
+                ratings:{},
+                avgRating:0,
+                comments:[],
+                views:0,
+                saves:0,
+                trustScore:td.score,
+                normalizedUrl:normalizeUrl(finalUrl),
+                domain:getDomain(finalUrl).toLowerCase()
+            };
+            
+            try{
+                await db.collection('links').add(link);
+                if(currentUser)await db.collection('users').doc(currentUser.uid).update({linkCount:firebase.firestore.FieldValue.increment(1)});
+                toast('🎉 Published! Redirecting...','success');
+                setTimeout(()=>window.location.href='index.html',1200);
+            }catch(e){
+                toast('Error publishing. Please try again.','error');
+                btn.disabled=false;
+                btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';
+            }
         }
 
+        // ============ AUTH ============
         auth.onAuthStateChanged(u=>{
-            if(u){db.collection('users').doc(u.uid).get().then(d=>{currentUser=d.exists?{uid:u.uid,...d.data()}:{uid:u.uid,username:u.email?.split('@')[0]||'user',email:u.email||'',accentColor:userColor(u.email?.split('@')[0]||'user'),emoji:'👤'};updateUserIndicator()})}
-            else{currentUser=null;updateUserIndicator()}
+            if(u){
+                db.collection('users').doc(u.uid).get().then(d=>{
+                    currentUser=d.exists
+                        ?{uid:u.uid,...d.data()}
+                        :{uid:u.uid,username:u.email?.split('@')[0]||'user',email:u.email||'',accentColor:userColor(u.email?.split('@')[0]||'user'),emoji:'👤'};
+                    updateUserIndicator();
+                });
+            }else{
+                currentUser=null;
+                updateUserIndicator();
+            }
         });
 
+        // ============ INIT ============
         document.addEventListener('DOMContentLoaded',async()=>{
-            const t=localStorage.getItem('ls-theme')||'light';setTheme(t);
-            $('#themeToggle').addEventListener('click',()=>{const cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')});
+            const t=localStorage.getItem('ls-theme')||'light';
+            setTheme(t);
+            $('#themeToggle').addEventListener('click',()=>{
+                const cur=document.body.classList.contains('theme-dark')?'dark':'light';
+                setTheme(cur==='dark'?'light':'dark');
+            });
             await loadCategoryData();
             updateUserIndicator();
-            $('#shareUrl').addEventListener('paste',()=>setTimeout(()=>handleUrlInput(),100));
+            $('#shareUrl').addEventListener('paste',()=>setTimeout(onUrlInput,100));
         });
     </script>
 </body>
