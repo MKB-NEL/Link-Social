@@ -28,6 +28,7 @@
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
         @keyframes spin{to{transform:rotate(360deg)}}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 
         .navbar{position:sticky;top:0;z-index:100;background:var(--bg-surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 1.5rem;box-shadow:0 0 0 1px rgba(0,0,0,0.04)}
         .navbar-inner{max-width:1128px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem}
@@ -35,10 +36,6 @@
         .navbar-logo{width:34px;height:34px;background-image:var(--logo-url);background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:var(--radius-sm);flex-shrink:0}
         .navbar-title{font-size:1.125rem;font-weight:600;letter-spacing:-0.2px}
         .navbar-actions{display:flex;align-items:center;gap:0.5rem}
-        .search-input-wrap{display:flex;align-items:center;background:var(--bg-input);border-radius:var(--radius-sm);padding:0 0.75rem;height:34px;gap:0.5rem;transition:all var(--transition-fast);border:1px solid transparent;max-width:300px}
-        .search-input-wrap:focus-within{background:var(--bg-surface);border-color:var(--primary);box-shadow:0 0 0 2px rgba(108,71,255,0.1)}
-        .search-input-wrap input{flex:1;border:none;background:transparent;outline:none;font-size:0.875rem;color:var(--text-primary);font-family:var(--font-family)}
-        .search-input-wrap input::placeholder{color:var(--text-tertiary)}
 
         .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.3rem;padding:0.5rem 1rem;border-radius:var(--radius-full);font-weight:600;font-size:0.875rem;transition:all var(--transition-fast);cursor:pointer;font-family:var(--font-family);border:none;white-space:nowrap}
         .btn:active{transform:scale(0.97)}
@@ -63,6 +60,8 @@
         .profile-name{font-size:1.5rem;font-weight:800;letter-spacing:-0.3px}
         .profile-username{font-size:0.95rem;color:var(--text-tertiary);font-weight:500}
         .profile-bio{font-size:0.9rem;color:var(--text-secondary);margin:0.5rem 0;line-height:1.5}
+        .profile-bio-edit-btn{display:inline-flex;align-items:center;gap:0.2rem;margin-left:0.5rem;cursor:pointer;color:var(--text-tertiary);transition:all var(--transition-fast);background:transparent;border:none;font-family:var(--font-family);font-size:0.75rem}
+        .profile-bio-edit-btn:hover{color:var(--primary)}
         .profile-meta{display:flex;gap:1rem;flex-wrap:wrap;font-size:0.8rem;color:var(--text-tertiary);margin:0.5rem 0}
         .profile-meta-item{display:flex;align-items:center;gap:0.35rem}
         .profile-actions{display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap}
@@ -78,6 +77,11 @@
         .stat-item.active .stat-value,.stat-item.active .stat-label{color:var(--primary)}
         .stat-value{font-size:1.25rem;font-weight:800;color:var(--text-primary)}
         .stat-label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-top:0.15rem}
+
+        .tab-search-wrap{display:flex;align-items:center;background:var(--bg-input);border-radius:var(--radius-lg);padding:0 0.85rem;height:38px;gap:0.5rem;margin-bottom:0.75rem;border:1px solid transparent;transition:all var(--transition-fast)}
+        .tab-search-wrap:focus-within{background:var(--bg-surface);border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,71,255,0.08)}
+        .tab-search-wrap input{flex:1;border:none;background:transparent;outline:none;font-size:0.85rem;color:var(--text-primary);font-family:var(--font-family)}
+        .tab-search-wrap input::placeholder{color:var(--text-tertiary)}
 
         .tab-content{animation:fadeInUp 0.3s ease-out}
         .link-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:0.5rem;box-shadow:var(--card-shadow);transition:all var(--transition-fast);display:flex;gap:0.75rem}
@@ -111,6 +115,21 @@
         .loading-spinner{display:flex;align-items:center;justify-content:center;padding:3rem}
         .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite}
 
+        /* Chat Bubble */
+        .chat-bubble-btn{position:fixed;bottom:1.5rem;right:1.5rem;width:48px;height:48px;border-radius:var(--radius-full);background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.2);cursor:pointer;z-index:50;transition:all var(--transition-fast);font-size:1.25rem;border:none}
+        .chat-bubble-btn:hover{background:var(--primary-hover);transform:scale(1.08);box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+
+        /* Chat Panel */
+        .chat-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;opacity:0;visibility:hidden;transition:all var(--transition-base)}
+        .chat-panel-overlay.active{opacity:1;visibility:visible}
+        .chat-panel{position:fixed;bottom:0;right:1.5rem;width:370px;max-width:100vw;height:440px;max-height:65vh;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-xl) var(--radius-xl) 0 0;z-index:510;transform:translateY(100%);transition:transform var(--transition-base);display:flex;flex-direction:column;box-shadow:0 -4px 20px rgba(0,0,0,0.15)}
+        .chat-panel.active{transform:translateY(0)}
+        .chat-panel-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-weight:700;font-size:0.9rem}
+        .chat-panel-close{width:28px;height:28px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-tertiary);transition:all var(--transition-fast);background:transparent;font-family:var(--font-family)}
+        .chat-panel-close:hover{background:var(--bg-hover)}
+        .chat-panel-list{flex:1;overflow-y:auto;padding:0.5rem}
+        .chat-panel-empty{text-align:center;padding:2rem;color:var(--text-tertiary);font-size:0.8125rem}
+
         /* Modals */
         .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:all var(--transition-base)}
         .modal-overlay.active{opacity:1;visibility:visible}
@@ -125,28 +144,17 @@
         .color-swatch.selected{border-color:var(--text-primary);box-shadow:0 0 0 3px var(--primary-light)}
         .gradient-preview{width:100%;height:60px;border-radius:var(--radius-lg);margin:0.75rem 0;border:1px solid var(--border)}
 
-        .chat-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;opacity:0;visibility:hidden;transition:all var(--transition-base)}
-        .chat-panel-overlay.active{opacity:1;visibility:visible}
-        .chat-panel{position:fixed;bottom:0;right:1.5rem;width:370px;max-width:100vw;height:460px;max-height:70vh;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-xl) var(--radius-xl) 0 0;z-index:510;transform:translateY(100%);transition:transform var(--transition-base);display:flex;flex-direction:column;box-shadow:0 -4px 20px rgba(0,0,0,0.15)}
-        .chat-panel.active{transform:translateY(0)}
-        .chat-panel-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-weight:700;font-size:0.9rem}
-        .chat-panel-close{width:28px;height:28px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-tertiary);transition:all var(--transition-fast);background:transparent;font-family:var(--font-family)}
-        .chat-panel-close:hover{background:var(--bg-hover)}
-        .chat-panel-list{flex:1;overflow-y:auto;padding:0.5rem}
-        .chat-panel-empty{text-align:center;padding:2rem;color:var(--text-tertiary);font-size:0.8125rem}
-
         .toast-container{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:0.5rem;pointer-events:none}
         .toast{padding:0.75rem 1.25rem;border-radius:var(--radius-md);font-size:0.8125rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15);animation:slideIn 0.3s ease-out;pointer-events:all}
         .toast.success{background:var(--success);color:#fff}.toast.error{background:var(--danger);color:#fff}.toast.info{background:var(--primary);color:#fff}
 
-        @media(max-width:768px){.profile-cover{height:120px;margin-bottom:44px}.profile-avatar-wrap{left:1rem;width:76px;height:76px;bottom:-38px}.profile-avatar{width:66px;height:66px;font-size:1.6rem}.profile-name{font-size:1.25rem}.stat-item{padding:0.75rem 0.25rem}.stat-value{font-size:1rem}.chat-panel{width:100%;right:0;border-radius:var(--radius-xl) var(--radius-xl) 0 0}.navbar-search{display:none}}
+        @media(max-width:768px){.profile-cover{height:120px;margin-bottom:44px}.profile-avatar-wrap{left:1rem;width:76px;height:76px;bottom:-38px}.profile-avatar{width:66px;height:66px;font-size:1.6rem}.profile-name{font-size:1.25rem}.stat-item{padding:0.75rem 0.25rem}.stat-value{font-size:1rem}.chat-panel{width:100%;right:0;border-radius:var(--radius-xl) var(--radius-xl) 0 0}}
     </style>
 </head>
 <body class="theme-light">
     <nav class="navbar">
         <div class="navbar-inner">
             <a class="navbar-brand" href="index.html"><div class="navbar-logo"></div><span class="navbar-title">LinkSocial</span></a>
-            <div class="navbar-search"><div class="search-input-wrap"><span class="iconify" data-icon="ph:magnifying-glass" data-width="16" style="color:var(--text-tertiary)"></span><input type="text" id="searchInput" placeholder="Search links..."></div></div>
             <div class="navbar-actions">
                 <button class="btn btn-icon btn-ghost" id="headerMsgBtn" title="Messages"><span class="iconify" data-icon="ph:chats-circle" data-width="22"></span></button>
                 <button class="btn btn-icon btn-ghost" id="themeToggle" title="Toggle theme"><span class="iconify" data-icon="ph:moon" data-width="20" id="themeIcon"></span></button>
@@ -167,7 +175,10 @@
                 <span class="profile-username" id="profileUsername">@loading</span>
                 <span class="trust-badge-sm high" id="profileTrustBadge"><span class="iconify" data-icon="ph:shield-check" data-width="12"></span> --%</span>
             </div>
-            <p class="profile-bio" id="profileBio"></p>
+            <p class="profile-bio" id="profileBioContainer">
+                <span id="profileBio"></span>
+                <button class="profile-bio-edit-btn" id="inlineEditBioBtn" style="display:none;"><span class="iconify" data-icon="ph:pencil-simple" data-width="12"></span> Edit</button>
+            </p>
             <div class="profile-meta">
                 <span class="profile-meta-item" id="profileJoined"><span class="iconify" data-icon="ph:calendar-blank" data-width="14"></span> Joined --</span>
                 <span class="profile-meta-item" id="profileWebsite"></span>
@@ -183,7 +194,13 @@
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 300px;gap:1.5rem;">
-            <div class="tab-content" id="tabContent"><div class="loading-spinner"><div class="spinner"></div></div></div>
+            <div>
+                <div class="tab-search-wrap" id="tabSearchWrap">
+                    <span class="iconify" data-icon="ph:magnifying-glass" data-width="16" style="color:var(--text-tertiary);flex-shrink:0;"></span>
+                    <input type="text" id="tabSearchInput" placeholder="Search in this tab..." oninput="handleTabSearch()">
+                </div>
+                <div class="tab-content" id="tabContent"><div class="loading-spinner"><div class="spinner"></div></div></div>
+            </div>
             <div style="display:flex;flex-direction:column;gap:1rem;position:sticky;top:68px;align-self:start;">
                 <div class="side-card"><div class="side-card-title"><span class="iconify" data-icon="ph:trophy" data-width="14"></span> Top Links</div><div id="topLinksList"><p style="font-size:0.8rem;color:var(--text-tertiary);">Loading...</p></div></div>
                 <div style="text-align:center;padding:1rem;font-size:0.7rem;color:var(--text-tertiary);"><a href="https://pireactive.vercel.app/" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600;">LinkSocial © 2026 · Built by PIReactive</a></div>
@@ -191,15 +208,15 @@
         </div>
     </div>
 
+    <!-- CHAT BUBBLE -->
+    <button class="chat-bubble-btn" id="chatBubbleBtn" title="Messages"><span class="iconify" data-icon="ph:chats-circle" data-width="24"></span></button>
+
     <!-- BIO EDIT MODAL -->
     <div class="modal-overlay" id="bioModal"><div class="modal"><h3><span class="iconify" data-icon="ph:pencil-simple" data-width="20"></span> Edit Bio</h3><textarea class="modal-textarea" id="bioTextarea" placeholder="Write something about yourself..."></textarea><div style="display:flex;gap:0.5rem;"><button class="btn btn-primary btn-sm" id="saveBioBtn" style="flex:1;">Save</button><button class="btn btn-ghost btn-sm" id="cancelBioBtn">Cancel</button></div></div></div>
 
     <!-- BANNER EDITOR MODAL -->
     <div class="modal-overlay" id="bannerModal"><div class="modal"><h3><span class="iconify" data-icon="ph:paint-brush" data-width="20"></span> Edit Banner</h3>
-        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
-            <button class="btn btn-sm" id="solidModeBtn" style="flex:1;background:var(--primary-light);color:var(--primary);">Solid Color</button>
-            <button class="btn btn-sm btn-ghost" id="gradientModeBtn" style="flex:1;">Gradient</button>
-        </div>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;"><button class="btn btn-sm" id="solidModeBtn" style="flex:1;background:var(--primary-light);color:var(--primary);">Solid</button><button class="btn btn-sm btn-ghost" id="gradientModeBtn" style="flex:1;">Gradient</button></div>
         <div id="solidSection"><label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:0.5rem;">Choose one color:</label><div class="color-grid" id="solidColors"></div></div>
         <div id="gradientSection" style="display:none;"><label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:0.5rem;">Choose 2 colors:</label><div class="color-grid" id="gradientColor1"></div><label style="font-size:0.8rem;font-weight:600;display:block;margin:0.75rem 0 0.5rem;">Second color:</label><div class="color-grid" id="gradientColor2"></div><label style="font-size:0.8rem;font-weight:600;display:block;margin:0.75rem 0 0.5rem;">Direction:</label><select id="gradientDir" style="width:100%;padding:0.5rem;border:1.5px solid var(--border);border-radius:var(--radius-md);background:var(--bg-input);color:var(--text-primary);font-family:var(--font-family);"><option value="135deg">Diagonal</option><option value="90deg">Horizontal</option><option value="180deg">Vertical</option><option value="225deg">Reverse Diagonal</option><option value="0deg">Left to Right</option></select></div>
         <div class="gradient-preview" id="gradientPreview" style="background:var(--primary);"></div>
@@ -207,7 +224,7 @@
     </div></div>
 
     <!-- EDIT LINK MODAL -->
-    <div class="modal-overlay" id="editLinkModal"><div class="modal"><h3><span class="iconify" data-icon="ph:pencil-simple" data-width="20"></span> Edit Link</h3><input type="text" class="modal-input" id="editLinkTitle" placeholder="Link title"><input type="url" class="modal-input" id="editLinkUrl" placeholder="URL"><textarea class="modal-textarea" id="editLinkDesc" placeholder="Description"></textarea><div style="display:flex;gap:0.5rem;"><button class="btn btn-primary btn-sm" id="saveLinkBtn" style="flex:1;">Save Changes</button><button class="btn btn-ghost btn-sm" id="cancelLinkBtn">Cancel</button></div></div></div>
+    <div class="modal-overlay" id="editLinkModal"><div class="modal"><h3><span class="iconify" data-icon="ph:pencil-simple" data-width="20"></span> Edit Link</h3><input type="text" class="modal-input" id="editLinkTitle" placeholder="Link title"><input type="url" class="modal-input" id="editLinkUrl" placeholder="URL"><textarea class="modal-textarea" id="editLinkDesc" placeholder="Description"></textarea><div style="display:flex;gap:0.5rem;"><button class="btn btn-primary btn-sm" id="saveLinkBtn" style="flex:1;">Save</button><button class="btn btn-ghost btn-sm" id="cancelLinkBtn">Cancel</button></div></div></div>
 
     <!-- CHAT PANEL -->
     <div class="chat-panel-overlay" id="chatPanelOverlay"></div>
@@ -227,7 +244,7 @@
         function fmtNum(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return String(n)}
         function userColor(u){var h=0;for(var i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return'hsl('+Math.abs(h%360)+',50%,45%)'}
 
-        var currentUser=null,profileUser=null,profileUid=null,allUserLinks=[],allLinksFiltered=[],activeTab='links',isFollowing=false;
+        var currentUser=null,profileUser=null,profileUid=null,allUserLinks=[],activeTab='links',isFollowing=false,tabSearchQuery='';
         var BANNER_COLORS=['#6c47ff','#3b82f6','#10b981','#f59e0b','#ef4444','#ec4899','#8b5cf6','#06b6d4','#84cc16','#f97316','#6366f1','#14b8a6','#0f172a','#1e293b','#334155','#ffffff','#000000','#dc2626','#eab308','#22c55e'];
         var bannerMode='solid',selectedSolidColor='#6c47ff',selectedGradColor1='#6c47ff',selectedGradColor2='#3b82f6',selectedGradDir='135deg',editingLinkId=null;
 
@@ -240,12 +257,13 @@
             else{a.innerHTML='<button class="btn btn-primary btn-sm" id="signinBtn">Sign In</button>'}
         }
 
-        function bindButtons(){
+        function bindAllButtons(){
             var pb=$('#profileBtn');if(pb)pb.onclick=function(){window.open('index.html','_self')};
             var sb=$('#signinBtn');if(sb)sb.onclick=function(){window.open('index.html','_self')};
             var fb=$('#followBtn');if(fb)fb.onclick=toggleFollow;
             var mb=$('#msgBtn');if(mb)mb.onclick=openChat;
             var eb=$('#editBioBtn');if(eb)eb.onclick=openBioModal;
+            var ib=$('#inlineEditBioBtn');if(ib)ib.onclick=openBioModal;
             var eb2=$('#editBannerBtn2');if(eb2)eb2.onclick=openBannerModal;
         }
 
@@ -298,15 +316,14 @@
             profileUser=doc.data();profileUser.uid=profileUid;
             if(!profileUser.bio)profileUser.bio='Hey! Text me for a Link!';
             var followers=profileUser.followers||[];
-            isFollowing=currentUser&&followers.indexOf(currentUser.uid)!==-1;
+            isFollowing=!!(currentUser&&followers.indexOf(currentUser.uid)!==-1);
             renderHeader();
             var snap=await db.collection('links').where('ownerId','==',profileUid).orderBy('createdAt','desc').get();
             allUserLinks=[];snap.docs.forEach(function(d){var data=d.data();data.id=d.id;data.upvotes=data.upvotes||0;data.downvotes=data.downvotes||0;data.comments=data.comments||[];data.views=data.views||0;allUserLinks.push(data)});
-            allLinksFiltered=allUserLinks.slice();
-            updateStats();loadTopLinks();renderTab('links');
-            var own=currentUser&&currentUser.uid===profileUid;
-            if(own){$('#analyticsTab').style.display='';$('#coverEditBtns').style.display='';$('#coverEditBtns').innerHTML='<button class="btn btn-xs btn-ghost" id="editBannerBtn" style="background:rgba(0,0,0,0.3);color:#fff;"><span class="iconify" data-icon="ph:paint-brush" data-width="12"></span> Edit</button>';setTimeout(function(){var b=$('#editBannerBtn');if(b)b.onclick=openBannerModal},50)}
-            else{$('#analyticsTab').style.display='none';$('#coverEditBtns').style.display='none'}
+            updateStats();loadTopLinks();renderTab(activeTab);
+            var own=!!(currentUser&&currentUser.uid===profileUid);
+            if(own){$('#analyticsTab').style.display='';$('#coverEditBtns').style.display='';$('#coverEditBtns').innerHTML='<button class="btn btn-xs btn-ghost" id="editBannerBtn" style="background:rgba(0,0,0,0.3);color:#fff;"><span class="iconify" data-icon="ph:paint-brush" data-width="12"></span> Edit</button>';$('#inlineEditBioBtn').style.display='inline-flex';setTimeout(function(){var b=$('#editBannerBtn');if(b)b.onclick=openBannerModal},50)}
+            else{$('#analyticsTab').style.display='none';$('#coverEditBtns').style.display='none';$('#inlineEditBioBtn').style.display='none'}
             if(profileUser.bannerStyle){$('#profileCover').style.background=profileUser.bannerStyle}
         }
 
@@ -320,11 +337,14 @@
             var joinDate='--';if(profileUser.createdAt){joinDate=new Date(profileUser.createdAt).toLocaleDateString('en-US',{month:'long',year:'numeric'})}
             $('#profileJoined').innerHTML='<span class="iconify" data-icon="ph:calendar-blank" data-width="14"></span> Joined '+joinDate;
             if(profileUser.website){$('#profileWebsite').style.display='';$('#profileWebsite').innerHTML='<a href="'+esc(profileUser.website)+'" target="_blank" rel="noopener" style="color:var(--primary);display:flex;align-items:center;gap:0.35rem;"><span class="iconify" data-icon="ph:globe" data-width="14"></span> '+esc(getDomain(profileUser.website))+'</a>'}else{$('#profileWebsite').style.display='none'}
-            var own=currentUser&&currentUser.uid===profileUid;var h='';
+            var own=!!(currentUser&&currentUser.uid===profileUid);var h='';
             if(own){h='<button class="btn btn-outline btn-sm" id="editBioBtn"><span class="iconify" data-icon="ph:pencil-simple" data-width="14"></span> Edit Bio</button><button class="btn btn-ghost btn-sm" id="editBannerBtn2"><span class="iconify" data-icon="ph:paint-brush" data-width="14"></span> Banner</button>'}
             else if(currentUser){var icon=isFollowing?'ph:user-minus':'ph:user-plus';var label=isFollowing?'Unfollow':'Follow';var btnClass=isFollowing?'btn-outline':'btn-primary';h='<button class="btn '+btnClass+' btn-sm" id="followBtn"><span class="iconify" data-icon="'+icon+'" data-width="14"></span> '+label+'</button>';if(isFollowing){h+='<button class="btn btn-outline btn-sm" id="msgBtn"><span class="iconify" data-icon="ph:chat-circle" data-width="14"></span> Message</button>'}}
             else{h='<button class="btn btn-primary btn-sm" id="followBtn"><span class="iconify" data-icon="ph:user-plus" data-width="14"></span> Follow</button>'}
-            $('#profileActions').innerHTML=h;window.Iconify.scan($('#profileActions'));bindButtons();}
+            $('#profileActions').innerHTML=h;window.Iconify.scan($('#profileActions'));
+            var own2=!!(currentUser&&currentUser.uid===profileUid);
+            if(own2){$('#inlineEditBioBtn').style.display='inline-flex'}else{$('#inlineEditBioBtn').style.display='none'}
+            bindAllButtons();}
 
         function updateStats(){
             $('#statLinks').textContent=fmtNum(allUserLinks.length);
@@ -340,16 +360,19 @@
             var html='';top.forEach(function(l,i){var net=(l.upvotes||0)-(l.downvotes||0);html+='<div style="padding:0.4rem 0;font-size:0.8rem;cursor:pointer;" onclick="window.open(\''+esc(l.url)+'\',\'_self\')"><strong>#'+(i+1)+'</strong> '+esc(l.title||'Untitled')+'<br><span style="color:var(--text-tertiary);font-size:0.7rem;"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="10"></span> '+fmtNum(net)+'</span></div>'});
             $('#topLinksList').innerHTML=html;window.Iconify.scan($('#topLinksList'));}
 
-        function filterLinks(){var q=$('#searchInput').value.toLowerCase().trim();if(!q){allLinksFiltered=allUserLinks.slice()}else{allLinksFiltered=allUserLinks.filter(function(l){return(l.title||'').toLowerCase().indexOf(q)!==-1||(l.description||'').toLowerCase().indexOf(q)!==-1||(l.url||'').toLowerCase().indexOf(q)!==-1})}renderTab('links')}
+        function handleTabSearch(){tabSearchQuery=$('#tabSearchInput').value.toLowerCase().trim();renderTab(activeTab)}
+
+        function getFilteredLinks(){if(!tabSearchQuery)return allUserLinks;return allUserLinks.filter(function(l){return(l.title||'').toLowerCase().indexOf(tabSearchQuery)!==-1||(l.description||'').toLowerCase().indexOf(tabSearchQuery)!==-1||(l.url||'').toLowerCase().indexOf(tabSearchQuery)!==-1})}
+        function getFilteredPeople(list){if(!tabSearchQuery||!list)return list;return list.filter(function(uid){return uid.toLowerCase().indexOf(tabSearchQuery)!==-1})}
 
         function renderTab(tab){
             activeTab=tab;$$('.stat-item').forEach(function(s){s.classList.remove('active')});var el=$('.stat-item[data-tab="'+tab+'"]');if(el)el.classList.add('active');
-            var c=$('#tabContent');
+            var c=$('#tabContent');$('#tabSearchInput').value=tabSearchQuery;
             if(tab==='links')renderLinksTab(c);else if(tab==='followers'||tab==='following')renderPeopleTab(c,tab);else if(tab==='analytics')renderAnalyticsTab(c);
         }
 
         function renderLinksTab(c){
-            var own=currentUser&&currentUser.uid===profileUid;var links=allLinksFiltered;
+            var own=!!(currentUser&&currentUser.uid===profileUid);var links=getFilteredLinks();
             if(links.length===0){c.innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="ph:link-simple" data-width="40"></span></div><p class="empty-state-title">No links found</p></div>';window.Iconify.scan(c);return}
             var html='';links.forEach(function(l){var sc=l.screenshot||l.previewImage||'';var net=(l.upvotes||0)-(l.downvotes||0);
             html+='<div class="link-card"><div class="link-card-screenshot">'+(sc?'<img src="'+esc(sc)+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=no-img><span class=iconify data-icon=ph:link-simple data-width=24></span></span>\'">':'<span class="no-img"><span class="iconify" data-icon="ph:link-simple" data-width="24"></span></span>')+'</div><div class="link-card-info"><div class="link-card-title" onclick="window.open(\''+esc(l.url)+'\',\'_self\')">'+esc(l.title||'Untitled')+'</div><div class="link-card-stats"><span class="link-card-stat"><span class="iconify" data-icon="ph:arrow-fat-up" data-width="12"></span> '+fmtNum(net)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:chat-circle" data-width="12"></span> '+fmtNum((l.comments||[]).length)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:eye" data-width="12"></span> '+fmtNum(l.views||0)+'</span><span class="link-card-stat"><span class="iconify" data-icon="ph:shield-check" data-width="12"></span> '+(l.trustScore||50)+'%</span><span class="link-card-stat"><span class="iconify" data-icon="ph:clock" data-width="12"></span> '+timeAgo(l.createdAt)+'</span></div>'+(own?'<div class="link-card-actions"><button class="btn btn-xs btn-outline" onclick="event.stopPropagation();openEditLinkModal(\''+l.id+'\')"><span class="iconify" data-icon="ph:pencil-simple" data-width="10"></span> Edit</button><button class="btn btn-xs btn-danger" onclick="event.stopPropagation();deleteLink(\''+l.id+'\')"><span class="iconify" data-icon="ph:trash" data-width="10"></span> Delete</button></div>':'')+'</div></div>';});
@@ -358,11 +381,13 @@
         async function renderPeopleTab(c,tab){
             var list=profileUser[tab]||[];if(list.length===0){var icon=tab==='followers'?'ph:users':'ph:user';var title=tab==='followers'?'No followers yet':'Not following anyone';c.innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="'+icon+'" data-width="40"></span></div><p class="empty-state-title">'+title+'</p></div>';window.Iconify.scan(c);return}
             c.innerHTML='<div class="loading-spinner"><div class="spinner"></div></div>';var users=[];for(var i=0;i<list.length;i++){var d=await db.collection('users').doc(list[i]).get();if(d.exists){var u=d.data();u.uid=list[i];users.push(u)}}
+            if(tabSearchQuery){users=users.filter(function(u){return(u.username||'').toLowerCase().indexOf(tabSearchQuery)!==-1})}
+            if(users.length===0){c.innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="ph:magnifying-glass" data-width="40"></span></div><p class="empty-state-title">No matches found</p></div>';window.Iconify.scan(c);return}
             var html='';users.forEach(function(u){var color=u.accentColor||userColor(u.username);var initial=u.emoji||(u.username||'U')[0].toUpperCase();html+='<div class="person-card" onclick="window.open(\'profile.html?uid='+u.uid+'\',\'_self\')"><div class="person-avatar" style="background:'+color+';">'+(u.emoji?'<span style="font-size:1.2rem;">'+u.emoji+'</span>':initial)+'</div><div><div class="person-name">'+esc(u.username||'User')+'</div><div class="person-username">@'+esc(u.username||'user')+'</div></div></div>'});c.innerHTML=html;window.Iconify.scan(c);}
 
         function renderAnalyticsTab(c){
             if(!(currentUser&&currentUser.uid===profileUid)){c.innerHTML='<div class="empty-state"><div class="empty-state-icon"><span class="iconify" data-icon="ph:lock-simple" data-width="40"></span></div><p class="empty-state-title">Only visible to profile owner</p></div>';return}
-            var tv=0,tu=0,td=0,tc2=0,ts=0;allUserLinks.forEach(function(l){tv+=(l.views||0);tu+=(l.upvotes||0);td+=(l.downvotes||0);tc2+=(l.comments||[]).length;ts+=(l.saves||0)});
+            var tv=0,tu=0,tc2=0,ts=0;allUserLinks.forEach(function(l){tv+=(l.views||0);tu+=(l.upvotes||0);tc2+=(l.comments||[]).length;ts+=(l.saves||0)});
             var at='-';if(allUserLinks.length>0){var t=0;allUserLinks.forEach(function(l){t+=(l.trustScore||50)});at=Math.round(t/allUserLinks.length)+'%'}
             var html='<div class="analytics-grid"><div class="analytics-card"><div class="analytics-value">'+fmtNum(allUserLinks.length)+'</div><div class="analytics-label">Total Links</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(tv)+'</div><div class="analytics-label">Views</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(tu)+'</div><div class="analytics-label">Upvotes</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(tc2)+'</div><div class="analytics-label">Comments</div></div><div class="analytics-card"><div class="analytics-value">'+fmtNum(ts)+'</div><div class="analytics-label">Saves</div></div><div class="analytics-card"><div class="analytics-value">'+at+'</div><div class="analytics-label">Avg Trust</div></div></div>';
             var best=[].concat(allUserLinks).sort(function(a,b){return(b.upvotes-b.downvotes)-(a.upvotes-a.downvotes)}).slice(0,5);
@@ -371,10 +396,11 @@
 
         function openEditLinkModal(id){var l=allUserLinks.find(function(x){return x.id===id});if(!l)return;editingLinkId=id;$('#editLinkTitle').value=l.title||'';$('#editLinkUrl').value=l.url||'';$('#editLinkDesc').value=l.description||'';$('#editLinkModal').classList.add('active')}
         function saveLinkEdit(){var id=editingLinkId;if(!id)return;var t=$('#editLinkTitle').value.trim();var u=$('#editLinkUrl').value.trim();var d=$('#editLinkDesc').value.trim();if(!t||!u){toast('Title and URL required','error');return}db.collection('links').doc(id).update({title:t,url:u,description:d}).then(function(){var l=allUserLinks.find(function(x){return x.id===id});if(l){l.title=t;l.url=u;l.description=d}renderTab('links');$('#editLinkModal').classList.remove('active');toast('Link updated!','success')})}
-        async function deleteLink(id){if(!confirm('Delete this link permanently?'))return;await db.collection('links').doc(id).delete();allUserLinks=allUserLinks.filter(function(l){return l.id!==id});allLinksFiltered=allLinksFiltered.filter(function(l){return l.id!==id});updateStats();loadTopLinks();renderTab('links');toast('Link deleted','info')}
+        async function deleteLink(id){if(!confirm('Delete this link permanently?'))return;await db.collection('links').doc(id).delete();allUserLinks=allUserLinks.filter(function(l){return l.id!==id});updateStats();loadTopLinks();renderTab('links');toast('Link deleted','info')}
 
         async function toggleFollow(){
-            if(!currentUser||!profileUid)return;var ref=db.collection('users').doc(profileUid);var doc=await ref.get();if(!doc.exists)return;
+            if(!currentUser||!profileUid)return;
+            var ref=db.collection('users').doc(profileUid);var doc=await ref.get();if(!doc.exists)return;
             var followers=doc.data().followers||[];
             if(followers.indexOf(currentUser.uid)!==-1){followers=followers.filter(function(u){return u!==currentUser.uid});isFollowing=false;toast('Unfollowed','info')}
             else{followers.push(currentUser.uid);isFollowing=true;toast('Following!','success')}
@@ -390,16 +416,20 @@
         async function loadConversations(){if(!currentUser){$('#chatPanelList').innerHTML='<div class="chat-panel-empty">Sign in to use messages</div>';return}var snap=await db.collection('messages').where('participants','array-contains',currentUser.uid).orderBy('lastMessageAt','desc').get();var convs=snap.docs.map(function(d){return{id:d.id,data:d.data()}});if(convs.length===0){$('#chatPanelList').innerHTML='<div class="chat-panel-empty">No conversations yet</div>';return}var html='';convs.forEach(function(c){var otherId=c.data.participants.find(function(p){return p!==currentUser.uid});var otherName=(c.data.participantNames||{})[otherId]||'User';html+='<div style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem;border-radius:var(--radius-md);cursor:pointer;margin-bottom:0.25rem;" onclick="window.open(\'chat.html?uid='+otherId+'\',\'_self\')"><div style="width:36px;height:36px;border-radius:50%;background:'+userColor(otherName)+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:0.7rem;">'+(otherName||'U')[0].toUpperCase()+'</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.8rem;">'+esc(otherName)+'</div><div style="font-size:0.7rem;color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(c.data.lastMessage||'')+'</div></div></div>'});$('#chatPanelList').innerHTML=html}
 
         $$('#statsBar .stat-item').forEach(function(s){s.addEventListener('click',function(){renderTab(this.dataset.tab)})});
-        auth.onAuthStateChanged(async function(u){if(u){var d=await db.collection('users').doc(u.uid).get();if(d.exists){currentUser=d.data();currentUser.uid=u.uid}else{currentUser={uid:u.uid,username:(u.email||'user').split('@')[0],accentColor:userColor((u.email||'user').split('@')[0]),emoji:'👤'}}}else{currentUser=null}renderAuthUI();bindButtons()});
+
+        auth.onAuthStateChanged(function(u){
+            if(u){db.collection('users').doc(u.uid).get().then(function(d){if(d.exists){currentUser=d.data();currentUser.uid=u.uid}else{currentUser={uid:u.uid,username:(u.email||'user').split('@')[0],accentColor:userColor((u.email||'user').split('@')[0]),emoji:'👤'}}renderAuthUI();bindAllButtons();loadProfile()})}
+            else{currentUser=null;renderAuthUI();bindAllButtons();loadProfile()}
+        });
 
         document.addEventListener('DOMContentLoaded',function(){
             var t=localStorage.getItem('ls-theme')||'light';setTheme(t);
             $('#themeToggle').addEventListener('click',function(){var cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')});
             $('#shareBtn').addEventListener('click',function(){window.open('add-link.html','_self')});
             $('#headerMsgBtn').addEventListener('click',openChatPanel);
+            $('#chatBubbleBtn').addEventListener('click',openChatPanel);
             $('#chatPanelClose').addEventListener('click',closeChatPanel);
             $('#chatPanelOverlay').addEventListener('click',closeChatPanel);
-            $('#searchInput').addEventListener('input',function(){currentPage=1;filterLinks()});
             $('#saveBioBtn').addEventListener('click',saveBio);
             $('#cancelBioBtn').addEventListener('click',function(){$('#bioModal').classList.remove('active')});
             $('#solidModeBtn').addEventListener('click',function(){bannerMode='solid';renderBannerUI()});
@@ -411,7 +441,7 @@
             $('#saveLinkBtn').addEventListener('click',saveLinkEdit);
             $('#cancelLinkBtn').addEventListener('click',function(){$('#editLinkModal').classList.remove('active')});
             $('#editLinkModal').addEventListener('click',function(e){if(e.target===$('#editLinkModal'))$('#editLinkModal').classList.remove('active')});
-            renderAuthUI();loadProfile();
+            renderAuthUI();bindAllButtons();loadProfile();
         });
     </script>
 </body>
