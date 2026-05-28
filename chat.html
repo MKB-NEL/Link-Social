@@ -29,11 +29,18 @@
         @keyframes spin{to{transform:rotate(360deg)}}
         @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
         @keyframes messageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
 
         .app-container{display:flex;height:100vh;max-width:1200px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);background:var(--bg-surface)}
 
-        /* Conversations List */
-        .conversations-panel{width:360px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg-surface)}
+        /* Navbar */
+        .navbar{position:sticky;top:0;z-index:50;background:var(--bg-surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 1.25rem;flex-shrink:0}
+        .navbar-back{display:flex;align-items:center;gap:0.4rem;cursor:pointer;color:var(--text-secondary);font-weight:600;font-size:0.875rem;transition:all var(--transition-fast);text-decoration:none;padding:0.35rem 0.6rem;border-radius:var(--radius-full)}
+        .navbar-back:hover{background:var(--bg-hover);color:var(--primary)}
+        .navbar-title{font-weight:700;font-size:1rem;margin-left:0.5rem}
+
+        /* Conversations Panel */
+        .conversations-panel{width:360px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg-surface);height:calc(100vh - 52px)}
         .conv-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:0.75rem}
         .conv-header-title{font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:0.5rem}
         .conv-search-wrap{display:flex;align-items:center;background:var(--bg-input);border-radius:var(--radius-lg);padding:0.4rem 0.85rem;gap:0.4rem;margin:0.5rem 1rem;border:1px solid transparent;transition:all var(--transition-fast)}
@@ -55,7 +62,7 @@
         .conv-empty-icon{font-size:2.5rem;margin-bottom:0.5rem;opacity:0.4}
 
         /* Chat Area */
-        .chat-area{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg-main)}
+        .chat-area{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg-main);height:calc(100vh - 52px)}
         .chat-header{padding:0.85rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem;background:var(--bg-surface)}
         .chat-header-avatar{width:40px;height:40px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0}
         .chat-header-name{font-weight:600;font-size:0.95rem}
@@ -71,7 +78,6 @@
         .msg-typing{display:flex;align-items:center;gap:4px;padding:0.5rem 1rem;font-size:0.75rem;color:var(--text-tertiary);align-self:flex-start}
         .msg-typing span{width:6px;height:6px;border-radius:50%;background:var(--text-tertiary);animation:pulse 1.4s infinite}
         .msg-typing span:nth-child(2){animation-delay:0.2s}.msg-typing span:nth-child(3){animation-delay:0.4s}
-        @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
         .chat-input-area{padding:0.85rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:0.6rem;align-items:flex-end;background:var(--bg-surface)}
         .chat-input-wrap{flex:1;display:flex;align-items:flex-end;background:var(--bg-input);border-radius:var(--radius-xl);padding:0.5rem 0.85rem;gap:0.5rem;border:1px solid transparent;transition:all var(--transition-fast)}
         .chat-input-wrap:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,71,255,0.08);background:var(--bg-surface)}
@@ -101,43 +107,56 @@
     </style>
 </head>
 <body class="theme-light">
-    <div class="app-container">
-        <!-- Conversations Panel -->
-        <div class="conversations-panel" id="conversationsPanel">
-            <div class="conv-header">
-                <span class="conv-header-title"><span class="iconify" data-icon="ph:chats-circle" data-width="22"></span> Messages</span>
-                <button class="btn btn-icon btn-ghost" id="themeToggle" title="Toggle theme"><span class="iconify" data-icon="ph:moon" data-width="20" id="themeIcon"></span></button>
-            </div>
-            <div class="conv-search-wrap"><span class="iconify" data-icon="ph:magnifying-glass" data-width="16" style="color:var(--text-tertiary);flex-shrink:0;"></span><input type="text" id="convSearchInput" placeholder="Search conversations..." oninput="filterConversations()"></div>
-            <div class="conv-list" id="convList"><div class="conv-empty"><div class="conv-empty-icon"><span class="iconify" data-icon="ph:chat-circle" data-width="48"></span></div><p style="font-weight:600;">No conversations yet</p><p style="font-size:0.8rem;">Follow someone to start chatting!</p></div></div>
-            <div style="padding:0.75rem;border-top:1px solid var(--border);text-align:center;font-size:0.7rem;color:var(--text-tertiary);"><a href="https://pireactive.vercel.app/" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600;">LinkSocial © 2026 · Built by PIReactive</a></div>
-        </div>
+    <div class="app-container" style="flex-direction:column;">
+        <!-- Top Navbar with Back Button -->
+        <nav class="navbar">
+            <a class="navbar-back" href="index.html">
+                <span class="iconify" data-icon="ph:arrow-left" data-width="18"></span> Back to Feed
+            </a>
+            <span class="navbar-title">Messages</span>
+            <button class="btn btn-icon btn-ghost" id="themeToggle" title="Toggle theme" style="margin-left:auto;">
+                <span class="iconify" data-icon="ph:moon" data-width="20" id="themeIcon"></span>
+            </button>
+        </nav>
 
-        <!-- Chat Area -->
-        <div class="chat-area" id="chatArea">
-            <div class="chat-placeholder" id="chatPlaceholder">
-                <div class="chat-placeholder-icon"><span class="iconify" data-icon="ph:chats-circle" data-width="64"></span></div>
-                <h3>Your Messages</h3>
-                <p>Select a conversation or follow someone to start chatting</p>
-            </div>
-            <div id="activeChat" style="display:none;flex:1;flex-direction:column;">
-                <div class="chat-header">
-                    <button class="btn btn-icon btn-ghost" id="backToConvs" style="display:none;" title="Back"><span class="iconify" data-icon="ph:arrow-left" data-width="20"></span></button>
-                    <div class="chat-header-avatar" id="chatPartnerAvatar" style="background:var(--primary);">U</div>
-                    <div>
-                        <div class="chat-header-name" id="chatPartnerName">User</div>
-                        <div class="chat-header-username" id="chatPartnerUsername">@user</div>
-                    </div>
-                    <div class="chat-header-actions">
-                        <button class="btn btn-icon btn-ghost" id="viewProfileBtn" title="View profile"><span class="iconify" data-icon="ph:user" data-width="18"></span></button>
-                    </div>
+        <!-- Main Chat Layout -->
+        <div style="display:flex;flex:1;overflow:hidden;">
+            <!-- Conversations Panel -->
+            <div class="conversations-panel" id="conversationsPanel">
+                <div class="conv-header">
+                    <span class="conv-header-title"><span class="iconify" data-icon="ph:chats-circle" data-width="22"></span> Messages</span>
                 </div>
-                <div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input-area">
-                    <div class="chat-input-wrap">
-                        <textarea id="messageInput" placeholder="Type a message..." rows="1" oninput="autoResize(this)" onkeydown="handleEnter(event)"></textarea>
+                <div class="conv-search-wrap"><span class="iconify" data-icon="ph:magnifying-glass" data-width="16" style="color:var(--text-tertiary);flex-shrink:0;"></span><input type="text" id="convSearchInput" placeholder="Search conversations..." oninput="filterConversations()"></div>
+                <div class="conv-list" id="convList"><div class="conv-empty"><div class="conv-empty-icon"><span class="iconify" data-icon="ph:chat-circle" data-width="48"></span></div><p style="font-weight:600;">No conversations yet</p><p style="font-size:0.8rem;">Follow someone to start chatting!</p></div></div>
+                <div style="padding:0.75rem;border-top:1px solid var(--border);text-align:center;font-size:0.7rem;color:var(--text-tertiary);"><a href="https://pireactive.vercel.app/" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600;">LinkSocial © 2026 · Built by PIReactive</a></div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-area" id="chatArea">
+                <div class="chat-placeholder" id="chatPlaceholder">
+                    <div class="chat-placeholder-icon"><span class="iconify" data-icon="ph:chats-circle" data-width="64"></span></div>
+                    <h3>Your Messages</h3>
+                    <p>Select a conversation or follow someone to start chatting</p>
+                </div>
+                <div id="activeChat" style="display:none;flex:1;flex-direction:column;">
+                    <div class="chat-header">
+                        <button class="btn btn-icon btn-ghost" id="backToConvs" style="display:none;" title="Back to conversations"><span class="iconify" data-icon="ph:arrow-left" data-width="20"></span></button>
+                        <div class="chat-header-avatar" id="chatPartnerAvatar" style="background:var(--primary);">U</div>
+                        <div>
+                            <div class="chat-header-name" id="chatPartnerName">User</div>
+                            <div class="chat-header-username" id="chatPartnerUsername">@user</div>
+                        </div>
+                        <div class="chat-header-actions">
+                            <button class="btn btn-icon btn-ghost" id="viewProfileBtn" title="View profile"><span class="iconify" data-icon="ph:user" data-width="18"></span></button>
+                        </div>
                     </div>
-                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled><span class="iconify" data-icon="ph:paper-plane-right" data-width="18"></span></button>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-area">
+                        <div class="chat-input-wrap">
+                            <textarea id="messageInput" placeholder="Type a message..." rows="1" oninput="autoResize(this)" onkeydown="handleEnter(event)"></textarea>
+                        </div>
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled><span class="iconify" data-icon="ph:paper-plane-right" data-width="18"></span></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,7 +180,6 @@
         function formatDate(ts){var d=new Date(ts);var today=new Date();if(d.toDateString()===today.toDateString())return'Today';var yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);if(d.toDateString()===yesterday.toDateString())return'Yesterday';return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
 
         function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';var sendBtn=$('#sendBtn');if(sendBtn)sendBtn.disabled=!el.value.trim()}
-
         function handleEnter(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}}
 
         async function loadConversations(){
