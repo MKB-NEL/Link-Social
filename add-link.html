@@ -177,15 +177,12 @@
 
         async function loadExistingUrls(){try{var s=await db.collection('links').select('url','title','ownerName').get();allExistingUrls=[];s.docs.forEach(function(d){var data=d.data();if(data.url)allExistingUrls.push({url:data.url,title:data.title||'Untitled',ownerName:data.ownerName||'Anonymous',normalized:normalizeUrl(data.url)})})}catch(e){}}
         function checkUrlExists(url){if(!url)return null;var norm=normalizeUrl(url);for(var i=0;i<allExistingUrls.length;i++){if(allExistingUrls[i].normalized===norm||isSameUrl(norm,allExistingUrls[i].normalized))return allExistingUrls[i]}return null}
-
-        // Robust duplicate check using Firestore
         async function checkDuplicateFirestore(url){
             var norm=normalizeUrl(url);
             var snap=await db.collection('links').where('normalizedUrl','==',norm).limit(1).get();
             if(!snap.empty){var d=snap.docs[0].data();return{url:d.url,title:d.title||'Untitled',ownerName:d.ownerName||'Anonymous'}}
-            // also check without query params
-            try{var baseUrl=new URL(url);var baseNorm=normalizeUrl(baseUrl.origin+baseUrl.pathname);if(baseNorm!==norm){snap=await db.collection('links').where('normalizedUrl','==',baseNorm).limit(1).get();if(!snap.empty){var d2=snap.docs[0].data();return{url:d2.url,title:d2.title||'Untitled',ownerName:d2.ownerName||'Anonymous'}}}
-            }catch(e){}
+            try{var baseUrl=new URL(url);var baseNorm=normalizeUrl(baseUrl.origin+baseUrl.pathname);if(baseNorm!==norm){snap=await db.collection('links').where('normalizedUrl','==',baseNorm).limit(1).get();if(!snap.empty){var d2=snap.docs[0].data();return{url:d2.url,title:d2.title||'Untitled',ownerName:d2.ownerName||'Anonymous'}}}}
+            catch(e){}
             return null;
         }
 
@@ -195,7 +192,6 @@
 
         async function pasteFromClipboard(){try{var text=await navigator.clipboard.readText();if(text&&(text.indexOf('http')!==-1||text.indexOf('www.')!==-1||text.indexOf('.onion')!==-1)){$('#shareUrl').value=text.trim();handleUrlInput()}}catch(e){}}
 
-        // Load categories with robust fallback
         async function loadCategoryData(){
             try{var r=await fetch('categories.json');var d=await r.json();categoryData=d.categories}catch(e){}
             if(!categoryData||!categoryData.length){
@@ -223,7 +219,6 @@
             }
         }
 
-        // Simple keyword-based category detection from description and title
         function detectCategories(title,desc,url){
             if(!categoryData||!categoryData.length)return['General'];
             var text=((desc||'')+' '+(title||'')).toLowerCase();
@@ -281,14 +276,17 @@
             var exists=checkUrlExists(url);
             if(exists){updateUrlStatus('duplicate');renderTrustUI({score:0,level:'danger',summary:'Already shared',missing:[]});return}
             updateUrlStatus('unique');
-            lockInputs();
             if(isOnion(url)){
+                // Onion links: no lock, user can immediately edit title/description
                 previewData={title:$('#shareTitle').value||url,description:$('#shareDesc').value||'Onion link',url:url};
                 $('#previewPlaceholder').style.display='none';$('#previewContent').style.display='block';
-                $('#previewContent').innerHTML='<div class="preview-card"><div class="preview-card-body"><div class="preview-card-domain">🧅 Onion Network</div><div class="preview-card-title">'+esc(url)+'</div><div class="preview-card-desc">Onion links are allowed but trust scoring is reduced.</div></div></div>';
-                if(!$('#shareTitle').value)$('#shareTitle').value=url;
-                unlockInputs();updateCategoryDisplay();var td=calcTrustScore(previewData,url,$('#shareTitle').value,$('#shareDesc').value,true);trustData=td;renderTrustUI(td);return;
+                $('#previewContent').innerHTML='<div class="preview-card"><div class="preview-card-body"><div class="preview-card-domain">🧅 Onion Network</div><div class="preview-card-title">'+esc(url)+'</div><div class="preview-card-desc">Onion links are allowed but trust scoring is reduced. Add a title and description above.</div></div></div>';
+                // Do not auto-fill title with URL; let user type
+                updateCategoryDisplay();
+                var td=calcTrustScore(previewData,url,$('#shareTitle').value,$('#shareDesc').value,true);trustData=td;renderTrustUI(td);
+                return;
             }
+            lockInputs();
             try{
                 var r=await fetch('https://api.microlink.io/?url='+encodeURIComponent(url)+'&screenshot=true');var d=await r.json();
                 if(d.status==='success'&&d.data){previewData=d.data;linkIsDead=false;
@@ -313,7 +311,6 @@
             var finalUrl=url;
             if(!isOnion(url)&&!url.startsWith('http'))finalUrl='https://'+url;
             var btn=$('#publishBtn');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Checking uniqueness...';
-            // Robust duplicate check using Firestore
             var duplicate=await checkDuplicateFirestore(finalUrl);
             if(!duplicate){duplicate=checkUrlExists(finalUrl);}
             if(duplicate){
@@ -321,7 +318,6 @@
                 updateUrlStatus('duplicate');$('#urlWrap').classList.add('duplicate');showDuplicateModal(duplicate);
                 setTimeout(function(){$('#urlWrap').classList.remove('duplicate')},3000);return;
             }
-            // Verify link is reachable
             if(!isOnion(finalUrl)){
                 btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Verifying link...';
                 try{var checkR=await fetch('https://api.microlink.io/?url='+encodeURIComponent(finalUrl));var checkD=await checkR.json();
