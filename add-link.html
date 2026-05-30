@@ -76,10 +76,8 @@
         .btn-primary:hover{background:var(--ph);box-shadow:0 6px 20px rgba(108,71,255,0.4);transform:translateY(-1px)}
         .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;box-shadow:none}
 
-        .cat-display{display:flex;align-items:center;gap:0.5rem;padding:0.65rem 0.9rem;background:var(--pl);border-radius:var(--rx);margin:0.75rem 0;font-size:0.82rem;font-weight:600;color:var(--p);border:1.5px solid rgba(108,71,255,0.12);flex-wrap:wrap}
-        .cat-list{display:flex;gap:0.3rem;flex-wrap:wrap;margin-left:0.25rem}
-        .cat-chip{background:var(--p);color:#fff;padding:0.15rem 0.5rem;border-radius:var(--rf);font-size:0.7rem;font-weight:600}
-        .onion-tag{background:var(--da);color:#fff;padding:0.15rem 0.5rem;border-radius:var(--rf);font-size:0.7rem;font-weight:700}
+        .cat-display{display:flex;align-items:baseline;gap:0.5rem;padding:0.65rem 0.9rem;background:var(--pl);border-radius:var(--rx);margin:0.75rem 0;font-size:0.82rem;font-weight:600;color:var(--p);border:1.5px solid rgba(108,71,255,0.12);flex-wrap:wrap}
+        .cat-text{color:var(--p);font-weight:500}
 
         .trust-box{background:var(--s);border:2px solid var(--b);border-radius:var(--rx);padding:1rem 1.25rem;margin:1rem 0;transition:all var(--t)}
         .trust-box.trusted{border-color:#10b981;background:linear-gradient(135deg,var(--su-bg),var(--s))}
@@ -142,7 +140,7 @@
             <div class="form-group"><label class="form-label">URL <span class="req">*</span></label><div class="url-wrap" id="urlWrap"><span class="url-icon"><span class="iconify" data-icon="ph:link-simple-bold" data-width="20"></span></span><input type="url" id="shareUrl" placeholder="example.com/amazing-article" oninput="handleUrlInput()" autofocus><button class="paste-btn" onclick="pasteFromClipboard()"><span class="iconify" data-icon="ph:clipboard-text" data-width="14"></span> Paste</button></div><div class="url-status" id="urlStatus"></div></div>
             <div class="form-group input-locked" id="titleGroup"><label class="form-label">Title <span class="req">*</span> <span class="auto-tag">auto-fill</span></label><div class="lock-overlay" id="titleLock" style="display:none"><span class="mini-spinner"></span> Fetching title...</div><input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()"></div>
             <div class="form-group input-locked" id="descGroup"><label class="form-label">Description <span class="auto-tag">auto-fill</span></label><div class="lock-overlay" id="descLock" style="display:none"><span class="mini-spinner"></span> Fetching description...</div><textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing?" oninput="onContentChange()"></textarea></div>
-            <div class="cat-display" id="catDisplay" style="display:none"><span id="catEmoji">🏷️</span><span>Categories:</span><div class="cat-list" id="catList"></div></div>
+            <div class="cat-display" id="catDisplay" style="display:none"><span id="catEmoji">🏷️</span><span>Categories: </span><span class="cat-text" id="catText"></span></div>
             <div class="trust-box" id="trustBox" style="display:none"><div class="trust-box-top"><div class="trust-score-row"><span class="trust-score-number high" id="trustScoreNumber">—</span><span class="trust-percent">/100</span></div></div><div class="trust-shields" id="trustShields"><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span></div><div class="trust-summary-text" id="trustSummaryText">Enter a URL to analyze safety</div><span class="trust-logs-toggle" id="trustLogsToggle" onclick="toggleTrustLogs()"><span class="iconify" data-icon="ph:caret-down" data-width="12"></span> Logs</span><div class="trust-logs" id="trustLogs"></div></div>
             <button class="btn btn-primary" id="publishBtn" onclick="handlePublish()"><span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span>Publish to LinkSocial</button>
         </div>
@@ -179,7 +177,17 @@
 
         async function loadExistingUrls(){try{var s=await db.collection('links').select('url','title','ownerName').get();allExistingUrls=[];s.docs.forEach(function(d){var data=d.data();if(data.url)allExistingUrls.push({url:data.url,title:data.title||'Untitled',ownerName:data.ownerName||'Anonymous',normalized:normalizeUrl(data.url)})})}catch(e){}}
         function checkUrlExists(url){if(!url)return null;var norm=normalizeUrl(url);for(var i=0;i<allExistingUrls.length;i++){if(allExistingUrls[i].normalized===norm||isSameUrl(norm,allExistingUrls[i].normalized))return allExistingUrls[i]}return null}
-        async function checkDuplicateFirestore(url){var norm=normalizeUrl(url);var snap=await db.collection('links').where('normalizedUrl','==',norm).get();if(!snap.empty){var d=snap.docs[0].data();return{url:d.url,title:d.title||'Untitled',ownerName:d.ownerName||'Anonymous'}}return null}
+
+        // Robust duplicate check using Firestore
+        async function checkDuplicateFirestore(url){
+            var norm=normalizeUrl(url);
+            var snap=await db.collection('links').where('normalizedUrl','==',norm).limit(1).get();
+            if(!snap.empty){var d=snap.docs[0].data();return{url:d.url,title:d.title||'Untitled',ownerName:d.ownerName||'Anonymous'}}
+            // also check without query params
+            try{var baseUrl=new URL(url);var baseNorm=normalizeUrl(baseUrl.origin+baseUrl.pathname);if(baseNorm!==norm){snap=await db.collection('links').where('normalizedUrl','==',baseNorm).limit(1).get();if(!snap.empty){var d2=snap.docs[0].data();return{url:d2.url,title:d2.title||'Untitled',ownerName:d2.ownerName||'Anonymous'}}}
+            }catch(e){}
+            return null;
+        }
 
         function updateUrlStatus(type){var s=$('#urlStatus'),w=$('#urlWrap');s.className='url-status '+type;if(type==='duplicate')s.innerHTML='<span class="iconify" data-icon="ph:warning-circle" data-width="14"></span> Already shared';else if(type==='unique')s.innerHTML='<span class="iconify" data-icon="ph:check-circle" data-width="14"></span> Unique';else if(type==='checking')s.innerHTML='<span class="iconify" data-icon="ph:spinner" data-width="14" style="animation:spin 0.8s linear infinite"></span> Checking...';else if(type==='dead')s.innerHTML='<span class="iconify" data-icon="ph:link-break" data-width="14"></span> Cannot be reached';else s.innerHTML='';w.classList.remove('error','duplicate','success','dead');if(type==='duplicate')w.classList.add('duplicate');if(type==='unique')w.classList.add('success');if(type==='dead')w.classList.add('error');window.Iconify.scan(s)}
 
@@ -187,7 +195,7 @@
 
         async function pasteFromClipboard(){try{var text=await navigator.clipboard.readText();if(text&&(text.indexOf('http')!==-1||text.indexOf('www.')!==-1||text.indexOf('.onion')!==-1)){$('#shareUrl').value=text.trim();handleUrlInput()}}catch(e){}}
 
-        // Load categories with fallback
+        // Load categories with robust fallback
         async function loadCategoryData(){
             try{var r=await fetch('categories.json');var d=await r.json();categoryData=d.categories}catch(e){}
             if(!categoryData||!categoryData.length){
@@ -215,37 +223,34 @@
             }
         }
 
+        // Simple keyword-based category detection from description and title
         function detectCategories(title,desc,url){
-            if(!categoryData||!categoryData.length)return[{name:'General',icon:'📌'}];
-            var text=((title||'')+' '+(desc||'')+' '+(url||'')).toLowerCase();
+            if(!categoryData||!categoryData.length)return['General'];
+            var text=((desc||'')+' '+(title||'')).toLowerCase();
             var domain=getDomain(url||'').toLowerCase();
-            var matches=[];
+            var matched=[];
             for(var i=0;i<categoryData.length;i++){
-                var cat=categoryData[i];var score=0;
+                var cat=categoryData[i];
                 for(var j=0;j<cat.keywords.length;j++){
                     var kw=cat.keywords[j];
-                    if(text.indexOf(kw)!==-1)score+=1;
-                    if((title||'').toLowerCase().indexOf(kw)!==-1)score+=2;
-                    if(domain.indexOf(kw)!==-1||domain.indexOf(kw.replace(/\s+/g,'-'))!==-1)score+=3;
+                    if(text.indexOf(kw)!==-1||domain.indexOf(kw)!==-1){
+                        if(matched.indexOf(cat.name)===-1)matched.push(cat.name);
+                        break;
+                    }
                 }
-                if(score>0)matches.push({name:cat.name,icon:cat.icon,score:score});
             }
-            matches.sort(function(a,b){return b.score-a.score});
-            var threshold=matches.length>0?matches[0].score*0.3:0;
-            var selected=matches.filter(function(m){return m.score>=threshold}).slice(0,4);
-            if(selected.length===0)selected=[{name:'General',icon:'📌'}];
-            return selected;
+            if(isOnion(url)&&matched.indexOf('ONION')===-1)matched.push('ONION');
+            if(matched.length===0)matched.push('General');
+            return matched;
         }
 
         function updateCategoryDisplay(){
             var title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim(),url=$('#shareUrl').value.trim();
             if(!title&&!desc&&!url){$('#catDisplay').style.display='none';return}
-            detectedCategories=detectCategories(title,desc,url);
-            if(!detectedCategories.length){$('#catDisplay').style.display='none';return}
-            $('#catDisplay').style.display='flex';$('#catEmoji').textContent=detectedCategories[0]?detectedCategories[0].icon:'🏷️';
-            var catHtml='';detectedCategories.forEach(function(c){catHtml+='<span class="cat-chip">'+c.name+'</span>'});
-            if(isOnion(url))catHtml+='<span class="onion-tag">🧅 ONION</span>';
-            $('#catList').innerHTML=catHtml;
+            var cats=detectCategories(title,desc,url);
+            if(!cats.length){$('#catDisplay').style.display='none';return}
+            $('#catDisplay').style.display='flex';
+            $('#catText').textContent=cats.join(', ');
         }
         function onContentChange(){if(!isFetching)updateCategoryDisplay()}
 
@@ -308,7 +313,7 @@
             var finalUrl=url;
             if(!isOnion(url)&&!url.startsWith('http'))finalUrl='https://'+url;
             var btn=$('#publishBtn');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Checking uniqueness...';
-            // Double-check with Firestore for duplicate
+            // Robust duplicate check using Firestore
             var duplicate=await checkDuplicateFirestore(finalUrl);
             if(!duplicate){duplicate=checkUrlExists(finalUrl);}
             if(duplicate){
@@ -316,6 +321,7 @@
                 updateUrlStatus('duplicate');$('#urlWrap').classList.add('duplicate');showDuplicateModal(duplicate);
                 setTimeout(function(){$('#urlWrap').classList.remove('duplicate')},3000);return;
             }
+            // Verify link is reachable
             if(!isOnion(finalUrl)){
                 btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Verifying link...';
                 try{var checkR=await fetch('https://api.microlink.io/?url='+encodeURIComponent(finalUrl));var checkD=await checkR.json();
@@ -327,9 +333,8 @@
             }
             btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Publishing...';
             var screenshot='';if(previewData){screenshot=(previewData.screenshot&&previewData.screenshot.url)?previewData.screenshot.url:((previewData.image&&previewData.image.url)?previewData.image.url:'')}
-            var cats=detectedCategories.length>0?detectedCategories:[{name:'General',icon:'📌'}];
-            var catNames=cats.map(function(c){return c.name});
-            if(isOnion(finalUrl)&&catNames.indexOf('ONION')===-1)catNames.unshift('ONION');
+            var catNames=detectCategories(title,desc,finalUrl);
+            if(catNames.length===0)catNames=['General'];
             var td=trustData||calcTrustScore(previewData,finalUrl,title,desc,!linkIsDead);
             var normalizedUrl=normalizeUrl(finalUrl);
             var link={title:title,url:finalUrl,description:desc,categories:catNames,category:catNames[0],screenshot:screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0,trustScore:td.score,normalizedUrl:normalizedUrl,domain:getDomain(finalUrl).toLowerCase()};
