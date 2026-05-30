@@ -236,11 +236,13 @@
         window.db = db;
         window.auth = auth;
         window.FieldValue = FieldValue;
-
-        import('/chat-app.js').catch(e => console.warn("Chat module not found, using inline definitions", e));
+        window.onAuthStateChanged = onAuthStateChanged;
+        
+        console.log("Firebase initialized successfully");
     </script>
 
     <script>
+        // All chat functions remain the same but now use window.auth and window.db
         function $(s){return document.querySelector(s)}
         function esc(s){if(!s)return'';return String(s).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
         function timeAgo(ts){if(!ts)return'';var s=Math.floor((Date.now()-ts)/1000);if(s<60)return'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'}
@@ -293,6 +295,8 @@
         function backToConvs(){$('#conversationsPanel').classList.remove('hidden-mobile');$('#chatArea').classList.add('hidden-mobile');$('#activeChat').style.display='none';$('#chatPlaceholder').style.display='flex';if(messagesListener){messagesListener();messagesListener=null}activeChatUid=null;activeChatUser=null}
         function viewPartnerProfile(){if(activeChatUid)window.open('profile.html?uid='+activeChatUid,'_self')}
         function requestNotificationPermission(){if(Notification&&Notification.permission==='default'){Notification.requestPermission()}}
+        
+        // Make all functions global
         window.filterConversations=filterConversations;
         window.openChat=openChat;
         window.sendMessage=sendMessage;
@@ -315,8 +319,57 @@
         window.scrollToMsg=scrollToMsg;
         window.closeEditModal=closeEditModal;
         window.checkScrollPosition=checkScrollPosition;
-        window.addEventListener('load',function(){var t=localStorage.getItem('ls-theme')||'light';setTheme(t);$('#themeToggle').addEventListener('click',function(){var cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')});$('#backToConvs').addEventListener('click',backToConvs);$('#emojiBtn').addEventListener('click',function(e){e.stopPropagation();$('#emojiPicker').classList.toggle('show')});document.addEventListener('click',function(e){if(!e.target.closest('#emojiPicker')&&!e.target.closest('#emojiBtn')){$('#emojiPicker').classList.remove('show')}});renderEmojiPicker();requestNotificationPermission();$('#chatMessagesWrap').addEventListener('scroll',checkScrollPosition);$('#saveEditMsgBtn').addEventListener('click',saveEditedMessage);$('#cancelEditMsgBtn').addEventListener('click',closeEditModal);$('#editMsgModal').addEventListener('click',function(e){if(e.target===$('#editMsgModal'))closeEditModal()});$('#shareSelectedLinkBtn').addEventListener('click',shareSelectedLink);$('#cancelShareBtn').addEventListener('click',closeShareLinkModal);$('#shareLinkModal').addEventListener('click',function(e){if(e.target===$('#shareLinkModal'))closeShareLinkModal()});if(window.innerWidth<=768){$('#backToConvs').style.display='flex'}window.addEventListener('resize',function(){if(window.innerWidth<=768){$('#backToConvs').style.display='flex'}else{$('#backToConvs').style.display='none';$('#conversationsPanel').classList.remove('hidden-mobile');$('#chatArea').classList.remove('hidden-mobile')}})});
-        window.auth.onAuthStateChanged(async function(u){if(u){var db=window.db;var d=await getDoc(doc(db,'users',u.uid));if(d.exists()){currentUser=d.data();currentUser.uid=u.uid}else{currentUser={uid:u.uid,username:(u.email||'user').split('@')[0],accentColor:userColor((u.email||'user').split('@')[0]),emoji:'👤'}}await loadMyFollowing()}else{window.location.href='index.html';return}loadConversations();var params=new URLSearchParams(window.location.search);var targetUid=params.get('uid');if(targetUid&&targetUid!==currentUser.uid){openChat(targetUid)}});
+        
+        // Wait for Firebase to be ready then setup auth
+        function initApp(){
+            if(!window.auth || !window.onAuthStateChanged){
+                setTimeout(initApp, 100);
+                return;
+            }
+            
+            window.onAuthStateChanged(window.auth, async function(u){
+                if(u){
+                    var db=window.db;
+                    var d=await getDoc(doc(db,'users',u.uid));
+                    if(d.exists()){
+                        currentUser=d.data();
+                        currentUser.uid=u.uid;
+                    }else{
+                        currentUser={uid:u.uid,username:(u.email||'user').split('@')[0],accentColor:userColor((u.email||'user').split('@')[0]),emoji:'👤'};
+                    }
+                    await loadMyFollowing();
+                    loadConversations();
+                    var params=new URLSearchParams(window.location.search);
+                    var targetUid=params.get('uid');
+                    if(targetUid&&targetUid!==currentUser.uid){
+                        openChat(targetUid);
+                    }
+                }else{
+                    window.location.href='index.html';
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded',function(){
+            var t=localStorage.getItem('ls-theme')||'light';
+            setTheme(t);
+            $('#themeToggle').addEventListener('click',function(){var cur=document.body.classList.contains('theme-dark')?'dark':'light';setTheme(cur==='dark'?'light':'dark')});
+            $('#backToConvs').addEventListener('click',backToConvs);
+            $('#emojiBtn').addEventListener('click',function(e){e.stopPropagation();$('#emojiPicker').classList.toggle('show')});
+            document.addEventListener('click',function(e){if(!e.target.closest('#emojiPicker')&&!e.target.closest('#emojiBtn')){$('#emojiPicker').classList.remove('show')}});
+            renderEmojiPicker();
+            requestNotificationPermission();
+            $('#chatMessagesWrap').addEventListener('scroll',checkScrollPosition);
+            $('#saveEditMsgBtn').addEventListener('click',saveEditedMessage);
+            $('#cancelEditMsgBtn').addEventListener('click',closeEditModal);
+            $('#editMsgModal').addEventListener('click',function(e){if(e.target===$('#editMsgModal'))closeEditModal()});
+            $('#shareSelectedLinkBtn').addEventListener('click',shareSelectedLink);
+            $('#cancelShareBtn').addEventListener('click',closeShareLinkModal);
+            $('#shareLinkModal').addEventListener('click',function(e){if(e.target===$('#shareLinkModal'))closeShareLinkModal()});
+            if(window.innerWidth<=768){$('#backToConvs').style.display='flex'}
+            window.addEventListener('resize',function(){if(window.innerWidth<=768){$('#backToConvs').style.display='flex'}else{$('#backToConvs').style.display='none';$('#conversationsPanel').classList.remove('hidden-mobile');$('#chatArea').classList.remove('hidden-mobile')}});
+            initApp();
+        });
     </script>
 </body>
 </html>
