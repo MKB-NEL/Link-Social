@@ -18,12 +18,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <style>
         :root{--font:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',Roboto,sans-serif;--t:150ms ease;--rs:0.375rem;--rm:0.5rem;--rl:0.75rem;--rx:1rem;--r2x:1.5rem;--rf:9999px}
-        .theme-light{--bg:#f4f2ee;--s:#ffffff;--h:#f9fafb;--inp:#f1f5f9;--b:#e2e8f0;--bl:#f1f5f9;--t1:#0f172a;--t2:#475569;--t3:#94a3b8;--p:#6c47ff;--ph:#5835e8;--pl:#f0ebff;--sc:#3b82f6;--su:#059669;--su-bg:#ecfdf5;--wa:#d97706;--wa-bg:#fffbeb;--da:#dc2626;--da-bg:#fef2f2;--shadow:0 20px 40px rgba(0,0,0,0.06);--logo:url('https://i.ibb.co/Z67LrCG7/L-1.png')}
-        .theme-dark{--bg:#0f172a;--s:#1e293b;--h:#263348;--inp:#1a2744;--b:#334155;--bl:#263348;--t1:#f1f5f9;--t2:#cbd5e1;--t3:#64748b;--p:#8b6cff;--ph:#7b5ce8;--pl:#1e1a3a;--sc:#60a5fa;--su:#10b981;--su-bg:#022c22;--wa:#f59e0b;--wa-bg:#422006;--da:#ef4444;--da-bg:#2a0a0a;--shadow:0 20px 40px rgba(0,0,0,0.4);--logo:url('https://i.ibb.co/jPxVQH4X/L-2.png')}
+        .theme-light{--bg:#f4f2ee;--s:#ffffff;--h:#f9fafb;--inp:#f1f5f9;--b:#e2e8f0;--bl:#f1f5f9;--t1:#0f172a;--t2:#475569;--t3:#94a3b8;--p:#6c47ff;--ph:#5835e8;--pl:#f0ebff;--sc:#3b82f6;--su:#059669;--su-bg:#ecfdf5;--wa:#d97706;--wa-bg:#fffbeb;--da:#dc2626;--da-bg:#fef2f2;--info:#3b82f6;--info-bg:#eff6ff;--shadow:0 20px 40px rgba(0,0,0,0.06);--logo:url('https://i.ibb.co/Z67LrCG7/L-1.png')}
+        .theme-dark{--bg:#0f172a;--s:#1e293b;--h:#263348;--inp:#1a2744;--b:#334155;--bl:#263348;--t1:#f1f5f9;--t2:#cbd5e1;--t3:#64748b;--p:#8b6cff;--ph:#7b5ce8;--pl:#1e1a3a;--sc:#60a5fa;--su:#10b981;--su-bg:#022c22;--wa:#f59e0b;--wa-bg:#422006;--da:#ef4444;--da-bg:#2a0a0a;--info:#60a5fa;--info-bg:#0a1929;--shadow:0 20px 40px rgba(0,0,0,0.4);--logo:url('https://i.ibb.co/jPxVQH4X/L-2.png')}
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
         body{font-family:var(--font);background:var(--bg);color:var(--t1);line-height:1.5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;transition:background 0.3s,color 0.3s}
         @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
         @keyframes spin{to{transform:rotate(360deg)}}
         @keyframes shake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-4px)}20%,40%,60%,80%{transform:translateX(4px)}}
         @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
@@ -46,6 +47,11 @@
         .form-label{display:flex;align-items:center;gap:0.35rem;font-size:0.78rem;font-weight:700;margin-bottom:0.35rem;color:var(--t1);text-transform:uppercase;letter-spacing:0.5px}
         .form-label .req{color:var(--da);font-size:0.65rem}
         .form-label .auto-tag{font-size:0.55rem;background:var(--pl);color:var(--p);padding:0.12rem 0.45rem;border-radius:var(--rf);font-weight:600}
+
+        .input-locked{position:relative}
+        .input-locked input,.input-locked textarea{pointer-events:none;opacity:0.6}
+        .input-locked .lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:0.4rem;font-size:0.75rem;color:var(--p);font-weight:600;pointer-events:none;z-index:2}
+        .input-locked .lock-overlay .mini-spinner{width:14px;height:14px;border:2px solid var(--b);border-top-color:var(--p);border-radius:50%;animation:spin 0.6s linear infinite}
 
         .url-wrap{display:flex;align-items:stretch;background:var(--inp);border:2px solid var(--b);border-radius:var(--rx);overflow:hidden;transition:all var(--t)}
         .url-wrap:focus-within{border-color:var(--p);box-shadow:0 0 0 4px rgba(108,71,255,0.08);background:var(--s)}
@@ -71,9 +77,9 @@
         .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;box-shadow:none}
 
         .cat-display{display:flex;align-items:center;gap:0.5rem;padding:0.65rem 0.9rem;background:var(--pl);border-radius:var(--rx);margin:0.75rem 0;font-size:0.82rem;font-weight:600;color:var(--p);border:1.5px solid rgba(108,71,255,0.12);flex-wrap:wrap}
-        .cat-display .cat-list{display:flex;gap:0.3rem;flex-wrap:wrap;margin-left:0.25rem}
-        .cat-display .cat-chip{background:var(--p);color:#fff;padding:0.15rem 0.5rem;border-radius:var(--rf);font-size:0.7rem;font-weight:600}
-        .cat-display .onion-tag{background:var(--da);color:#fff;padding:0.15rem 0.5rem;border-radius:var(--rf);font-size:0.7rem;font-weight:700}
+        .cat-list{display:flex;gap:0.3rem;flex-wrap:wrap;margin-left:0.25rem}
+        .cat-chip{background:var(--p);color:#fff;padding:0.15rem 0.5rem;border-radius:var(--rf);font-size:0.7rem;font-weight:600}
+        .onion-tag{background:var(--da);color:#fff;padding:0.15rem 0.5rem;border-radius:var(--rf);font-size:0.7rem;font-weight:700}
 
         .trust-box{background:var(--s);border:2px solid var(--b);border-radius:var(--rx);padding:1rem 1.25rem;margin:1rem 0;transition:all var(--t)}
         .trust-box.trusted{border-color:#10b981;background:linear-gradient(135deg,var(--su-bg),var(--s))}
@@ -134,8 +140,8 @@
             <div class="header-row"><div class="header-left"><div class="logo-icon"></div><h1>Share a Link</h1></div><div class="user-badge" id="userBadge"><div class="dot" id="userDot" style="background:linear-gradient(135deg,var(--p),var(--sc))">?</div><span id="userName">Loading...</span></div></div>
             <p class="subtitle">Curate the web. Share something valuable with the community.</p>
             <div class="form-group"><label class="form-label">URL <span class="req">*</span></label><div class="url-wrap" id="urlWrap"><span class="url-icon"><span class="iconify" data-icon="ph:link-simple-bold" data-width="20"></span></span><input type="url" id="shareUrl" placeholder="example.com/amazing-article" oninput="handleUrlInput()" autofocus><button class="paste-btn" onclick="pasteFromClipboard()"><span class="iconify" data-icon="ph:clipboard-text" data-width="14"></span> Paste</button></div><div class="url-status" id="urlStatus"></div></div>
-            <div class="form-group"><label class="form-label">Title <span class="req">*</span> <span class="auto-tag">auto-fill</span></label><input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()"></div>
-            <div class="form-group"><label class="form-label">Description <span class="auto-tag">auto-fill</span></label><textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing?" oninput="onContentChange()"></textarea></div>
+            <div class="form-group input-locked" id="titleGroup"><label class="form-label">Title <span class="req">*</span> <span class="auto-tag">auto-fill</span></label><div class="lock-overlay" id="titleLock" style="display:none"><span class="mini-spinner"></span> Fetching title...</div><input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()"></div>
+            <div class="form-group input-locked" id="descGroup"><label class="form-label">Description <span class="auto-tag">auto-fill</span></label><div class="lock-overlay" id="descLock" style="display:none"><span class="mini-spinner"></span> Fetching description...</div><textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing?" oninput="onContentChange()"></textarea></div>
             <div class="cat-display" id="catDisplay" style="display:none"><span id="catEmoji">🏷️</span><span>Categories:</span><div class="cat-list" id="catList"></div></div>
             <div class="trust-box" id="trustBox" style="display:none"><div class="trust-box-top"><div class="trust-score-row"><span class="trust-score-number high" id="trustScoreNumber">—</span><span class="trust-percent">/100</span></div></div><div class="trust-shields" id="trustShields"><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span></div><div class="trust-summary-text" id="trustSummaryText">Enter a URL to analyze safety</div><span class="trust-logs-toggle" id="trustLogsToggle" onclick="toggleTrustLogs()"><span class="iconify" data-icon="ph:caret-down" data-width="12"></span> Logs</span><div class="trust-logs" id="trustLogs"></div></div>
             <button class="btn btn-primary" id="publishBtn" onclick="handlePublish()"><span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span>Publish to LinkSocial</button>
@@ -155,7 +161,7 @@
         var userColor=function(u){var h=0;for(var i=0;i<(u||'a').length;i++)h=u.charCodeAt(i)+((h<<5)-h);return'hsl('+Math.abs(h%360)+',50%,45%)'};
         var isOnion=function(url){return url&&(url.indexOf('.onion')!==-1||url.indexOf('tor://')!==-1||url.indexOf('onion://')!==-1)};
 
-        var currentUser=null,previewData=null,detectedCategories=[],categoryData=null,trustData=null,allExistingUrls=[],linkIsDead=false;
+        var currentUser=null,previewData=null,detectedCategories=[],categoryData=null,trustData=null,allExistingUrls=[],linkIsDead=false,isFetching=false;
 
         function toast(m,t){t=t||'success';var el=document.createElement('div');el.className='toast '+t;el.textContent=m;document.body.appendChild(el);setTimeout(function(){el.style.opacity='0';el.style.transition='all 0.3s';setTimeout(function(){el.remove()},300)},3000)}
         function setTheme(t){document.body.classList.remove('theme-light','theme-dark');document.body.classList.add('theme-'+t);$('#themeIcon').setAttribute('data-icon',t==='dark'?'ph:sun':'ph:moon');localStorage.setItem('ls-theme',t)}
@@ -165,11 +171,15 @@
         function closeDeadLinkModal(){$('#deadLinkOverlay').classList.remove('active');$('#shareUrl').focus()}
         function toggleTrustLogs(){$('#trustLogs').classList.toggle('show');$('#trustLogsToggle .iconify').setAttribute('data-icon',$('#trustLogs').classList.contains('show')?'ph:caret-up':'ph:caret-down')}
 
+        function lockInputs(){isFetching=true;$('#titleLock').style.display='flex';$('#descLock').style.display='flex';$('#shareTitle').value='';$('#shareDesc').value=''}
+        function unlockInputs(){isFetching=false;$('#titleLock').style.display='none';$('#descLock').style.display='none'}
+
         function normalizeUrl(url){try{var u=url.trim().toLowerCase();if(!u.startsWith('http')&&!isOnion(u))u='https://'+u;var p=new URL(u);var n=p.hostname.replace(/^www\./,'')+p.pathname.replace(/\/+$/,'');var skip=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','ref','source'];var params=[];new URLSearchParams(p.search).forEach(function(v,k){if(skip.indexOf(k)===-1)params.push(k+'='+v)});params.sort();if(params.length)n+='?'+params.join('&');return n}catch(e){return url.trim().toLowerCase()}}
         function isSameUrl(u1,u2){try{return normalizeUrl(u1)===normalizeUrl(u2)}catch(e){return u1.trim().toLowerCase()===u2.trim().toLowerCase()}}
 
         async function loadExistingUrls(){try{var s=await db.collection('links').select('url','title','ownerName').get();allExistingUrls=[];s.docs.forEach(function(d){var data=d.data();if(data.url)allExistingUrls.push({url:data.url,title:data.title||'Untitled',ownerName:data.ownerName||'Anonymous',normalized:normalizeUrl(data.url)})})}catch(e){}}
         function checkUrlExists(url){if(!url)return null;var norm=normalizeUrl(url);for(var i=0;i<allExistingUrls.length;i++){if(allExistingUrls[i].normalized===norm||isSameUrl(norm,allExistingUrls[i].normalized))return allExistingUrls[i]}return null}
+        async function checkDuplicateFirestore(url){var norm=normalizeUrl(url);var snap=await db.collection('links').where('normalizedUrl','==',norm).get();if(!snap.empty){var d=snap.docs[0].data();return{url:d.url,title:d.title||'Untitled',ownerName:d.ownerName||'Anonymous'}}return null}
 
         function updateUrlStatus(type){var s=$('#urlStatus'),w=$('#urlWrap');s.className='url-status '+type;if(type==='duplicate')s.innerHTML='<span class="iconify" data-icon="ph:warning-circle" data-width="14"></span> Already shared';else if(type==='unique')s.innerHTML='<span class="iconify" data-icon="ph:check-circle" data-width="14"></span> Unique';else if(type==='checking')s.innerHTML='<span class="iconify" data-icon="ph:spinner" data-width="14" style="animation:spin 0.8s linear infinite"></span> Checking...';else if(type==='dead')s.innerHTML='<span class="iconify" data-icon="ph:link-break" data-width="14"></span> Cannot be reached';else s.innerHTML='';w.classList.remove('error','duplicate','success','dead');if(type==='duplicate')w.classList.add('duplicate');if(type==='unique')w.classList.add('success');if(type==='dead')w.classList.add('error');window.Iconify.scan(s)}
 
@@ -177,11 +187,36 @@
 
         async function pasteFromClipboard(){try{var text=await navigator.clipboard.readText();if(text&&(text.indexOf('http')!==-1||text.indexOf('www.')!==-1||text.indexOf('.onion')!==-1)){$('#shareUrl').value=text.trim();handleUrlInput()}}catch(e){}}
 
-        async function loadCategoryData(){try{var r=await fetch('categories.json');var d=await r.json();categoryData=d.categories}catch(e){categoryData=[{name:'General',icon:'📌',keywords:['general']}]}}
+        // Load categories with fallback
+        async function loadCategoryData(){
+            try{var r=await fetch('categories.json');var d=await r.json();categoryData=d.categories}catch(e){}
+            if(!categoryData||!categoryData.length){
+                categoryData=[
+                    {name:"AI & Machine Learning",icon:"🤖",keywords:["ai","artificial intelligence","machine learning","llm","gpt","neural network","deep learning","openai","chatgpt","claude","gemini"]},
+                    {name:"Programming & Development",icon:"💻",keywords:["programming","coding","developer","github","git","javascript","python","rust","typescript","react","node","api","docker","kubernetes"]},
+                    {name:"Technology",icon:"⚡",keywords:["tech","technology","startup","silicon valley","gadget","hardware","software","apple","google","microsoft"]},
+                    {name:"Education",icon:"📚",keywords:["education","learn","course","tutorial","study","academic","university","school"]},
+                    {name:"Entertainment",icon:"🎬",keywords:["movie","film","tv show","anime","series","netflix","entertainment","celebrity"]},
+                    {name:"Gaming",icon:"🎮",keywords:["game","gaming","pc gaming","console","playstation","xbox","nintendo","steam","esports"]},
+                    {name:"Music",icon:"🎵",keywords:["music","song","album","playlist","artist","band","concert","spotify"]},
+                    {name:"Business & Finance",icon:"💼",keywords:["business","startup","entrepreneur","funding","vc","venture capital","revenue","profit","market","stock","trading"]},
+                    {name:"News & Politics",icon:"📰",keywords:["news","breaking","report","journalism","article","opinion","editorial","politics"]},
+                    {name:"Science",icon:"🔬",keywords:["science","research","experiment","discovery","physics","chemistry","biology","astronomy"]},
+                    {name:"Health & Fitness",icon:"💪",keywords:["health","fitness","workout","exercise","nutrition","diet","wellness","mental health"]},
+                    {name:"Food & Cooking",icon:"🍳",keywords:["food","recipe","cooking","restaurant","cuisine","baking"]},
+                    {name:"Travel",icon:"✈️",keywords:["travel","tourism","hotel","flight","adventure","backpacking"]},
+                    {name:"Sports",icon:"⚽",keywords:["sport","football","soccer","basketball","tennis","nba","nfl"]},
+                    {name:"Design & Creativity",icon:"🎨",keywords:["design","graphic design","ui","ux","figma","sketch","adobe","photoshop"]},
+                    {name:"Shopping & Deals",icon:"🛍️",keywords:["shopping","deal","discount","coupon","sale","product review"]},
+                    {name:"Developer Resources",icon:"🛠️",keywords:["api","github repo","dev tool","framework","library","sdk","documentation"]},
+                    {name:"Social Media & Communities",icon:"🌐",keywords:["social media","viral","trend","influencer","community","forum","discord server"]},
+                    {name:"General",icon:"📌",keywords:["general","misc","other"]}
+                ];
+            }
+        }
 
-        // AI-powered multi-category detection
         function detectCategories(title,desc,url){
-            if(!categoryData)return[{name:'General',icon:'📌'}];
+            if(!categoryData||!categoryData.length)return[{name:'General',icon:'📌'}];
             var text=((title||'')+' '+(desc||'')+' '+(url||'')).toLowerCase();
             var domain=getDomain(url||'').toLowerCase();
             var matches=[];
@@ -206,14 +241,14 @@
             var title=$('#shareTitle').value.trim(),desc=$('#shareDesc').value.trim(),url=$('#shareUrl').value.trim();
             if(!title&&!desc&&!url){$('#catDisplay').style.display='none';return}
             detectedCategories=detectCategories(title,desc,url);
+            if(!detectedCategories.length){$('#catDisplay').style.display='none';return}
             $('#catDisplay').style.display='flex';$('#catEmoji').textContent=detectedCategories[0]?detectedCategories[0].icon:'🏷️';
             var catHtml='';detectedCategories.forEach(function(c){catHtml+='<span class="cat-chip">'+c.name+'</span>'});
             if(isOnion(url))catHtml+='<span class="onion-tag">🧅 ONION</span>';
             $('#catList').innerHTML=catHtml;
         }
-        function onContentChange(){updateCategoryDisplay()}
+        function onContentChange(){if(!isFetching)updateCategoryDisplay()}
 
-        // Trust scoring (without about/contact/privacy)
         function calcTrustScore(previewData,url,title,desc,pageExists){
             if(!pageExists||linkIsDead){return{score:0,level:'dead',summary:'This link cannot be reached',missing:['Page failed to load']}}
             var score=0;var missing=[];
@@ -222,13 +257,12 @@
             if(previewData&&previewData.description){score+=5}else{missing.push('Meta description')}
             if(previewData&&(previewData.image||previewData.screenshot)){score+=5}else{missing.push('Open Graph image')}
             if(previewData&&(previewData.logo||previewData.favicon)){score+=5}else{missing.push('Favicon')}
-            if(!isOnion(url)){score+=5}else{score+=3;missing.push('Onion link - limited checks')}
             var domain=getDomain(url||'');if(domain&&!/^\d+\.\d+\.\d+\.\d+$/.test(domain)&&domain.length>3&&!/[^a-z0-9.-]/.test(domain)&&domain.split('.').length<=4){score+=10}else{missing.push('Normal domain name')}
             if(pageExists){score+=10}
             if(previewData&&previewData.description&&previewData.description.length>100){score+=10}else{missing.push('Substantial content')}
-            if(isOnion(url)){score+=5;missing.push('Onion network - reduced trust')}
-            var finalScore=Math.min(100,score);var level='trusted',summary='This link appears trustworthy';
-            if(finalScore<60){level='warning';summary='Some trust factors are missing'}if(finalScore<40){level='danger';summary='This link lacks many trust indicators'}if(finalScore===0){level='dead';summary='Link unreachable'}
+            if(isOnion(url)){score-=10;missing.push('Onion link - reduced trust')}
+            var finalScore=Math.min(100,Math.max(0,score));var level='trusted',summary='This link appears trustworthy';
+            if(finalScore<60){level='warning';summary='Some trust factors are missing'}if(finalScore<40){level='danger';summary='This link lacks many trust indicators'}
             return{score:finalScore,level:level,summary:summary,missing:missing};
         }
 
@@ -242,12 +276,13 @@
             var exists=checkUrlExists(url);
             if(exists){updateUrlStatus('duplicate');renderTrustUI({score:0,level:'danger',summary:'Already shared',missing:[]});return}
             updateUrlStatus('unique');
+            lockInputs();
             if(isOnion(url)){
                 previewData={title:$('#shareTitle').value||url,description:$('#shareDesc').value||'Onion link',url:url};
                 $('#previewPlaceholder').style.display='none';$('#previewContent').style.display='block';
                 $('#previewContent').innerHTML='<div class="preview-card"><div class="preview-card-body"><div class="preview-card-domain">🧅 Onion Network</div><div class="preview-card-title">'+esc(url)+'</div><div class="preview-card-desc">Onion links are allowed but trust scoring is reduced.</div></div></div>';
                 if(!$('#shareTitle').value)$('#shareTitle').value=url;
-                updateCategoryDisplay();var td=calcTrustScore(previewData,url,$('#shareTitle').value,$('#shareDesc').value,true);trustData=td;renderTrustUI(td);return;
+                unlockInputs();updateCategoryDisplay();var td=calcTrustScore(previewData,url,$('#shareTitle').value,$('#shareDesc').value,true);trustData=td;renderTrustUI(td);return;
             }
             try{
                 var r=await fetch('https://api.microlink.io/?url='+encodeURIComponent(url)+'&screenshot=true');var d=await r.json();
@@ -258,10 +293,10 @@
                     $('#previewContent').innerHTML='<div class="preview-card">'+(img?'<img src="'+esc(img)+'" class="preview-card-image" alt="Preview" onerror="this.style.display=\'none\'">':'')+'<div class="preview-card-body"><div class="preview-card-domain">'+(fv?'<img src="'+esc(fv)+'" alt="" onerror="this.style.display=\'none\'">':'')+' '+esc(domain)+'</div><div class="preview-card-title">'+esc(d.data.title||domain)+'</div>'+(d.data.description?'<div class="preview-card-desc">'+esc(d.data.description)+'</div>':'')+'</div></div>';
                     if(!$('#shareTitle').value&&d.data.title)$('#shareTitle').value=d.data.title;
                     if(!$('#shareDesc').value&&d.data.description)$('#shareDesc').value=d.data.description;
-                    updateCategoryDisplay();var td=calcTrustScore(previewData,url,$('#shareTitle').value,$('#shareDesc').value,true);trustData=td;renderTrustUI(td);
-                }else{linkIsDead=true;showPlaceholder('Could not load preview');updateUrlStatus('dead');
+                    unlockInputs();updateCategoryDisplay();var td=calcTrustScore(previewData,url,$('#shareTitle').value,$('#shareDesc').value,true);trustData=td;renderTrustUI(td);
+                }else{linkIsDead=true;unlockInputs();showPlaceholder('Could not load preview');updateUrlStatus('dead');
                     var tdDead=calcTrustScore(null,url,'','',false);trustData=tdDead;renderTrustUI(tdDead);showDeadLinkModal()}
-            }catch(e){linkIsDead=true;showPlaceholder('Error loading preview');updateUrlStatus('dead');
+            }catch(e){linkIsDead=true;unlockInputs();showPlaceholder('Error loading preview');updateUrlStatus('dead');
                 var tdErr=calcTrustScore(null,url,'','',false);trustData=tdErr;renderTrustUI(tdErr);showDeadLinkModal()}
         }
 
@@ -273,20 +308,32 @@
             var finalUrl=url;
             if(!isOnion(url)&&!url.startsWith('http'))finalUrl='https://'+url;
             var btn=$('#publishBtn');btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Checking uniqueness...';
-            await loadExistingUrls();var duplicate=checkUrlExists(finalUrl);
-            if(duplicate){btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';updateUrlStatus('duplicate');$('#urlWrap').classList.add('duplicate');showDuplicateModal(duplicate);setTimeout(function(){$('#urlWrap').classList.remove('duplicate')},3000);return}
-            if(!isOnion(finalUrl)){btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Verifying link...';
+            // Double-check with Firestore for duplicate
+            var duplicate=await checkDuplicateFirestore(finalUrl);
+            if(!duplicate){duplicate=checkUrlExists(finalUrl);}
+            if(duplicate){
+                btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';
+                updateUrlStatus('duplicate');$('#urlWrap').classList.add('duplicate');showDuplicateModal(duplicate);
+                setTimeout(function(){$('#urlWrap').classList.remove('duplicate')},3000);return;
+            }
+            if(!isOnion(finalUrl)){
+                btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Verifying link...';
                 try{var checkR=await fetch('https://api.microlink.io/?url='+encodeURIComponent(finalUrl));var checkD=await checkR.json();
-                    if(checkD.status!=='success'||!checkD.data){btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';toast('This link cannot be reached','error');updateUrlStatus('dead');showDeadLinkModal();return}
-                }catch(e){btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';toast('This link cannot be reached','error');updateUrlStatus('dead');showDeadLinkModal();return}}
+                    if(checkD.status!=='success'||!checkD.data){
+                        btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';
+                        toast('This link cannot be reached','error');updateUrlStatus('dead');showDeadLinkModal();return;
+                    }
+                }catch(e){btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';toast('This link cannot be reached','error');updateUrlStatus('dead');showDeadLinkModal();return;}
+            }
             btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Publishing...';
             var screenshot='';if(previewData){screenshot=(previewData.screenshot&&previewData.screenshot.url)?previewData.screenshot.url:((previewData.image&&previewData.image.url)?previewData.image.url:'')}
             var cats=detectedCategories.length>0?detectedCategories:[{name:'General',icon:'📌'}];
             var catNames=cats.map(function(c){return c.name});
             if(isOnion(finalUrl)&&catNames.indexOf('ONION')===-1)catNames.unshift('ONION');
             var td=trustData||calcTrustScore(previewData,finalUrl,title,desc,!linkIsDead);
-            var link={title:title,url:finalUrl,description:desc,categories:catNames,category:catNames[0],screenshot:screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0,trustScore:td.score,normalizedUrl:normalizeUrl(finalUrl),domain:getDomain(finalUrl).toLowerCase()};
-            try{await db.collection('links').add(link);allExistingUrls.push({url:finalUrl,title:title,ownerName:currentUser?currentUser.username:'Anonymous',normalized:normalizeUrl(finalUrl)});if(currentUser)await db.collection('users').doc(currentUser.uid).update({linkCount:firebase.firestore.FieldValue.increment(1)});toast('🎉 Published! Redirecting...','success');setTimeout(function(){window.location.href='index.html'},1200)}catch(e){toast('Error. Try again.','error');btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial'}
+            var normalizedUrl=normalizeUrl(finalUrl);
+            var link={title:title,url:finalUrl,description:desc,categories:catNames,category:catNames[0],screenshot:screenshot,previewImage:screenshot,ownerId:currentUser?currentUser.uid:'anonymous',ownerName:currentUser?currentUser.username:'Anonymous',createdAt:Date.now(),upvotes:1,downvotes:0,ratings:{},avgRating:0,comments:[],views:0,saves:0,trustScore:td.score,normalizedUrl:normalizedUrl,domain:getDomain(finalUrl).toLowerCase()};
+            try{await db.collection('links').add(link);allExistingUrls.push({url:finalUrl,title:title,ownerName:currentUser?currentUser.username:'Anonymous',normalized:normalizedUrl});if(currentUser)await db.collection('users').doc(currentUser.uid).update({linkCount:firebase.firestore.FieldValue.increment(1)});toast('🎉 Published! Redirecting...','success');setTimeout(function(){window.location.href='index.html'},1200)}catch(e){toast('Error. Try again.','error');btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial'}
         }
 
         auth.onAuthStateChanged(function(u){if(u){db.collection('users').doc(u.uid).get().then(function(d){currentUser=d.exists?{uid:u.uid,username:d.data().username,email:d.data().email,accentColor:d.data().accentColor,emoji:d.data().emoji}:{uid:u.uid,username:u.email.split('@')[0],accentColor:userColor(u.email.split('@')[0]),emoji:'👤'};updateUserUI()})}else{currentUser=null;updateUserUI()}});
