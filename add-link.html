@@ -53,6 +53,8 @@
         .input-locked .lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:0.4rem;font-size:0.75rem;color:var(--p);font-weight:600;pointer-events:none;z-index:2}
         .input-locked .lock-overlay .mini-spinner{width:14px;height:14px;border:2px solid var(--b);border-top-color:var(--p);border-radius:50%;animation:spin 0.6s linear infinite}
 
+        .input-unlocked input,.input-unlocked textarea{pointer-events:auto;opacity:1}
+
         .url-wrap{display:flex;align-items:stretch;background:var(--inp);border:2px solid var(--b);border-radius:var(--rx);overflow:hidden;transition:all var(--t)}
         .url-wrap:focus-within{border-color:var(--p);box-shadow:0 0 0 4px rgba(108,71,255,0.08);background:var(--s)}
         .url-wrap.error{border-color:var(--da);animation:shake 0.5s ease-out}
@@ -138,8 +140,8 @@
             <div class="header-row"><div class="header-left"><div class="logo-icon"></div><h1>Share a Link</h1></div><div class="user-badge" id="userBadge"><div class="dot" id="userDot" style="background:linear-gradient(135deg,var(--p),var(--sc))">?</div><span id="userName">Loading...</span></div></div>
             <p class="subtitle">Curate the web. Share something valuable with the community.</p>
             <div class="form-group"><label class="form-label">URL <span class="req">*</span></label><div class="url-wrap" id="urlWrap"><span class="url-icon"><span class="iconify" data-icon="ph:link-simple-bold" data-width="20"></span></span><input type="url" id="shareUrl" placeholder="example.com/amazing-article" oninput="handleUrlInput()" autofocus><button class="paste-btn" onclick="pasteFromClipboard()"><span class="iconify" data-icon="ph:clipboard-text" data-width="14"></span> Paste</button></div><div class="url-status" id="urlStatus"></div></div>
-            <div class="form-group input-locked" id="titleGroup"><label class="form-label">Title <span class="req">*</span> <span class="auto-tag">auto-fill</span></label><div class="lock-overlay" id="titleLock" style="display:none"><span class="mini-spinner"></span> Fetching title...</div><input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()"></div>
-            <div class="form-group input-locked" id="descGroup"><label class="form-label">Description <span class="auto-tag">auto-fill</span></label><div class="lock-overlay" id="descLock" style="display:none"><span class="mini-spinner"></span> Fetching description...</div><textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing?" oninput="onContentChange()"></textarea></div>
+            <div class="form-group" id="titleGroup"><label class="form-label">Title <span class="req">*</span> <span class="auto-tag" id="titleTag">auto-fill</span></label><div class="lock-overlay" id="titleLock" style="display:none"><span class="mini-spinner"></span> Fetching title...</div><input type="text" class="form-input" id="shareTitle" placeholder="Give it a compelling title..." oninput="onContentChange()"></div>
+            <div class="form-group" id="descGroup"><label class="form-label">Description <span class="auto-tag" id="descTag">auto-fill</span></label><div class="lock-overlay" id="descLock" style="display:none"><span class="mini-spinner"></span> Fetching description...</div><textarea class="form-textarea" id="shareDesc" placeholder="What makes this link worth sharing?" oninput="onContentChange()"></textarea></div>
             <div class="cat-display" id="catDisplay" style="display:none"><span id="catEmoji">🏷️</span><span>Categories: </span><span class="cat-text" id="catText"></span></div>
             <div class="trust-box" id="trustBox" style="display:none"><div class="trust-box-top"><div class="trust-score-row"><span class="trust-score-number high" id="trustScoreNumber">—</span><span class="trust-percent">/100</span></div></div><div class="trust-shields" id="trustShields"><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span><span class="trust-shield empty"><span class="iconify" data-icon="ph:shield" data-width="22"></span></span></div><div class="trust-summary-text" id="trustSummaryText">Enter a URL to analyze safety</div><span class="trust-logs-toggle" id="trustLogsToggle" onclick="toggleTrustLogs()"><span class="iconify" data-icon="ph:caret-down" data-width="12"></span> Logs</span><div class="trust-logs" id="trustLogs"></div></div>
             <button class="btn btn-primary" id="publishBtn" onclick="handlePublish()"><span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span>Publish to LinkSocial</button>
@@ -169,8 +171,10 @@
         function closeDeadLinkModal(){$('#deadLinkOverlay').classList.remove('active');$('#shareUrl').focus()}
         function toggleTrustLogs(){$('#trustLogs').classList.toggle('show');$('#trustLogsToggle .iconify').setAttribute('data-icon',$('#trustLogs').classList.contains('show')?'ph:caret-up':'ph:caret-down')}
 
-        function lockInputs(){isFetching=true;$('#titleLock').style.display='flex';$('#descLock').style.display='flex';$('#shareTitle').value='';$('#shareDesc').value=''}
-        function unlockInputs(){isFetching=false;$('#titleLock').style.display='none';$('#descLock').style.display='none'}
+        function lockInputs(){isFetching=true;$('#titleLock').style.display='flex';$('#descLock').style.display='flex';$('#titleGroup').classList.add('input-locked');$('#descGroup').classList.add('input-locked');$('#shareTitle').value='';$('#shareDesc').value=''}
+        function unlockInputs(){isFetching=false;$('#titleLock').style.display='none';$('#descLock').style.display='none';$('#titleGroup').classList.remove('input-locked');$('#descGroup').classList.remove('input-locked')}
+        
+        function unlockInputsForDeadLink(){isFetching=false;$('#titleLock').style.display='none';$('#descLock').style.display='none';$('#titleGroup').classList.remove('input-locked');$('#descGroup').classList.remove('input-locked');$('#titleTag').textContent='manual entry';$('#descTag').textContent='manual entry'}
 
         function normalizeUrl(url){try{var u=url.trim().toLowerCase();if(!u.startsWith('http')&&!isOnion(u))u='https://'+u;var p=new URL(u);var n=p.hostname.replace(/^www\./,'')+p.pathname.replace(/\/+$/,'');var skip=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','ref','source'];var params=[];new URLSearchParams(p.search).forEach(function(v,k){if(skip.indexOf(k)===-1)params.push(k+'='+v)});params.sort();if(params.length)n+='?'+params.join('&');return n}catch(e){return url.trim().toLowerCase()}}
         function isSameUrl(u1,u2){try{return normalizeUrl(u1)===normalizeUrl(u2)}catch(e){return u1.trim().toLowerCase()===u2.trim().toLowerCase()}}
@@ -250,7 +254,7 @@
         function onContentChange(){if(!isFetching)updateCategoryDisplay()}
 
         function calcTrustScore(previewData,url,title,desc,pageExists){
-            if(!pageExists||linkIsDead){return{score:0,level:'dead',summary:'This link cannot be reached',missing:['Page failed to load']}}
+            if(!pageExists||linkIsDead){return{score:0,level:'dead',summary:'This link cannot be reached - 0% Trust',missing:['Page failed to load']}}
             var score=0;var missing=[];
             if(previewData&&previewData.title){score+=15;score+=5}else{missing.push('Valid page title')}
             if(url&&url.startsWith('https://')){score+=10}else{missing.push('HTTPS encryption')}
@@ -297,9 +301,9 @@
                     if(!$('#shareTitle').value&&d.data.title)$('#shareTitle').value=d.data.title;
                     if(!$('#shareDesc').value&&d.data.description)$('#shareDesc').value=d.data.description;
                     unlockInputs();updateCategoryDisplay();var td=calcTrustScore(previewData,url,$('#shareTitle').value,$('#shareDesc').value,true);trustData=td;renderTrustUI(td);
-                }else{linkIsDead=true;unlockInputs();showPlaceholder('Could not load preview');updateUrlStatus('dead');
+                }else{linkIsDead=true;unlockInputsForDeadLink();showPlaceholder('Could not load preview');updateUrlStatus('dead');
                     var tdDead=calcTrustScore(null,url,'','',false);trustData=tdDead;renderTrustUI(tdDead);showDeadLinkModal()}
-            }catch(e){linkIsDead=true;unlockInputs();showPlaceholder('Error loading preview');updateUrlStatus('dead');
+            }catch(e){linkIsDead=true;unlockInputsForDeadLink();showPlaceholder('Error loading preview');updateUrlStatus('dead');
                 var tdErr=calcTrustScore(null,url,'','',false);trustData=tdErr;renderTrustUI(tdErr);showDeadLinkModal()}
         }
 
@@ -318,15 +322,10 @@
                 updateUrlStatus('duplicate');$('#urlWrap').classList.add('duplicate');showDuplicateModal(duplicate);
                 setTimeout(function(){$('#urlWrap').classList.remove('duplicate')},3000);return;
             }
-            if(!isOnion(finalUrl)){
-                btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Verifying link...';
-                try{var checkR=await fetch('https://api.microlink.io/?url='+encodeURIComponent(finalUrl));var checkD=await checkR.json();
-                    if(checkD.status!=='success'||!checkD.data){
-                        btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';
-                        toast('This link cannot be reached','error');updateUrlStatus('dead');showDeadLinkModal();return;
-                    }
-                }catch(e){btn.disabled=false;btn.innerHTML='<span class="iconify" data-icon="ph:rocket-launch" data-width="18"></span> Publish to LinkSocial';toast('This link cannot be reached','error');updateUrlStatus('dead');showDeadLinkModal();return;}
-            }
+            
+            // 🔽 REMOVED: The dead link verification block is now gone 🔽
+            // Users can now publish links even if they can't be reached
+            
             btn.innerHTML='<span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-radius:50%;border-top-color:transparent;animation:spin 0.6s linear infinite"></span> Publishing...';
             var screenshot='';if(previewData){screenshot=(previewData.screenshot&&previewData.screenshot.url)?previewData.screenshot.url:((previewData.image&&previewData.image.url)?previewData.image.url:'')}
             var catNames=detectCategories(title,desc,finalUrl);
